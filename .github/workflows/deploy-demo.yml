@@ -26,6 +26,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Checkout gh-pages branch
+        if: github.event_name == 'push'
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          fetch-depth: 0
+
+      - name: Delete everything but pr-preview folder
+        if: github.event_name == 'push'
+        run: |
+          find . -mindepth 1 -maxdepth 1 ! -name 'pr-preview' -exec rm -rf {} +
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -36,6 +48,11 @@ jobs:
 
       - name: Build demo
         run: yarn build-demo
+
+      - name: Delete contents of PR preview folder before publishing
+        if: github.event_name == 'pull_request'
+        run: |
+          rm -rf pr-preview/pr-${{ github.event.pull_request.number }}/* || true
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
