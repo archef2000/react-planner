@@ -43,7 +43,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./demo/dist
           keep_files: true
-          destination_dir: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && 'main' || format('pr-{0}', github.event.pull_request.number) }}
+          destination_dir: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && '' || format('pr-preview/pr-{0}', github.event.pull_request.number) }}
 
   delete-pr-preview:
     runs-on: ubuntu-latest
