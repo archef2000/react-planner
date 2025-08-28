@@ -1,0 +1,97 @@
+name: Deploy demo and PR previews to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write # to push to gh-pages
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build demo
+        run: npm run build-demo
+
+      - name: Prepare publish directory
+        id: prep
+        run: |
+          set -euo pipefail
+          echo "Event: $GITHUB_EVENT_NAME"
+          PUBLISH_DIR=publish
+          mkdir -p "$PUBLISH_DIR"
+          # Fetch existing gh-pages branch (if any) to preserve prior previews / root site
+          if git ls-remote --exit-code origin gh-pages >/dev/null 2>&1; then
+            git fetch origin gh-pages:gh-pages
+            git checkout gh-pages
+            # Move its contents into publish/ (excluding .git)
+            shopt -s dotglob
+            mv * ../$PUBLISH_DIR/ 2>/dev/null || true
+            mv .[!.]* ../$PUBLISH_DIR/ 2>/dev/null || true
+            git checkout -
+          fi
+
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            # Root deployment for master -> root of site
+            rm -rf "$PUBLISH_DIR"/*.html "$PUBLISH_DIR"/*.js "$PUBLISH_DIR"/assets || true
+            rsync -a demo/dist/ "$PUBLISH_DIR"/
+            DEPLOY_PATH="/"  # relative to project page base
+          else
+            SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-8)
+            PR_NUMBER=${{ github.event.pull_request.number }}
+            PREVIEW_SUBDIR="previews/pr-${PR_NUMBER}-${SHORT_SHA}"
+            mkdir -p "$PUBLISH_DIR/$PREVIEW_SUBDIR"
+            rsync -a demo/dist/ "$PUBLISH_DIR/$PREVIEW_SUBDIR/"
+            DEPLOY_PATH="/$PREVIEW_SUBDIR/"
+            # Optional: add/update an index of previews
+            INDEX_FILE="$PUBLISH_DIR/previews/index.html"
+            mkdir -p "$(dirname "$INDEX_FILE")"
+            echo "<html><head><title>PR Previews</title></head><body><h1>PR Previews</h1><ul>" > "$INDEX_FILE"
+            find "$PUBLISH_DIR/previews" -maxdepth 1 -mindepth 1 -type d -printf '%f\n' | sort -r | while read d; do
+              echo "<li><a href='../previews/$d/'>${d}</a></li>" >> "$INDEX_FILE"
+            done
+            echo "</ul></body></html>" >> "$INDEX_FILE"
+          fi
+
+          echo "deploy_path=$DEPLOY_PATH" >> $GITHUB_OUTPUT
+
+      - name: Deploy to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: publish
+          clean: false # keep existing previews
+          commit-message: "Deploy: ${GITHUB_SHA} (${GITHUB_EVENT_NAME})"
+
+      - name: Deployment URLs
+        run: |
+          BASE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "Production demo: ${BASE_URL}/"
+          else
+            echo "Preview URL: ${BASE_URL}${{ steps.prep.outputs.deploy_path }}"
+            echo "Index of previews: ${BASE_URL}/previews/"
+          fi

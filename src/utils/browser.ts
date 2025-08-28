@@ -1,0 +1,36 @@
+export function browserDownload(json) {
+  const fileOutputLink = document.createElement('a');
+
+  let filename = 'output' + Date.now() + '.json';
+  filename = window.prompt('Insert output filename', filename);
+  if (!filename) return;
+
+  const output = JSON.stringify(json);
+  const data = new Blob([output], { type: 'text/plain' });
+  const url = window.URL.createObjectURL(data);
+  fileOutputLink.setAttribute('download', filename);
+  fileOutputLink.href = url;
+  fileOutputLink.style.display = 'none';
+  document.body.appendChild(fileOutputLink);
+  fileOutputLink.click();
+  document.body.removeChild(fileOutputLink);
+}
+
+export function browserUpload(): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+
+    fileInput.addEventListener('change', function (event) {
+      const file = (event.target as any).files[0];
+      const reader = new FileReader();
+      reader.addEventListener('load', (fileEvent) => {
+        const loadedData = String(fileEvent.target.result);
+        resolve(loadedData);
+      });
+      reader.readAsText(file);
+    });
+
+    fileInput.click();
+  });
+}

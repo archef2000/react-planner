@@ -1,0 +1,42 @@
+{
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-react",
+    [
+      "@babel/preset-typescript",
+      {
+        "allowDeclareFields": true
+      }
+    ]
+  ],
+  "plugins": [
+    "@babel/plugin-transform-object-rest-spread"
+  ],
+  "env": {
+    "development": {
+      "plugins": [
+        "react-refresh/babel"
+      ]
+    },
+    "commonjs": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "modules": "commonjs"
+          }
+        ]
+      ]
+    },
+    "es": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "modules": false
+          }
+        ]
+      ]
+    }
+  }
+}
