@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, closed]
 
 permissions:
   contents: write
@@ -19,6 +19,7 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || (github.event.action != 'closed' && github.event.action != 'deleted')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,3 +44,23 @@ jobs:
           publish_dir: ./demo/dist
           keep_files: true
           destination_dir: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && 'main' || format('pr-{0}', github.event.pull_request.number) }}
+
+  delete-pr-preview:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && (github.event.action == 'closed' || github.event.action == 'deleted')
+    steps:
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          fetch-depth: 0
+
+      - name: Remove PR preview folder
+        run: |
+          rm -rf pr-${{ github.event.pull_request.number }}
+
+      - name: Commit and push changes
+        run: |
+          git add .
+          git commit -m "Remove PR preview for #${{ github.event.pull_request.number }}"
+          git push origin gh-pages
