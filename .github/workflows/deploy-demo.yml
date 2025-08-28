@@ -69,7 +69,7 @@ jobs:
 
       - name: Copy new build files
         run: |
-          cp -r ../main/demo/dist/* "$DEST"
+          cp -r main/demo/dist/* "$DEST"
 
       - name: Commit and push changes
         run: |
