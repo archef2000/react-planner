@@ -1,7 +1,7 @@
 name: Deploy demo and PR previews to GitHub Pages
 
 on:
-  workflow_run:
+  workflow_dispatch:
   push:
     branches: [master]
   pull_request:
