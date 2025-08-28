@@ -8,7 +8,7 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
-  contents: write # to push to gh-pages
+  contents: write
   pages: write
   id-token: write
 
@@ -31,22 +31,15 @@ jobs:
           node-version: 22
 
       - name: Run install
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: install
+        run: yarn install --frozen-lockfile
 
       - name: Build demo
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build-demo
+        run: yarn build-demo
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload entire repository
-          path: "./demo/dist"
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./demo/dist
+          keep_files: true
+          destination_dir: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && 'main' || format('pr-{0}', github.event.pull_request.number) }}
