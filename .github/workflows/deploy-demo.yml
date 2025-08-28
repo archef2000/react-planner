@@ -46,11 +46,6 @@ jobs:
         run: |
           git clone --single-branch --branch gh-pages https://github.com/${{ github.repository }} gh-pages-work
 
-        with:
-          ref: gh-pages
-          fetch-depth: 0
-          path: gh-pages-work
-
       - name: Set destination directory
         id: destdir
         run: |
