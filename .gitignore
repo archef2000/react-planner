@@ -5,5 +5,5 @@ dist/*
 !dist/index.html
 .vscode
 es/*
-lib*
+lib/*
 demo/dist*
