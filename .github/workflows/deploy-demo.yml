@@ -47,20 +47,21 @@ jobs:
         with:
           ref: gh-pages
           fetch-depth: 0
+          path: gh-pages-work
 
       - name: Set destination directory
         id: destdir
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "push" || "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
-            echo "DEST=./" >> $GITHUB_ENV
+            echo "DEST=gh-pages-work/" >> $GITHUB_ENV
           else
-            echo "DEST=./pr-preview/pr-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+            echo "DEST=gh-pages-work/pr-preview/pr-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
           fi
 
       - name: Delete old files (main or PR)
         run: |
-          if [[ "$DEST" == "./" ]]; then
-            find . -mindepth 1 -maxdepth 1 ! -name 'pr-preview' -exec rm -rf {} +
+          if [[ "$DEST" == "gh-pages-work/" ]]; then
+            find gh-pages-work -mindepth 1 -maxdepth 1 ! -name 'pr-preview' -exec rm -rf {} +
           else
             rm -rf "$DEST"/* || true
             mkdir -p "$DEST"
@@ -72,6 +73,7 @@ jobs:
 
       - name: Commit and push changes
         run: |
+          cd gh-pages-work
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
