@@ -3,7 +3,7 @@ name: Deploy demo and PR previews to GitHub Pages
 on:
   workflow_dispatch:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
     types: [opened, synchronize, reopened]
 
