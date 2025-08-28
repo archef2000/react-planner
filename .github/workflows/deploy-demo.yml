@@ -31,11 +31,15 @@ jobs:
           node-version: 20
           cache: "npm"
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
 
       - name: Build demo
-        run: npm run build-demo
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build-demo
 
       - name: Prepare publish directory
         id: prep
