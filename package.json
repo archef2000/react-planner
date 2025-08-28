@@ -7,6 +7,7 @@
   "jsnext:main": "es/index.js",
   "scripts": {
     "start": "cross-env BABEL_ENV=development NODE_ENV=development webpack-dev-server --config demo/webpack.config.js --port 9000 --mode development",
+    "start-prod": "cross-env BABEL_ENV=production NODE_ENV=production webpack-dev-server --config demo/webpack.config.js --port 9000 --mode production",
     "build-demo": "webpack --config demo/webpack.config.js --mode production",
     "build-commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib --extensions \".ts,.tsx,.js,.jsx\"",
     "build-es": "cross-env BABEL_ENV=es babel src --copy-files --out-dir es --extensions \".ts,.tsx,.js,.jsx\"",

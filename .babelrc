@@ -13,11 +13,6 @@
     "@babel/plugin-transform-object-rest-spread"
   ],
   "env": {
-    "development": {
-      "plugins": [
-        "react-refresh/babel"
-      ]
-    },
     "commonjs": {
       "presets": [
         [

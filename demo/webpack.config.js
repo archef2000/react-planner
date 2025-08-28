@@ -1,24 +1,26 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const path = require('path');
-const webpack = require('webpack');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+import HtmlWebpackPlugin from "html-webpack-plugin"
+import { fileURLToPath } from 'url';
+import path from "path"
+import webpack from "webpack"
+import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin"
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PAGE_TITLE = 'React Planner';
 
-module.exports = (env, self) => {
-  let isProduction = self.hasOwnProperty('mode') ? (self.mode === 'production') : true;
-  let port = self.hasOwnProperty('port') ? self.port : 8080;
+export default (env, self) => {
+  const isProduction = self.hasOwnProperty('mode') ? (self.mode === 'production') : true;
+  const port = self.hasOwnProperty('port') ? self.port : 8080;
 
   if (isProduction) console.info('Webpack: Production mode'); else console.info('Webpack: Development mode');
 
-  let config = {
+  const config = {
     context: path.resolve(__dirname),
     entry: {
       app: './src/renderer.tsx'
     },
     output: {
       path: path.join(__dirname, 'dist'),
-      // In dev keep simple names except for the vendor chunk which we want to cache aggressively.
       filename: isProduction ? '[contenthash].[name].js' : (pathData) => {
         return pathData.chunk && pathData.chunk.name === 'vendor' ? 'vendor.[contenthash].js' : '[name].js';
       },
@@ -67,7 +69,7 @@ module.exports = (env, self) => {
         '@archef2000/react-planner': path.join(__dirname, '../src/index'),
         'react-planner': path.join(__dirname, '../src/index'),
         'src': path.join(__dirname, '../src'),
-        'three-nodes': path.resolve('node_modules/three/examples/jsm/nodes')
+        'three-nodes': path.resolve(__dirname, '../../node_modules/three/examples/jsm/nodes')
       }
     },
     cache: isProduction ? false : { type: 'filesystem' },
@@ -91,6 +93,7 @@ module.exports = (env, self) => {
               presets: ['@babel/preset-env', '@babel/preset-react'],
               sourceMaps: true,
               cacheDirectory: true,
+              plugins: isProduction ? [] : ['react-refresh/babel'],
             }
           }
         },
