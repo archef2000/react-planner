@@ -76,8 +76,10 @@ jobs:
           PR_NUMBER=${{ github.event.pull_request.number }}
           DEMO_URL="https://archef2000.github.io/react-planner/pr-preview/pr-$PR_NUMBER/"
           COMMENT_BODY=":rocket: PR demo available at: $DEMO_URL"
-          cd main
-          gh pr comment $PR_NUMBER --body "$COMMENT_BODY"
+          curl -s -H "Authorization: token $GH_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"body\": \"$COMMENT_BODY\"}" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"
         shell: bash
 
       - name: Commit and push changes
