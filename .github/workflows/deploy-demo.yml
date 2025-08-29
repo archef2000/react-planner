@@ -76,6 +76,7 @@ jobs:
           PR_NUMBER=${{ github.event.pull_request.number }}
           DEMO_URL="https://archef2000.github.io/react-planner/pr-preview/pr-$PR_NUMBER/"
           COMMENT_BODY=":rocket: PR demo available at: $DEMO_URL"
+          cd main
           gh pr comment $PR_NUMBER --body "$COMMENT_BODY"
         shell: bash
 
