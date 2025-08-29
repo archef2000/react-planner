@@ -99,7 +99,7 @@ jobs:
           else
             msgHash="$hash"
           fi
-          git commit -m "deploy: $msgHash"
+          git commit -m "deploy: $msgHash" || true
           git push
 
   delete-pr-preview:
