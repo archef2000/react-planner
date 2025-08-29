@@ -77,7 +77,7 @@ jobs:
           git add .
           # Generate msgHash
           baseRepo="${{ github.repository }}"
-          hash=$(git rev-parse --short HEAD)
+          hash=$(git --git-dir=../main/.git rev-parse --short HEAD)
           extRepo=""
           if [[ "$baseRepo" != "archef2000/react-planner" ]]; then
             extRepo="$baseRepo"
