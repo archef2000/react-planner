@@ -70,16 +70,12 @@ jobs:
           cp -r main/demo/dist/* "$DEST"
 
       - name: Post PR demo URL comment
+        uses: peter-evans/create-or-update-comment@v4
         if: github.event_name == 'pull_request' && github.event.action == 'synchronize' # opened
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          DEMO_URL="https://archef2000.github.io/react-planner/pr-preview/pr-$PR_NUMBER/"
-          COMMENT_BODY=":rocket: PR demo available at: $DEMO_URL"
-          cd main
-          gh pr comment $PR_NUMBER --body "$COMMENT_BODY"
-        shell: bash
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ":rocket: PR demo available at: https://archef2000.github.io/react-planner/pr-preview/pr-${{ github.event.pull_request.number }}/"
+          reactions: "+1"
 
       - name: Commit and push changes
         run: |
