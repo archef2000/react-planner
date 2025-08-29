@@ -66,7 +66,7 @@ export default class Panel extends Component<PanelProps, PanelState> {
 
     return (
       <div style={STYLE}>
-        <p>wrong 3</p>
+        <p>wrong (create message)</p>
         <h3
           style={{ ...STYLE_TITLE, color: hover ? SharedStyle.SECONDARY_COLOR.main : SharedStyle.PRIMARY_COLOR.text_alt }}
           onMouseEnter={() => this.toggleHover()}
