@@ -75,7 +75,19 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git add .
-          git commit -m "Update site files"
+          # Generate msgHash
+          baseRepo="${{ github.repository }}"
+          hash=$(git rev-parse --short HEAD)
+          extRepo=""
+          if [[ "$baseRepo" != "archef2000/react-planner" ]]; then
+            extRepo="$baseRepo"
+          fi
+          if [[ -n "$extRepo" ]]; then
+            msgHash="$extRepo@$hash"
+          else
+            msgHash="$hash"
+          fi
+          git commit -m "deploy: $msgHash"
           git push
 
   delete-pr-preview:
