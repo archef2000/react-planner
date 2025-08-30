@@ -80,6 +80,7 @@ jobs:
         uses: peter-evans/create-or-update-comment@v4
         if: github.event_name == 'pull_request_target' && github.event.action == 'synchronize' # opened
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body: ":rocket: PR demo available at: https://archef2000.github.io/react-planner/pr-preview/pr-${{ github.event.pull_request.number }}/"
 
