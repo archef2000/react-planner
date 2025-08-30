@@ -69,6 +69,12 @@ jobs:
         run: |
           cp -r main/demo/dist/* "$DEST"
 
+      - name: Debug print
+        run: |
+          echo "github.event_name is set to: ${{ github.event_name }}"
+          echo "github.event.action is set to: ${{ github.event.action }}"
+          echo "GITHUB_EVENT_NAME is set to: $GITHUB_EVENT_NAME"
+
       - name: Post PR demo URL comment
         uses: peter-evans/create-or-update-comment@v4
         if: github.event_name == 'pull_request_target' && github.event.action == 'synchronize' # opened
