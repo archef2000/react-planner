@@ -116,5 +116,7 @@ jobs:
       - name: Commit and push changes
         run: |
           git add .
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m "Remove PR preview for #${{ github.event.pull_request.number }}"
           git push origin gh-pages
