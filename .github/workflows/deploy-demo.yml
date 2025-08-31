@@ -20,7 +20,7 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' || (github.event.action != 'closed' && github.event.action != 'deleted')
+    if: github.event_name != 'pull_request_target' || (github.event.action != 'closed' && github.event.action != 'deleted')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -101,7 +101,7 @@ jobs:
 
   delete-pr-preview:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && (github.event.action == 'closed' || github.event.action == 'deleted')
+    if: github.event_name == 'pull_request_target' && (github.event.action == 'closed' || github.event.action == 'deleted')
     steps:
       - name: Checkout gh-pages branch
         uses: actions/checkout@v4
