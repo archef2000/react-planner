@@ -7,7 +7,15 @@ const sliderStyle = { display: 'block', width: '100%', height: '30px' } as const
 const textContainerStyle = { display: 'inline-block', width: '15%', float: 'right' } as const;
 const textStyle = { height: '34px', textAlign: 'center' } as const;
 
-export default function FormNumberInput({ value, onChange, ...rest }) {
+type FormSliderProps = {
+  value: number;
+  onChange: (value: number[]) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+};
+
+export default function FormSlider({ value, onChange, ...rest }: FormSliderProps) {
   return (
     <div>
       <div style={sliderContainerStyle}>
@@ -22,6 +30,7 @@ export default function FormNumberInput({ value, onChange, ...rest }) {
                 height: "6px",
                 width: "100%",
                 backgroundColor: "#ccc",
+                transform: "translateY(10px)"
               }}
             >
               {children}
@@ -33,9 +42,10 @@ export default function FormNumberInput({ value, onChange, ...rest }) {
               key={props.key}
               style={{
                 ...props.style,
-                height: "42px",
-                width: "42px",
+                height: "15px",
+                width: "15px",
                 backgroundColor: "#999",
+                outline: "none"
               }}
             />
           )}
@@ -45,7 +55,7 @@ export default function FormNumberInput({ value, onChange, ...rest }) {
       </div>
 
       <div style={textContainerStyle}>
-        <FormTextInput value={value} onChange={onChange} style={textStyle} />
+        <FormTextInput value={value} onChange={e => onChange([parseInt(e.target.value)])} style={textStyle} />
       </div>
     </div>
   )

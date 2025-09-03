@@ -233,7 +233,7 @@ export default class PanelLayers extends Component<PanelLayersProps, PanelLayers
                       min={0}
                       max={100}
                       value={Math.round(this.state.editingLayer.opacity * 100)}
-                      onChange={e => this.setState({ editingLayer: { ...this.state.editingLayer, opacity: (e.target.value / 100) } })}
+                      onChange={value => this.setState({ editingLayer: { ...this.state.editingLayer, opacity: (value[0] / 100) } })}
                     />
                   </td>
                 </tr>
