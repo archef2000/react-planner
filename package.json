@@ -1,10 +1,8 @@
 {
-  "name": "react-planner",
+  "name": "@archef2000/react-planner",
   "version": "2.0.7",
   "description": "react-planner is a React Component for plans design. Draw a 2D floorplan and navigate it in 3D mode.",
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "jsnext:main": "es/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "start": "cross-env BABEL_ENV=development NODE_ENV=development webpack-dev-server --config demo/webpack.config.js --port 9000 --mode development",
     "start-prod": "cross-env BABEL_ENV=production NODE_ENV=production webpack-dev-server --config demo/webpack.config.js --port 9000 --mode production",
@@ -12,13 +10,12 @@
     "build-commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib --extensions \".ts,.tsx,.js,.jsx\"",
     "build-es": "cross-env BABEL_ENV=es babel src --copy-files --out-dir es --extensions \".ts,.tsx,.js,.jsx\"",
     "build-ts": "tsc --project tsconfig.json",
-    "build": "npm run clean && npm run build-ts && npm run build-demo && npm run build-commonjs && npm run build-es",
+    "build": "tsc",
     "add-build-to-vcs": "git add -A src/version.js && git add -A es && git add -A lib && git add -A demo/dist",
     "clean": "rimraf lib es demo/dist",
     "website-update": "gh-pages -m 'Update gh-pages' -d ./demo/dist/",
     "update-version-file": "const-version ./package.json ./src/version.js",
     "version": "npm run update-version-file && npm run build && npm run add-build-to-vcs",
-    "postpublish": "npm run website-update",
     "test": "echo \"Error: no test specified\" && exit 1",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",
@@ -117,5 +114,18 @@
     "react": "18.x",
     "react-dom": "18.x",
     "three": "0.179.x"
-  }
+  },
+  "directories": {
+    "doc": "docs",
+    "example": "demo",
+    "bin": "dist",
+    "src": "src"
+  },
+  "files": [
+    "docs",
+    "demo",
+    "dist",
+    "src",
+    "README.md"
+  ]
 }
