@@ -89,15 +89,13 @@ export default class ElementEditor extends Component<ElementEditorProps, Element
 
   componentDidUpdate(prevProps: ElementEditorProps) {
     const { element, layer, state } = this.props;
-    const { prototype, id } = element;
-    const scene = prevProps.state.scene;
-    const selectedLayer = scene.layers[scene.selectedLayer];
-    const selected = selectedLayer[prototype][id];
 
-    if (selectedLayer !== layer) this.setState({
-      attributesFormData: this.initAttrData(element, layer, this.context),
-      propertiesFormData: this.initPropData(element, this.context)
-    });
+    if (prevProps.layer.id !== layer.id) {
+      this.setState({
+        attributesFormData: this.initAttrData(element, layer, this.context),
+        propertiesFormData: this.initPropData(element, this.context)
+      });
+    }
   }
 
   initAttrData(element: ElementType, layer: Layer, context: ReactPlannerContextProps) {

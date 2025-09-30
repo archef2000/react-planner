@@ -104,7 +104,7 @@ class Item {
           itemID,
           startPointX: x,
           startPointY: y,
-          originalX: item.x,
+          originalX: item.x, // TODO: is a string sometimes
           originalY: item.y
         };
       }

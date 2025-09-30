@@ -9,18 +9,18 @@ const obj = require('./sofa.obj');
 const img = require('./texture.jpg');
 const resourcePath = img.substr(0, img.lastIndexOf("/")) + "/";
 
-const width = { length: 180, unit: 'cm' };
+const width = { length: 90, unit: 'cm' };
 const depth = { length: 60, unit: 'cm' };
 const height = { length: 70, unit: 'cm' };
 
 let cachedJSONSofa: Object3DJSON;
 
 export default defineCatalogElement({
-  name: 'sofa',
+  name: 'sofa single',
   prototype: 'items',
 
   info: {
-    title: 'sofa',
+    title: 'sofa single',
     tag: ['furnishings', 'leather'],
     description: 'Leather sofa',
     image: require('./sofa.png')
@@ -95,7 +95,9 @@ export default defineCatalogElement({
       const newHeight = height.length;
       const newDepth = depth.length;
 
-      object.scale.set(newWidth / width.length, newHeight / height.length, newDepth / depth.length);
+      const bbox = new Box3().setFromObject(object);
+      const size = new Vector3();
+      bbox.getSize(size);
 
       const box = new BoxHelper(object, 0x99c3fb);
       box.material.linewidth = 2;
@@ -104,8 +106,6 @@ export default defineCatalogElement({
 
       // Normalize the origin of this item
       const boundingBox = new Box3().setFromObject(object);
-      const size = new Vector3();
-      boundingBox.getSize(size);
 
       const center = [
         (boundingBox.max.x - boundingBox.min.x) / 2 + boundingBox.min.x,

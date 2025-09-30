@@ -51,16 +51,15 @@ class Layer {
     return produce(state, draft => {
       const layer = draft.scene.layers[layerID];
       if (!layer) return;
+      layer.selected[elementPrototype] = layer.selected[elementPrototype].filter(el => el !== elementID);
       const element = layer[elementPrototype][elementID];
       if (!element) return;
-
       element.selected = false;
-      layer.selected[elementPrototype] = layer.selected[elementPrototype].filter(el => el !== elementID);
     });
   }
 
   static unselectAll(state: State, layerID: string) {
-    return produce(state, draft => {
+    state = produce(state, draft => {
       const layer = draft.scene.layers[layerID];
       if (!layer) return;
 
@@ -71,6 +70,18 @@ class Layer {
       Object.values(items).forEach(item => { draft = Item.unselect(draft, layerID, item.id); });
       Object.values(areas).forEach(area => { draft = Area.unselect(draft, layerID, area.id); });
       return draft;
+    });
+    return produce(state, draft => {
+      const layer = draft.scene.layers[layerID];
+      if (!layer) return;
+
+      layer.selected = {
+        lines: [],
+        holes: [],
+        items: [],
+        areas: [],
+        vertices: []
+      };
     });
   }
 
