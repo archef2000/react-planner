@@ -12,6 +12,8 @@ import {
   Float32BufferAttribute,
   Vector3,
   DoubleSide,
+  BackSide,
+  FrontSide,
   SRGBColorSpace,
   Object3D,
   Object3DEventMap,
@@ -112,6 +114,7 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
   // Get height and thickness of the wall converting them into the current scene units
   const height = element.properties.height.length;
   const thickness = element.properties.thickness.length;
+  const opacity = element.properties.opacity;
   const faceThickness = 0.2; // thickness of decorative textured panel
   const faceDistance = 0.5;    // no artificial gap; panels will be shifted just outside the wall body
 
@@ -132,9 +135,6 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
   const backPoints = [points1[points1.length - 1], backEnd].map((p) => { return { y: p.y * -1, x: p.x } });
 
   const halfDistance = distance / 2;
-
-  const soulMaterial = new MeshBasicMaterial({ color: (element.selected ? SharedStyle.MESH_SELECTED : 0xD3D3D3) });
-  soulMaterial.side = DoubleSide;
 
   // Build a custom prism geometry using the four plan-view corners (front/back at start/end)
   const fStart = frontPoints[0];
@@ -205,7 +205,24 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
   soulGeometry.setAttribute('uv', new Float32BufferAttribute(uvs, 2));
   soulGeometry.computeVertexNormals();
 
-  let soul: Mesh = new Mesh(soulGeometry, soulMaterial);
+  // Triangles order (each 2 tris): front(0-1), back(2-3), start(4-5), end(6-7), bottom(8-9), top(10-11)
+  // Each triangle adds 3 vertices
+  const frontVertCount = 2 * 3; // 6
+  const backVertCount = 2 * 3;  // 6
+  const remainingVertCount = (positions.length / 3) - frontVertCount - backVertCount;
+
+  soulGeometry.clearGroups();
+  soulGeometry.addGroup(0, frontVertCount, 0); // front hidden
+  soulGeometry.addGroup(frontVertCount, backVertCount, 1); // back hidden
+  soulGeometry.addGroup(frontVertCount + backVertCount, remainingVertCount, 2); // visible sides/top/bottom
+
+  // Hidden faces fully transparent
+  const frontHiddenMat = new MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, side: BackSide });
+  const backHiddenMat = new MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, side: FrontSide });
+  // Visible faces adopt the opacity property
+  const sideVisibleMat = new MeshBasicMaterial({ color: (element.selected ? SharedStyle.MESH_SELECTED : 0xD3D3D3), side: DoubleSide, opacity, transparent: true });
+
+  let soul: Mesh = new Mesh(soulGeometry, [frontHiddenMat, backHiddenMat, sideVisibleMat]);
 
   const alpha = Math.asin((vertex1.y - vertex0.y) / (distance));
 
@@ -245,6 +262,11 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
 
   const frontMaterial = applyTexture(textures[element.properties.textureB], distance, height);
   const backMaterial = applyTexture(textures[element.properties.textureA], distance, height);
+
+  [frontMaterial, backMaterial].forEach(mat => {
+    mat.opacity = opacity;
+    if (opacity < 1) mat.transparent = true;
+  });
 
   // Build proper thin face panels from actual face quads, offset outward along face normal
   // Helper to build a thin extruded quad geometry with UVs along length (u) and height (v)
@@ -405,9 +427,12 @@ export function updatedWall(element: Line, layer: Layer, scene: Scene, textures:
   const backFace = mesh.getObjectByName('backFace');
 
   if (differences[0] == 'selected') {
-    const mat = new MeshBasicMaterial({ color: (element.selected ? SharedStyle.MESH_SELECTED : 0xD3D3D3) });
-    mat.side = DoubleSide;
-    (soul as Mesh).material = mat;
+    const soulMesh = soul as Mesh;
+    if (Array.isArray(soulMesh.material)) {
+      const sideMat = soulMesh.material[2] as MeshBasicMaterial;
+      sideMat.color.set(element.selected ? SharedStyle.MESH_SELECTED : 0xD3D3D3);
+      sideMat.needsUpdate = true;
+    }
   }
   else if (differences[0] == 'properties') {
     if (differences[1] == 'thickness') {

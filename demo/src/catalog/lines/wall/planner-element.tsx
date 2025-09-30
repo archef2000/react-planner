@@ -38,6 +38,13 @@ const textures: CatalogElementTextures = {
       normalScaleY: 0.4
     }
   },
+  glass: {
+    name: 'Glass',
+    // 1x1 semi-transparent PNG (light blue tint)
+    uri: require('./textures/glass.jpg'),
+    lengthRepeatScale: 1,
+    heightRepeatScale: 1,
+  }
 };
 
 export default ElementsFactories.WallFactory('wall', info, textures);

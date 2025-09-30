@@ -61,6 +61,14 @@ export default function WallFactory(name: string, info: CatalogElementInfo, text
           length: 20
         }
       },
+      opacity: {
+        label: translator.t('opacity'),
+        type: 'number',
+        defaultValue: 1,
+        min: 0,
+        max: 1,
+        step: 0.05
+      },
       textureA: {
         label: translator.t('texture') + ' A',
         type: 'enum',
