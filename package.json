@@ -2,7 +2,7 @@
   "name": "@archef2000/react-planner",
   "version": "2.0.9",
   "description": "react-planner is a React Component for plans design. Draw a 2D floorplan and navigate it in 3D mode.",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
     "start": "cross-env BABEL_ENV=development NODE_ENV=development webpack-dev-server --config demo/webpack.config.js --port 9000 --mode development",
