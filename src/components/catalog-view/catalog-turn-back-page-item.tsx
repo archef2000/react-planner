@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+
 import { MdNavigateBefore } from 'react-icons/md';
-import * as SharedStyle from '../../shared-style';
+
 import ReactPlannerContext from '../../react-planner-context';
+import * as SharedStyle from '../../shared-style';
 
 const STYLE_BOX = {
   width: '14em',
@@ -58,17 +60,23 @@ interface CatalogTurnBackPageItemState {
   hover: boolean;
 }
 
-export default class CatalogTurnBackPageItem extends Component<CatalogTurnBackPageItemProps, CatalogTurnBackPageItemState> {
+export default class CatalogTurnBackPageItem extends Component<
+  CatalogTurnBackPageItemProps,
+  CatalogTurnBackPageItemState
+> {
   static contextType = ReactPlannerContext;
   context!: React.ContextType<typeof ReactPlannerContext>;
 
-  constructor(props, context) {
+  constructor(
+    props: CatalogTurnBackPageItemProps,
+    context: typeof ReactPlannerContext
+  ) {
     super(props, context);
     this.state = { hover: false };
   }
 
-  changePage(newPage) {
-    this.context.projectActions.goBackToCatalogPage(newPage)
+  changePage(newPage: string) {
+    this.context.projectActions.goBackToCatalogPage(newPage);
   }
 
   render() {
@@ -78,14 +86,13 @@ export default class CatalogTurnBackPageItem extends Component<CatalogTurnBackPa
     return (
       <div
         style={hover ? STYLE_BOX_HOVER : STYLE_BOX}
-        onClick={e => this.changePage(page.name)}
-        onMouseEnter={e => this.setState({ hover: true })}
-        onMouseLeave={e => this.setState({ hover: false })}
+        onClick={(e) => this.changePage(page.name)}
+        onMouseEnter={(e) => this.setState({ hover: true })}
+        onMouseLeave={(e) => this.setState({ hover: false })}
       >
         <div style={CONTAINER_DIV}>
           <MdNavigateBefore style={!hover ? STYLE_BACK : STYLE_BACK_HOVER} />
         </div>
-
       </div>
     );
   }

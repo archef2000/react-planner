@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
-import If from '../../utils/react-if';
-import * as sharedStyles from '../../shared-style';
+
+import { CatalogJson } from '../../catalog/catalog';
 import ReactPlannerContext from '../../react-planner-context';
-import { CatalogJson, CatalogFn } from '../../catalog/catalog';
+import * as sharedStyles from '../../shared-style';
+import If from '../../utils/react-if';
 
 const cx = 0;
 const cy = 0;
@@ -18,7 +19,7 @@ interface GroupProps {
   layer: any;
   group: any;
   scene: any;
-  catalog: CatalogJson
+  catalog: CatalogJson;
 }
 
 export default function Group({ layer, group, scene, catalog }: GroupProps) {
@@ -43,10 +44,10 @@ export default function Group({ layer, group, scene, catalog }: GroupProps) {
           data-part="rotation-anchor"
         >
           <circle cx={cx} cy={cy} r={radius} style={STYLE_CIRCLE}>
-            <title>{translator.t('Group\'s Barycenter')}</title>
+            <title>{translator.t("Group's Barycenter")}</title>
           </circle>
         </g>
       </If>
     </g>
-  )
+  );
 }

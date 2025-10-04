@@ -1,22 +1,52 @@
 import React, { Component } from 'react';
-import Panel from './panel';
-import {
-  MODE_IDLE, MODE_2D_ZOOM_IN, MODE_2D_ZOOM_OUT, MODE_2D_PAN, MODE_3D_VIEW, MODE_3D_FIRST_PERSON,
-  MODE_WAITING_DRAWING_LINE, MODE_DRAWING_LINE, MODE_DRAWING_HOLE, MODE_DRAWING_ITEM, MODE_DRAGGING_LINE,
-  MODE_DRAGGING_VERTEX, MODE_DRAGGING_ITEM, MODE_DRAGGING_HOLE, MODE_FITTING_IMAGE, MODE_UPLOADING_IMAGE,
-  MODE_ROTATING_ITEM
-} from '../../constants';
-import * as SharedStyle from '../../shared-style';
+
 import { MdSearch } from 'react-icons/md';
+
+import {
+  MODE_2D_PAN,
+  MODE_2D_ZOOM_IN,
+  MODE_2D_ZOOM_OUT,
+  MODE_3D_FIRST_PERSON,
+  MODE_3D_VIEW,
+  MODE_DRAGGING_HOLE,
+  MODE_DRAGGING_ITEM,
+  MODE_DRAGGING_LINE,
+  MODE_DRAGGING_VERTEX,
+  MODE_DRAWING_HOLE,
+  MODE_DRAWING_ITEM,
+  MODE_DRAWING_LINE,
+  MODE_FITTING_IMAGE,
+  MODE_IDLE,
+  MODE_ROTATING_ITEM,
+  MODE_UPLOADING_IMAGE,
+  MODE_WAITING_DRAWING_LINE,
+  ModeType
+} from '../../constants';
+import { Layer, Scene, SharedAttributes } from '../../models';
 import ReactPlannerContext from '../../react-planner-context';
-import { Layer, Scene } from '../../models';
+import * as SharedStyle from '../../shared-style';
+
+import Panel from './panel';
 
 const VISIBILITY_MODE = {
-  MODE_IDLE, MODE_2D_ZOOM_IN, MODE_2D_ZOOM_OUT, MODE_2D_PAN, MODE_3D_VIEW, MODE_3D_FIRST_PERSON,
-  MODE_WAITING_DRAWING_LINE, MODE_DRAWING_LINE, MODE_DRAWING_HOLE, MODE_DRAWING_ITEM, MODE_DRAGGING_LINE,
-  MODE_DRAGGING_VERTEX, MODE_DRAGGING_ITEM, MODE_DRAGGING_HOLE, MODE_FITTING_IMAGE, MODE_UPLOADING_IMAGE,
+  MODE_IDLE,
+  MODE_2D_ZOOM_IN,
+  MODE_2D_ZOOM_OUT,
+  MODE_2D_PAN,
+  MODE_3D_VIEW,
+  MODE_3D_FIRST_PERSON,
+  MODE_WAITING_DRAWING_LINE,
+  MODE_DRAWING_LINE,
+  MODE_DRAWING_HOLE,
+  MODE_DRAWING_ITEM,
+  MODE_DRAGGING_LINE,
+  MODE_DRAGGING_VERTEX,
+  MODE_DRAGGING_ITEM,
+  MODE_DRAGGING_HOLE,
+  MODE_FITTING_IMAGE,
+  MODE_UPLOADING_IMAGE,
   MODE_ROTATING_ITEM
-};
+} as Record<ModeType, ModeType>;
 
 const contentArea = {
   height: 'auto',
@@ -42,28 +72,33 @@ const elementStyle = {
 const elementSelectedStyle = {
   ...elementStyle,
   border: elementStyle.border.replace('#CCC', SharedStyle.SECONDARY_COLOR.main),
-  color: SharedStyle.SECONDARY_COLOR.main,
+  color: SharedStyle.SECONDARY_COLOR.main
 } as const;
 
 const categoryDividerStyle = {
   paddingBottom: '0.5em',
-  borderBottom: '1px solid #888',
+  borderBottom: '1px solid #888'
 } as const;
 
 const tableSearchStyle = { width: '100%', marginTop: '0.8em' } as const;
 const searchIconStyle = { fontSize: '1.5em' } as const;
-const searchInputStyle = { fontSize: '1em', width: '100%', height: '1em', padding: '1em 0.5em' } as const;
+const searchInputStyle = {
+  fontSize: '1em',
+  width: '100%',
+  height: '1em',
+  padding: '1em 0.5em'
+} as const;
 
 interface PanelLayerElementProps {
   mode: string;
-  layers: Scene["layers"];
-  selectedLayer: any;
+  layers: Scene['layers'];
+  selectedLayer: string;
 }
 
 interface ElementsType {
-  lines: Layer["lines"][string][];
-  holes: Layer["holes"][string][];
-  items: Layer["items"][string][];
+  lines: Layer['lines'][string][];
+  holes: Layer['holes'][string][];
+  items: Layer['items'][string][];
 }
 
 interface PanelLayerElementState {
@@ -72,18 +107,24 @@ interface PanelLayerElementState {
   matchedElements: ElementsType;
 }
 
-export default class PanelLayerElement extends Component<PanelLayerElementProps, PanelLayerElementState> {
+export default class PanelLayerElement extends Component<
+  PanelLayerElementProps,
+  PanelLayerElementState
+> {
   static contextType = ReactPlannerContext;
   context!: React.ContextType<typeof ReactPlannerContext>;
 
-  constructor(props: PanelLayerElementProps, context) {
+  constructor(
+    props: PanelLayerElementProps,
+    context: typeof ReactPlannerContext
+  ) {
     super(props, context);
 
     const layer = props.layers[props.selectedLayer];
     const elements = {
       lines: Object.values(layer.lines),
       holes: Object.values(layer.holes),
-      items: Object.values(layer.items),
+      items: Object.values(layer.items)
     } as const;
 
     this.state = {
@@ -93,7 +134,10 @@ export default class PanelLayerElement extends Component<PanelLayerElementProps,
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState: PanelLayerElementState) {
+  shouldComponentUpdate(
+    nextProps: PanelLayerElementProps,
+    nextState: PanelLayerElementState
+  ) {
     if (this.state.matchString !== nextState.matchString) return true;
 
     const oldElements = this.state.elements;
@@ -103,7 +147,8 @@ export default class PanelLayerElement extends Component<PanelLayerElementProps,
       oldElements.lines !== newElements.lines ||
       oldElements.holes !== newElements.holes ||
       oldElements.items !== newElements.items
-    ) return true;
+    )
+      return true;
 
     return false;
   }
@@ -116,12 +161,12 @@ export default class PanelLayerElement extends Component<PanelLayerElementProps,
     const elements = {
       lines: Object.values(layer.lines),
       holes: Object.values(layer.holes),
-      items: Object.values(layer.items),
+      items: Object.values(layer.items)
     };
 
     if (this.state.matchString !== '') {
       const regexp = new RegExp(this.state.matchString, 'i');
-      const filterCb = el => regexp.test(el.name);
+      const filterCb = (el: SharedAttributes) => regexp.test(el.name);
 
       this.setState({
         matchedElements: {
@@ -135,7 +180,7 @@ export default class PanelLayerElement extends Component<PanelLayerElementProps,
     }
   }
 
-  matcharray(text) {
+  matcharray(text: string) {
     if (text === '') {
       this.setState({
         matchString: '',
@@ -145,7 +190,7 @@ export default class PanelLayerElement extends Component<PanelLayerElementProps,
     }
 
     const regexp = new RegExp(text, 'i');
-    const filterCb = el => regexp.test(el.name);
+    const filterCb = (el: SharedAttributes) => regexp.test(el.name);
 
     this.setState({
       matchString: text,
@@ -163,86 +208,93 @@ export default class PanelLayerElement extends Component<PanelLayerElementProps,
     const layer = this.props.layers[this.props.selectedLayer];
 
     return (
-      <Panel name={this.context.translator.t('Elements on layer {0}', layer.name)}>
-        <div style={contentArea} onWheel={e => e.stopPropagation()}>
-
+      <Panel
+        name={this.context.translator.t('Elements on layer {0}', layer.name)}
+      >
+        <div style={contentArea} onWheel={(e) => e.stopPropagation()}>
           <table style={tableSearchStyle}>
             <tbody>
               <tr>
-                <td><MdSearch style={searchIconStyle} /></td>
-                <td><input type="text" style={searchInputStyle} onChange={(e) => {
-                  this.matcharray(e.target.value);
-                }} /></td>
+                <td>
+                  <MdSearch style={searchIconStyle} />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    style={searchInputStyle}
+                    onChange={(e) => {
+                      this.matcharray(e.target.value);
+                    }}
+                  />
+                </td>
               </tr>
             </tbody>
           </table>
 
-          {
-            this.state.matchedElements.lines.length ?
-              <div>
-                <p style={categoryDividerStyle}>{this.context.translator.t('Lines')}</p>
-                {
-                  this.state.matchedElements.lines.map((line) => {
-                    return (
-                      <div
-                        key={line.id}
-                        onClick={e => this.context.linesActions.selectLine(layer.id, line.id)}
-                        style={line.selected ? elementSelectedStyle : elementStyle}
-                      >
-                        {line.name}
-                      </div>
-                    )
-                  })
-                }
-              </div>
-              : null
-          }
+          {this.state.matchedElements.lines.length ? (
+            <div>
+              <p style={categoryDividerStyle}>
+                {this.context.translator.t('Lines')}
+              </p>
+              {this.state.matchedElements.lines.map((line) => {
+                return (
+                  <div
+                    key={line.id}
+                    onClick={(e) =>
+                      this.context.linesActions.selectLine(layer.id, line.id)
+                    }
+                    style={line.selected ? elementSelectedStyle : elementStyle}
+                  >
+                    {line.name}
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
 
-          {
-            this.state.matchedElements.holes.length ?
-              <div>
-                <p style={categoryDividerStyle}>{this.context.translator.t('Holes')}</p>
-                {
-                  this.state.matchedElements.holes.map((hole) => {
-                    return (
-                      <div
-                        key={hole.id}
-                        onClick={e => this.context.holesActions.selectHole(layer.id, hole.id)}
-                        style={hole.selected ? elementSelectedStyle : elementStyle}
-                      >
-                        {hole.name}
-                      </div>
-                    )
-                  })
-                }
-              </div>
-              : null
-          }
+          {this.state.matchedElements.holes.length ? (
+            <div>
+              <p style={categoryDividerStyle}>
+                {this.context.translator.t('Holes')}
+              </p>
+              {this.state.matchedElements.holes.map((hole) => {
+                return (
+                  <div
+                    key={hole.id}
+                    onClick={(e) =>
+                      this.context.holesActions.selectHole(layer.id, hole.id)
+                    }
+                    style={hole.selected ? elementSelectedStyle : elementStyle}
+                  >
+                    {hole.name}
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
 
-          {
-            this.state.matchedElements.items.length ?
-              <div>
-                <p style={categoryDividerStyle}>{this.context.translator.t('Items')}</p>
-                {
-                  this.state.matchedElements.items.map((item) => {
-                    return (
-                      <div
-                        key={item.id}
-                        onClick={e => this.context.itemsActions.selectItem(layer.id, item.id)}
-                        style={item.selected ? elementSelectedStyle : elementStyle}
-                      >
-                        {item.name}
-                      </div>
-                    )
-                  })
-                }
-              </div>
-              : null
-          }
-
+          {this.state.matchedElements.items.length ? (
+            <div>
+              <p style={categoryDividerStyle}>
+                {this.context.translator.t('Items')}
+              </p>
+              {this.state.matchedElements.items.map((item) => {
+                return (
+                  <div
+                    key={item.id}
+                    onClick={(e) =>
+                      this.context.itemsActions.selectItem(layer.id, item.id)
+                    }
+                    style={item.selected ? elementSelectedStyle : elementStyle}
+                  >
+                    {item.name}
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
         </div>
       </Panel>
     );
   }
-
 }

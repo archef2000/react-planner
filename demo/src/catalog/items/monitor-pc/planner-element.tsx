@@ -1,16 +1,18 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 50;
 const DEPTH = 50;
 const HEIGHT = 50;
 
 const textureLoader = new Three.TextureLoader();
-const power = textureLoader.load(require("./power.jpg"));
-const black = textureLoader.load(require("./black.jpg"));
-const white = textureLoader.load(require("./white.jpg"));
-const keyboard = textureLoader.load(require("./keyboard.jpg"));
+const power = textureLoader.load(require('./power.jpg'));
+const black = textureLoader.load(require('./black.jpg'));
+const white = textureLoader.load(require('./white.jpg'));
+const keyboard = textureLoader.load(require('./keyboard.jpg'));
+
 const blackMaterial = new Three.MeshLambertMaterial({ map: black });
 
 const objectMaxLOD = makeObjectMaxLOD();
@@ -42,7 +44,7 @@ function makeObjectMaxLOD() {
   edge_p4.position.set(0, 0.61, -0.21);
   monitorPC.add(edge_p4);
 
-  const cubeGeometryBase5 = new Three.BoxGeometry(0.4, 0.40, 0.05);
+  const cubeGeometryBase5 = new Three.BoxGeometry(0.4, 0.4, 0.05);
   const back = new Three.Mesh(cubeGeometryBase5, blackMaterial);
   back.position.set(-0.02, 0.61, 0);
   back.rotation.y = Math.PI / 2;
@@ -54,7 +56,13 @@ function makeObjectMaxLOD() {
   powerButton.position.set(0.0155, 0.43, 0);
   monitorPC.add(powerButton);
 
-  const cylinderGeometry1 = new Three.CylinderGeometry(0.02, 0.02, 0.06, 32, 32);
+  const cylinderGeometry1 = new Three.CylinderGeometry(
+    0.02,
+    0.02,
+    0.06,
+    32,
+    32
+  );
   const base_p1 = new Three.Mesh(cylinderGeometry1, blackMaterial);
   base_p1.position.set(0, 0.38, 0);
   monitorPC.add(base_p1);
@@ -112,7 +120,7 @@ function makeObjectMinLOD() {
   edge_p4.position.set(0, 0.61, -0.21);
   monitorPC.add(edge_p4);
 
-  const cubeGeometryBase5 = new Three.BoxGeometry(0.4, 0.40, 0.05);
+  const cubeGeometryBase5 = new Three.BoxGeometry(0.4, 0.4, 0.05);
   const blackMaterial = new Three.MeshLambertMaterial({ map: black });
   const back = new Three.Mesh(cubeGeometryBase5, blackMaterial);
   back.position.set(-0.02, 0.61, 0);
@@ -141,20 +149,20 @@ function makeObjectMinLOD() {
 }
 
 export default defineCatalogElement({
-  name: "monitor_pc",
-  prototype: "items",
+  name: 'monitor_pc',
+  prototype: 'items',
 
   info: {
     tag: ['furnishings'],
-    title: "pc monitor",
-    description: "pc monitor",
+    title: 'pc monitor',
+    description: 'pc monitor',
     image: require('./monitorPC.png')
   },
 
   properties: {
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 100
       }
@@ -165,21 +173,35 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH})`}>
-        <rect key="1" x="0" y="0" width={WIDTH} height={DEPTH}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#84e1ce" }} />
-        <text key="2" x="0" y="0"
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#84e1ce'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "10px" }}>
+          style={{ textAnchor: 'middle', fontSize: '10px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -197,7 +219,7 @@ export default defineCatalogElement({
     const deltaZ = Math.abs(aa.max.z - aa.min.z);
 
     monitorPC_MaxLOD.rotation.y += -Math.PI / 2;
-    monitorPC_MaxLOD.position.y += -HEIGHT * .75 + newAltitude;
+    monitorPC_MaxLOD.position.y += -HEIGHT * 0.75 + newAltitude;
     monitorPC_MaxLOD.scale.set(WIDTH / deltaZ, HEIGHT / deltaY, DEPTH / deltaX);
 
     /**************** LOD min ***********************/
@@ -207,7 +229,7 @@ export default defineCatalogElement({
     monitorPC_MinLOD.add(objectMinLOD.clone());
 
     monitorPC_MinLOD.rotation.y += -Math.PI / 2;
-    monitorPC_MinLOD.position.y += -HEIGHT * .75 + newAltitude;
+    monitorPC_MinLOD.position.y += -HEIGHT * 0.75 + newAltitude;
     monitorPC_MinLOD.scale.set(WIDTH / deltaZ, HEIGHT / deltaY, DEPTH / deltaX);
 
     /*** add all Level of Detail ***/

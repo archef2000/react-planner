@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { MdArrowBack as Arrow } from 'react-icons/md';
+
 import * as SharedStyle from '../../shared-style';
 
 const breadcrumbStyle = {
@@ -28,20 +30,26 @@ const breadcrumbTabStyle = {
 interface CatalogBreadcrumbProps {
   names: Array<{
     name: string;
-    action?: () => void;
+    action?: React.MouseEventHandler<HTMLDivElement>;
   }>;
 }
 
 export default function CatalogBreadcrumb({ names }: CatalogBreadcrumbProps) {
   const labelNames = names.map((name, ind) => {
-
     const lastElement = ind === names.length - 1;
 
-    return <div key={ind} style={{ display: 'flex' }}>
-      <div style={!lastElement ? breadcrumbTextStyle : breadcrumbLastTextStyle} onClick={name.action || null}>{name.name}</div>
-      {!lastElement ? <Arrow style={breadcrumbTabStyle} /> : null}
-    </div>
+    return (
+      <div key={ind} style={{ display: 'flex' }}>
+        <div
+          style={!lastElement ? breadcrumbTextStyle : breadcrumbLastTextStyle}
+          onClick={name.action}
+        >
+          {name.name}
+        </div>
+        {!lastElement ? <Arrow style={breadcrumbTabStyle} /> : null}
+      </div>
+    );
   });
 
   return <div style={breadcrumbStyle}>{labelNames}</div>;
-};
+}

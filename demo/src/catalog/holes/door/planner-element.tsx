@@ -1,15 +1,37 @@
 import React from 'react';
-import * as Three from 'three';
-import { loadObjWithMaterial } from '../../utils/load-obj';
-import { Object3DEventMap, Group } from 'three';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
+import { Group, Object3DEventMap } from 'three';
+
+import { loadObjWithMaterial } from '../../utils/load-obj';
 
 let cached3DDoor: Group<Object3DEventMap>;
 
-const STYLE_HOLE_BASE = { stroke: '#000', strokeWidth: '3px', fill: '#000' } as const;
-const STYLE_HOLE_SELECTED = { stroke: '#0096fd', strokeWidth: '4px', fill: '#0096fd', cursor: 'move' } as const;
-const STYLE_ARC_BASE = { stroke: '#000', strokeWidth: '3px', strokeDasharray: '5,5', fill: 'none' } as const;
-const STYLE_ARC_SELECTED = { stroke: '#0096fd', strokeWidth: '4px', strokeDasharray: '5,5', fill: 'none', cursor: 'move' } as const;
+const STYLE_HOLE_BASE = {
+  stroke: '#000',
+  strokeWidth: '3px',
+  fill: '#000'
+} as const;
+const STYLE_HOLE_SELECTED = {
+  stroke: '#0096fd',
+  strokeWidth: '4px',
+  fill: '#0096fd',
+  cursor: 'move'
+} as const;
+const STYLE_ARC_BASE = {
+  stroke: '#000',
+  strokeWidth: '3px',
+  strokeDasharray: '5,5',
+  fill: 'none'
+} as const;
+const STYLE_ARC_SELECTED = {
+  stroke: '#0096fd',
+  strokeWidth: '4px',
+  strokeDasharray: '5,5',
+  fill: 'none',
+  cursor: 'move'
+} as const;
 const EPSILON = 3;
 
 export default defineCatalogElement({
@@ -57,8 +79,8 @@ export default defineCatalogElement({
       type: 'checkbox',
       defaultValue: false,
       values: {
-        'none': false,
-        'yes': true
+        none: false,
+        yes: true
       }
     }
   },
@@ -75,20 +97,41 @@ export default defineCatalogElement({
     if (flip == false) {
       return (
         <g transform={`translate(${-length / 2}, 0)`}>
-          <path d={arcPath} style={arcStyle} transform={`translate(${0},${holeWidth}) scale(${1},${-1}) rotate(${0})`} />
-          <line x1={0} y1={holeWidth - EPSILON} x2={0} y2={0 - EPSILON} style={holeStyle} transform={`scale(${-1},${1})`} />
+          <path
+            d={arcPath}
+            style={arcStyle}
+            transform={`translate(${0},${holeWidth}) scale(${1},${-1}) rotate(${0})`}
+          />
+          <line
+            x1={0}
+            y1={holeWidth - EPSILON}
+            x2={0}
+            y2={0 - EPSILON}
+            style={holeStyle}
+            transform={`scale(${-1},${1})`}
+          />
           <path d={holePath} style={holeStyle} />
         </g>
-      )
-    }
-    else {
+      );
+    } else {
       return (
         <g transform={`translate(${-length / 2}, 0)`}>
-          <path d={arcPath} style={arcStyle} transform={`translate(${0},${-holeWidth}) scale(${1},${1}) rotate(${0})`} />
-          <line x1={0} y1={-holeWidth - EPSILON} x2={0} y2={0 - EPSILON} style={holeStyle} transform={`scale(${-1},${1})`} />
+          <path
+            d={arcPath}
+            style={arcStyle}
+            transform={`translate(${0},${-holeWidth}) scale(${1},${1}) rotate(${0})`}
+          />
+          <line
+            x1={0}
+            y1={-holeWidth - EPSILON}
+            x2={0}
+            y2={0 - EPSILON}
+            style={holeStyle}
+            transform={`scale(${-1},${1})`}
+          />
           <path d={holePath} style={holeStyle} />
         </g>
-      )
+      );
     }
   },
 
@@ -112,8 +155,11 @@ export default defineCatalogElement({
       const height = element.properties.height.length;
       const thickness = element.properties.thickness.length;
 
-      object.scale.set(width / initialWidth, height / initialHeight,
-        thickness / initialThickness);
+      object.scale.set(
+        width / initialWidth,
+        height / initialHeight,
+        thickness / initialThickness
+      );
 
       return object;
     };
@@ -125,7 +171,7 @@ export default defineCatalogElement({
     const mtl = require('./door.mtl');
     const obj = require('./door.obj');
     const img = require('./texture.jpg');
-    const resourcePath = img.substr(0, img.lastIndexOf("/")) + "/";
+    const resourcePath = img.substr(0, img.lastIndexOf('/')) + '/';
 
     cached3DDoor = await loadObjWithMaterial(mtl, obj, resourcePath);
     return onLoadItem(cached3DDoor.clone());

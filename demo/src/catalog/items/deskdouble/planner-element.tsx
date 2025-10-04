@@ -1,6 +1,7 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 120;
 const DEPTH = 50;
@@ -16,12 +17,16 @@ const objectMinLOD = makeObjectMinLOD();
 function makeObjectMaxLOD() {
   const deskdouble = new Three.Mesh();
 
-  const newDepth = .5;
-  const newWidth = .9;
+  const newDepth = 0.5;
+  const newWidth = 0.9;
   const newHeight = 1;
-  const radius = .03;
+  const radius = 0.03;
 
-  const geometry = new Three.BoxGeometry(newWidth + newWidth / 6, newHeight / 20, newDepth + newDepth / 4);
+  const geometry = new Three.BoxGeometry(
+    newWidth + newWidth / 6,
+    newHeight / 20,
+    newDepth + newDepth / 4
+  );
 
   const boxMaterials = [brown, brown, green, brown, brown, brown];
 
@@ -29,14 +34,24 @@ function makeObjectMaxLOD() {
   plane.position.y = newHeight;
   deskdouble.add(plane);
 
-  const geometry_legs = new Three.CylinderGeometry(radius, radius, newHeight, 32, 32);
+  const geometry_legs = new Three.CylinderGeometry(
+    radius,
+    radius,
+    newHeight,
+    32,
+    32
+  );
 
   const geometry2 = new Three.BoxGeometry(newWidth, newHeight / 20, newDepth);
   const plane2 = new Three.Mesh(geometry2, brown);
   plane2.position.y = newHeight / 2 + newHeight / 4;
   deskdouble.add(plane2);
 
-  const geometry3 = new Three.BoxGeometry(newWidth, newHeight / 10, newDepth / 20);
+  const geometry3 = new Three.BoxGeometry(
+    newWidth,
+    newHeight / 10,
+    newDepth / 20
+  );
   const plane3 = new Three.Mesh(geometry3, brown);
   plane3.position.y = newHeight / 2 + newHeight / 4 + newHeight / 16;
   plane3.position.z = newDepth / 3 + newDepth / 5;
@@ -66,18 +81,22 @@ function makeObjectMaxLOD() {
   leg4.position.y = newHeight / 2;
   deskdouble.add(leg4);
 
-  return deskdouble
+  return deskdouble;
 }
 
 function makeObjectMinLOD() {
   const deskdouble = new Three.Mesh();
 
-  const newDepth = .5;
-  const newWidth = .9;
+  const newDepth = 0.5;
+  const newWidth = 0.9;
   const newHeight = 1;
-  const radius = .03;
+  const radius = 0.03;
 
-  const geometry = new Three.BoxGeometry(newWidth + newWidth / 6, newHeight / 20, newDepth + newDepth / 4);
+  const geometry = new Three.BoxGeometry(
+    newWidth + newWidth / 6,
+    newHeight / 20,
+    newDepth + newDepth / 4
+  );
 
   const boxMaterials = [brown, brown, green, brown, brown, brown];
 
@@ -85,14 +104,24 @@ function makeObjectMinLOD() {
   plane.position.y = newHeight;
   deskdouble.add(plane);
 
-  const geometry_legs = new Three.CylinderGeometry(radius, radius, newHeight, 8, 8);
+  const geometry_legs = new Three.CylinderGeometry(
+    radius,
+    radius,
+    newHeight,
+    8,
+    8
+  );
 
   const geometry2 = new Three.BoxGeometry(newWidth, newHeight / 20, newDepth);
   const plane2 = new Three.Mesh(geometry2, brown);
   plane2.position.y = newHeight / 2 + newHeight / 4;
   deskdouble.add(plane2);
 
-  const geometry3 = new Three.BoxGeometry(newWidth, newHeight / 10, newDepth / 20);
+  const geometry3 = new Three.BoxGeometry(
+    newWidth,
+    newHeight / 10,
+    newDepth / 20
+  );
   const plane3 = new Three.Mesh(geometry3, brown);
   plane3.position.y = newHeight / 2 + newHeight / 4 + newHeight / 16;
   plane3.position.z = newDepth / 3 + newDepth / 5;
@@ -122,7 +151,7 @@ function makeObjectMinLOD() {
   leg4.position.y = newHeight / 2;
   deskdouble.add(leg4);
 
-  return deskdouble
+  return deskdouble;
 }
 
 export default defineCatalogElement({
@@ -150,21 +179,35 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key='1' x='0' y='0' width={WIDTH} height={DEPTH}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: '2px', fill: '#84e1ce' }} />
-        <text key='2' x='0' y='0'
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#84e1ce'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: 'middle', fontSize: '11px' }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {

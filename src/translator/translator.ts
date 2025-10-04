@@ -1,78 +1,82 @@
-import EN from './en'
-import IT from './it'
-import RU from './ru'
+import EN from './en';
+import IT from './it';
+import RU from './ru';
 
-const DEFAULT_LOCALE = 'en'
+const DEFAULT_LOCALE = 'en';
 
 export default class Translator {
-  locale: string
-  translations: { [key: string]: { [key: string]: string } }
+  locale = DEFAULT_LOCALE;
+  translations: { [key: string]: { [key: string]: string } };
   constructor() {
-    this.locale = null
-    this.translations = {}
+    this.translations = {};
 
-    this.registerTranslation('en', EN)
-    this.registerTranslation('it', IT)
-    this.registerTranslation('ru', RU)
+    this.registerTranslation('en', EN);
+    this.registerTranslation('it', IT);
+    this.registerTranslation('ru', RU);
 
-    let locale = null
-    const languages = Translator.getBrowserLanguages()
+    let locale = null;
+    const languages = Translator.getBrowserLanguages();
     for (let i = 0; i < languages.length; i++) {
-      const lang = languages[i]
+      const lang = languages[i];
       if (this.translations.hasOwnProperty(lang)) {
-        locale = lang
-        break
+        locale = lang;
+        break;
       }
     }
-    locale = locale ? locale : DEFAULT_LOCALE
+    locale = locale ? locale : DEFAULT_LOCALE;
 
-    this.setLocale(locale)
+    this.setLocale(locale);
   }
 
-  t(phrase, ...params) {
-    return this.translate(phrase, ...params)
+  t(phrase: string, ...params: string[]) {
+    return this.translate(phrase, ...params);
   }
 
-  translate(phrase, ...params) {
-    const locale = this.locale
+  translate(phrase: string, ...params: string[]) {
+    const locale = this.locale;
 
-    const translation = this.translations[locale]
+    const translation = this.translations[locale];
     if (!translation.hasOwnProperty(phrase)) {
-      console.warn(`translation '${phrase}' not found in language '${locale}'`)
-      return phrase
+      console.warn(`translation '${phrase}' not found in language '${locale}'`);
+      return phrase;
     }
 
-    let translatedPhrase = translation[phrase]
+    let translatedPhrase = translation[phrase];
 
-    translatedPhrase = translatedPhrase.replace(/{(\d+)}/g, function (match, number) {
-      return typeof params[number] != 'undefined' ? params[number] : match
-    })
+    translatedPhrase = translatedPhrase.replace(
+      /{(\d+)}/g,
+      function (match, number) {
+        return typeof params[number] != 'undefined' ? params[number] : match;
+      }
+    );
 
-    return translatedPhrase
+    return translatedPhrase;
   }
 
-  setLocale(locale) {
-    locale = locale.toLowerCase()
+  setLocale(locale: string) {
+    locale = locale.toLowerCase();
 
     if (this.translations.hasOwnProperty(locale)) {
-      this.locale = locale
+      this.locale = locale;
     } else {
-      console.warn(`locale '${locale}' not available, switch to ${DEFAULT_LOCALE}`)
-      this.locale = DEFAULT_LOCALE.toLowerCase()
+      console.warn(
+        `locale '${locale}' not available, switch to ${DEFAULT_LOCALE}`
+      );
+      this.locale = DEFAULT_LOCALE.toLowerCase();
     }
   }
 
-  registerTranslation(locale, translations) {
+  registerTranslation(locale: string, translations: Record<string, string>) {
     if (!this.translations.hasOwnProperty(locale)) {
-      this.translations[locale] = translations
+      this.translations[locale] = translations;
     } else {
-      Object.assign(this.translations[locale], translations)
+      Object.assign(this.translations[locale], translations);
     }
   }
 
   static getBrowserLanguages() {
     return navigator.languages
       ? navigator.languages
-      : [navigator.language || (navigator as any).userLanguage]
+      : [navigator.language || (navigator as any).userLanguage];
   }
 }

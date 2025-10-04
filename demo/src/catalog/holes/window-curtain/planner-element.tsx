@@ -1,13 +1,20 @@
 import React from 'react';
+
+import { defineCatalogElement } from '@archef2000/react-planner';
 import * as Three from 'three';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
+
 import { loadObjWithMaterial } from '../../utils/load-obj';
-import { defineCatalogElement } from '@archef2000/react-planner';
 
 let cached3DWindow: Three.Group<Three.Object3DEventMap>;
 
 const STYLE_HOLE_BASE = { stroke: '#000', strokeWidth: '3px', fill: '#000' };
-const STYLE_HOLE_SELECTED = { stroke: '#0096fd', strokeWidth: '3px', fill: '#0096fd', cursor: 'move' };
+const STYLE_HOLE_SELECTED = {
+  stroke: '#0096fd',
+  strokeWidth: '3px',
+  fill: '#0096fd',
+  cursor: 'move'
+};
 const EPSILON = 3;
 
 export default defineCatalogElement({
@@ -55,10 +62,10 @@ export default defineCatalogElement({
       type: 'checkbox',
       defaultValue: false,
       values: {
-        'none': false,
-        'yes': true
+        none: false,
+        yes: true
       }
-    },
+    }
   },
 
   render2D: function (element, layer, scene) {
@@ -68,8 +75,15 @@ export default defineCatalogElement({
     const length = element.properties.width.length;
     return (
       <g transform={`translate(${-length / 2}, 0)`}>
-        <path key='1' d={holePath} style={holeStyle} />
-        <line key='2' x1={holeWidth / 2} y1={-10 - EPSILON} x2={holeWidth / 2} y2={10 + EPSILON} style={holeStyle} />
+        <path key="1" d={holePath} style={holeStyle} />
+        <line
+          key="2"
+          x1={holeWidth / 2}
+          y1={-10 - EPSILON}
+          x2={holeWidth / 2}
+          y2={10 + EPSILON}
+          style={holeStyle}
+        />
       </g>
     );
   },
@@ -81,7 +95,6 @@ export default defineCatalogElement({
     const flip = element.properties.flip;
 
     const onLoadItem = (object: Three.Group<Three.Object3DEventMap>) => {
-
       const window = new Three.Object3D();
 
       const boundingBox = new Three.Box3().setFromObject(object);
@@ -102,14 +115,16 @@ export default defineCatalogElement({
       const height = element.properties.height.length;
       const thickness = element.properties.thickness.length;
 
-      object.scale.set(width / initialWidth, height / initialHeight,
-        thickness / 2 / initialThickness);
+      object.scale.set(
+        width / initialWidth,
+        height / initialHeight,
+        thickness / 2 / initialThickness
+      );
 
       window.add(object);
       window.add(createTenda());
 
-      if (flip === true)
-        window.rotation.y += Math.PI;
+      if (flip === true) window.rotation.y += Math.PI;
 
       return window;
     };
@@ -121,7 +136,7 @@ export default defineCatalogElement({
     const mtl = require('./window.mtl');
     const obj = require('./window.obj');
     const img = require('./texture.png');
-    const resourcePath = img.substr(0, img.lastIndexOf("/")) + "/";
+    const resourcePath = img.substr(0, img.lastIndexOf('/')) + '/';
 
     cached3DWindow = await loadObjWithMaterial(mtl, obj, resourcePath);
     return onLoadItem(cached3DWindow.clone());
@@ -131,7 +146,7 @@ export default defineCatalogElement({
         const r = 10;
         const x = Math.sin(u) * 3 * r;
         const z = Math.sin(v / 2) * 2 * r;
-        const y = (Math.sin(u * 2 * Math.PI) + Math.cos(v * 2 * Math.PI)) * .5;
+        const y = (Math.sin(u * 2 * Math.PI) + Math.cos(v * 2 * Math.PI)) * 0.5;
 
         return new Three.Vector3(x, y, z);
       };
@@ -145,8 +160,8 @@ export default defineCatalogElement({
       mesh.rotation.x += Math.PI / 2;
       mesh.rotation.y += Math.PI / 2;
       mesh.position.y += 3.1;
-      mesh.position.x += .05;
-      mesh.scale.set(.125, .125, .125);
+      mesh.position.x += 0.05;
+      mesh.scale.set(0.125, 0.125, 0.125);
 
       const mesh2 = mesh.clone();
       mesh2.rotation.x += Math.PI;
@@ -155,16 +170,19 @@ export default defineCatalogElement({
       Tenda.add(mesh);
       Tenda.add(mesh2);
 
-      for (let i = -.7; i > -3.4; i -= .45) {
-        const geometry = new Three.TorusGeometry(.08, .016, 32, 32, 2 * Math.PI);
+      for (let i = -0.7; i > -3.4; i -= 0.45) {
+        const geometry = new Three.TorusGeometry(
+          0.08,
+          0.016,
+          32,
+          32,
+          2 * Math.PI
+        );
         const torus = new Three.Mesh(geometry, white);
 
-        if (i == -1.15)
-          torus.position.set(i, 3.14, .045);
-        else if (i == -2.5)
-          torus.position.set(i, 3.14, -.01);
-        else
-          torus.position.set(i, 3.14, .04);
+        if (i == -1.15) torus.position.set(i, 3.14, 0.045);
+        else if (i == -2.5) torus.position.set(i, 3.14, -0.01);
+        else torus.position.set(i, 3.14, 0.04);
         torus.rotation.y += Math.PI / 2;
         Tenda.add(torus);
       }
@@ -181,7 +199,7 @@ export default defineCatalogElement({
 
       const geometrySphereUp = new Three.SphereGeometry(0.04, 32, 32);
       const sphere = new Three.Mesh(geometrySphereUp, white);
-      sphere.position.set(-.5, 3.18, 0.02);
+      sphere.position.set(-0.5, 3.18, 0.02);
       sphere.rotation.x += Math.PI / 2;
       sphere.scale.set(0.8, 1, 1);
       Tenda.add(sphere);
@@ -198,14 +216,24 @@ export default defineCatalogElement({
       sphere4.position.x += -2.6;
       Tenda.add(sphere4);
 
-      const panelMaterial = new Three.MeshLambertMaterial({ color: 0xffffff, transparent: true, opacity: 0.85, side: Three.DoubleSide });
+      const panelMaterial = new Three.MeshLambertMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.85,
+        side: Three.DoubleSide
+      });
       const panelWidth = 1.2; // base before scaling
       const panelHeight = 3.0;
       const segmentsX = 24;
       const segmentsY = 32;
 
       const buildPanel = (mirror = false) => {
-        const geom = new Three.PlaneGeometry(panelWidth, panelHeight, segmentsX, segmentsY);
+        const geom = new Three.PlaneGeometry(
+          panelWidth,
+          panelHeight,
+          segmentsX,
+          segmentsY
+        );
         const pos = geom.attributes.position;
         const v = new Three.Vector3();
         for (let i = 0; i < pos.count; i++) {
@@ -213,7 +241,10 @@ export default defineCatalogElement({
           // u 0..1 across width
           const u = (v.x + panelWidth / 2) / panelWidth;
           // folds
-          const fold = Math.sin(u * Math.PI * 3) * 0.05 * (0.3 + 0.7 * (-(v.y - panelHeight / 2) / panelHeight + 1));
+          const fold =
+            Math.sin(u * Math.PI * 3) *
+            0.05 *
+            (0.3 + 0.7 * (-(v.y - panelHeight / 2) / panelHeight + 1));
           v.z = fold * (mirror ? 1 : -1);
           pos.setXYZ(i, v.x, v.y, v.z);
         }
@@ -247,7 +278,11 @@ export default defineCatalogElement({
 
     function createMesh(geom: ParametricGeometry) {
       geom.applyMatrix4(new Three.Matrix4().makeTranslation(-25, 0, -25));
-      const meshMaterial = new Three.MeshLambertMaterial({ color: 0xffffff, opacity: 0.9, transparent: true });
+      const meshMaterial = new Three.MeshLambertMaterial({
+        color: 0xffffff,
+        opacity: 0.9,
+        transparent: true
+      });
       meshMaterial.side = Three.DoubleSide;
 
       const plane = new Three.Mesh(geom, meshMaterial);

@@ -1,4 +1,3 @@
-import { Group, Object3DEventMap } from 'three';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 
@@ -18,4 +17,3 @@ export async function loadObjWithMaterial(
   const object = await objLoader.loadAsync(objFile);
   return object;
 }
-

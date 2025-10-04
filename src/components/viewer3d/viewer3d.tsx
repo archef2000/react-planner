@@ -1,25 +1,15 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { Component } from 'react';
+
 import * as Three from 'three';
-import { parseData, PlanData, updateScene } from './scene-creator';
-import { disposeScene } from './three-memory-cleaner';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import * as SharedStyle from '../../shared-style';
-import ReactPlannerContext from '../../react-planner-context';
-import { usePrevious } from '@uidotdev/usehooks';
+
 import { State } from '../../models';
+import ReactPlannerContext from '../../react-planner-context';
+import * as SharedStyle from '../../shared-style';
 import { diff } from '../../utils/history';
 
-let mouseDownEvent: (event: MouseEvent) => void = null;
-let mouseUpEvent: (event: MouseEvent) => void = null;
-let cameraP: Three.PerspectiveCamera = null;
-let scene3DP: Three.Scene = null;
-let planDataP: PlanData = null;
-let orbitControllerP = null;
-const lastMousePosition = {
-  x: 0,
-  y: 0
-};
-let renderingID: number;
+import { parseData, PlanData, updateScene } from './scene-creator';
+import { disposeScene } from './three-memory-cleaner';
 
 interface Scene3DViewerProps {
   state: State;
@@ -27,36 +17,55 @@ interface Scene3DViewerProps {
   height: number;
 }
 
-export default function Scene3DViewer(props: Scene3DViewerProps) {
-  const { width, height } = props;
+export default class Scene3DViewer extends Component<Scene3DViewerProps, {}> {
+  static contextType = ReactPlannerContext;
+  declare context: React.ContextType<typeof ReactPlannerContext>;
 
-  const previousProps = usePrevious(props);
-  const canvasWrapper = useRef(null);
-  const actions = useContext(ReactPlannerContext);
-  const { catalog, projectActions } = actions;
+  lastMousePosition: { x: number; y: number } = { x: 0, y: 0 };
+  width: number;
+  height: number;
+  renderingID = 0;
+  renderer: Three.WebGLRenderer;
 
-  const [renderer, _setRenderer] = useState((
-    (window as any).__threeRenderer ||
-    new Three.WebGLRenderer({ preserveDrawingBuffer: true })
-  ) as Three.WebGLRenderer);
-  (window as any).__threeRenderer = renderer;
+  canvasWrapper: React.RefObject<null | HTMLDivElement>;
 
-  useEffect(() => {
-    const { state } = props;
+  camera: Three.PerspectiveCamera | undefined;
+  scene3D: Three.Scene | undefined;
+  planData: PlanData | undefined;
+  orbitController: OrbitControls | undefined;
+
+  mouseDownEvent: undefined | ((event: MouseEvent) => void);
+  mouseUpEvent: undefined | ((event: MouseEvent) => void);
+
+  constructor(props: Scene3DViewerProps) {
+    super(props);
+
+    this.width = props.width;
+    this.height = props.height;
+    this.canvasWrapper = React.createRef<HTMLDivElement>();
+
+    this.renderer =
+      (window as any).__threeRenderer ||
+      new Three.WebGLRenderer({ preserveDrawingBuffer: true });
+    (window as any).__threeRenderer = this.renderer;
+  }
+
+  componentDidMount() {
+    const { state } = this.props;
 
     const scene3D = new Three.Scene();
 
     //RENDERER
-    renderer.setClearColor(new Three.Color(SharedStyle.COLORS.white));
-    renderer.setSize(width, height);
+    this.renderer.setClearColor(new Three.Color(SharedStyle.COLORS.white));
+    this.renderer.setSize(this.width, this.height);
 
     // LOAD DATA
-    const planData = parseData(state.scene, actions, catalog);
+    const planData = parseData(state.scene, this.context);
 
     scene3D.add(planData.plan);
     scene3D.add(planData.grid);
 
-    const aspectRatio = width / height;
+    const aspectRatio = this.width / this.height;
     const camera = new Three.PerspectiveCamera(45, aspectRatio, 1, 300000);
 
     scene3D.add(camera);
@@ -85,7 +94,11 @@ export default function Scene3DViewer(props: Scene3DViewerProps) {
     spotLight1.position.set(cameraPositionX, cameraPositionY, cameraPositionZ);
     scene3D.add(spotLight1);
     const dirLight = new Three.DirectionalLight(0xffffff, 0.8);
-    dirLight.position.set(cameraPositionX + 300, cameraPositionY + 400, cameraPositionZ + 300);
+    dirLight.position.set(
+      cameraPositionX + 300,
+      cameraPositionY + 400,
+      cameraPositionZ + 300
+    );
     scene3D.add(dirLight);
 
     // OBJECT PICKING
@@ -93,19 +106,18 @@ export default function Scene3DViewer(props: Scene3DViewerProps) {
     const mouse = new Three.Vector2();
     const raycaster = new Three.Raycaster();
 
-    mouseDownEvent = (event: MouseEvent) => {
-      const x = (event.offsetX / props.width) * 2 - 1;
-      const y = (-event.offsetY / props.height) * 2 + 1;
-      Object.assign(lastMousePosition, { x, y });
+    this.mouseDownEvent = (event: MouseEvent) => {
+      this.lastMousePosition.x = (event.offsetX / this.width) * 2 - 1;
+      this.lastMousePosition.y = (-event.offsetY / this.height) * 2 + 1;
     };
-    mouseUpEvent = (event: MouseEvent) => {
+    this.mouseUpEvent = (event: MouseEvent) => {
       event.preventDefault();
-      mouse.x = (event.offsetX / props.width) * 2 - 1;
-      mouse.y = -(event.offsetY / props.height) * 2 + 1;
+      mouse.x = (event.offsetX / this.width) * 2 - 1;
+      mouse.y = -(event.offsetY / this.height) * 2 + 1;
 
       if (
-        Math.abs(mouse.x - lastMousePosition.x) <= 0.02 &&
-        Math.abs(mouse.y - lastMousePosition.y) <= 0.02
+        Math.abs(mouse.x - this.lastMousePosition.x) <= 0.02 &&
+        Math.abs(mouse.y - this.lastMousePosition.y) <= 0.02
       ) {
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects(toIntersect, true);
@@ -114,21 +126,27 @@ export default function Scene3DViewer(props: Scene3DViewerProps) {
           const object = intersects[0].object as any; //TODO
           object.interact && object.interact();
         } else {
-          projectActions.unselectAll();
+          this.context.projectActions.unselectAll();
         }
       }
     };
 
-    renderer.domElement.addEventListener("mousedown", mouseDownEvent);
-    renderer.domElement.addEventListener("mouseup", mouseUpEvent);
-    renderer.domElement.style.display = "block";
+    if (this.mouseDownEvent)
+      this.renderer.domElement.addEventListener(
+        'mousedown',
+        this.mouseDownEvent
+      );
+    if (this.mouseUpEvent)
+      this.renderer.domElement.addEventListener('mouseup', this.mouseUpEvent);
+    this.renderer.domElement.style.display = 'block';
 
-    canvasWrapper.current.appendChild(renderer.domElement);
+    if (this.canvasWrapper.current)
+      this.canvasWrapper.current.appendChild(this.renderer.domElement);
 
     // create orbit controls
-    const orbitController = new OrbitControls(camera, renderer.domElement);
+    const orbitController = new OrbitControls(camera, this.renderer.domElement);
     const spotLightTarget = new Three.Object3D();
-    spotLightTarget.name = "spotLightTarget";
+    spotLightTarget.name = 'spotLightTarget';
     spotLightTarget.position.set(
       orbitController.target.x,
       orbitController.target.y,
@@ -156,57 +174,73 @@ export default function Scene3DViewer(props: Scene3DViewerProps) {
         planData.sceneGraph.LODs[elemID].update(camera);
       }
 
-      renderer.render(scene3D, camera);
+      this.renderer.render(scene3D, camera);
 
-      renderingID = requestAnimationFrame(render);
+      this.renderingID = requestAnimationFrame(render);
     };
 
     render();
 
-    cameraP = camera;
-    scene3DP = scene3D;
+    this.camera = camera;
+    this.scene3D = scene3D;
+    this.orbitController = orbitController;
+    this.planData = planData;
+  }
 
-    planDataP = planData;
-    orbitControllerP = orbitController;
+  componentWillUnmount() {
+    cancelAnimationFrame(this.renderingID);
+    this.orbitController?.dispose();
 
-    return () => {
-      cancelAnimationFrame(renderingID);
-      orbitControllerP.dispose();
-
-      renderer.domElement.removeEventListener("mousedown", mouseDownEvent);
-      renderer.domElement.removeEventListener("mouseup", mouseUpEvent);
-
-      disposeScene(scene3DP);
-      scene3DP.remove(planDataP.plan);
-      scene3DP.remove(planDataP.grid);
-
-      scene3DP = null;
-      planDataP = null;
-      cameraP = null;
-      orbitControllerP = null;
-      renderer.renderLists.dispose();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (cameraP) {
-      cameraP.aspect = props.width / props.height;
-      cameraP.updateProjectionMatrix();
-    }
-
-    if (previousProps && props.state.scene !== previousProps.state.scene) {
-      const changedValues = diff(previousProps.state.scene, props.state.scene);
-      updateScene(
-        planDataP,
-        props.state.scene,
-        previousProps.state.scene,
-        changedValues,
-        actions,
-        catalog
+    if (this.mouseDownEvent)
+      this.renderer.domElement.removeEventListener(
+        'mousedown',
+        this.mouseDownEvent
       );
-    }
-    renderer.setSize(props.width, props.height);
-  }, [props]);
+    if (this.mouseUpEvent)
+      this.renderer.domElement.removeEventListener(
+        'mouseup',
+        this.mouseUpEvent
+      );
 
-  return <div ref={canvasWrapper} />;
-};
+    if (this.scene3D) {
+      disposeScene(this.scene3D);
+      if (this.planData) {
+        this.scene3D.remove(this.planData.plan);
+        this.scene3D.remove(this.planData.grid);
+      }
+    }
+
+    this.scene3D = undefined;
+    this.planData = undefined;
+    this.camera = undefined;
+    this.orbitController = undefined;
+    this.renderer.renderLists.dispose();
+  }
+
+  componentDidUpdate(prevProps: Scene3DViewerProps) {
+    const { width, height } = this.props;
+    this.width = width;
+    this.height = height;
+    if (this.camera) {
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
+    }
+
+    if (prevProps && this.props.state.scene !== prevProps.state.scene) {
+      const changedValues = diff(prevProps.state.scene, this.props.state.scene);
+      if (this.planData) {
+        updateScene(
+          this.planData,
+          this.props.state.scene,
+          prevProps.state.scene,
+          changedValues,
+          this.context
+        );
+      }
+    }
+    this.renderer.setSize(width, height);
+  }
+  render() {
+    return <div ref={this.canvasWrapper} />;
+  }
+}

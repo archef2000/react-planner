@@ -1,6 +1,7 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 80;
 const DEPTH = 80;
@@ -53,16 +54,17 @@ function makeObjectMaxLOD() {
   }
 
   function choiceTexture() {
-    return (Math.floor(Math.random() * 3))
+    return Math.floor(Math.random() * 3);
   }
 
   //book
   const bookGeometry = new Three.BoxGeometry(0.24, 0.32, 0.76);
 
-  const bookMaterial =
-    [new Three.MeshLambertMaterial({ map: bookTexture1 }),
+  const bookMaterial = [
+    new Three.MeshLambertMaterial({ map: bookTexture1 }),
     new Three.MeshLambertMaterial({ map: bookTexture2 }),
-    new Three.MeshLambertMaterial({ map: bookTexture3 })];
+    new Three.MeshLambertMaterial({ map: bookTexture3 })
+  ];
 
   const book1 = new Three.Mesh(bookGeometry, bookMaterial[choiceTexture()]);
   book1.position.set(0.15, 0.59, 0);
@@ -84,7 +86,7 @@ function makeObjectMaxLOD() {
   book5.position.set(0.15, 1.79, 0);
   bookcase.add(book5);
 
-  return bookcase
+  return bookcase;
 }
 
 function makeObjectMinLOD() {
@@ -128,7 +130,7 @@ function makeObjectMinLOD() {
     bookcase.add(shelve);
   }
 
-  return bookcase
+  return bookcase;
 }
 
 export default defineCatalogElement({
@@ -156,21 +158,37 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
-    const rect_style = { stroke: element.selected ? '#0096fd' : '#000', strokeWidth: '2px', fill: '#84e1ce' };
+    const rect_style = {
+      stroke: element.selected ? '#0096fd' : '#000',
+      strokeWidth: '2px',
+      fill: '#84e1ce'
+    };
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key='1' x='0' y='0' width={WIDTH} height={DEPTH} style={rect_style} />
-        <text key='2' x='0' y='0'
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={rect_style}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: 'middle', fontSize: '11px' }}>
-          {element.type}</text>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
+          {element.type}
+        </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {

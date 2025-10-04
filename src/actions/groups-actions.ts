@@ -1,5 +1,6 @@
-import { ElementPrototypes } from '../types';
 import { GROUP_ACTIONS } from '../constants';
+import { Group as GroupModel } from '../models';
+import { ElementPrototypes } from '../types';
 
 export function addGroup() {
   return {
@@ -13,21 +14,26 @@ export function addGroupFromSelected() {
   };
 }
 
-export function selectGroup(groupID) {
+export function selectGroup(groupID: string) {
   return {
     type: GROUP_ACTIONS.SELECT_GROUP,
     groupID
   };
 }
 
-export function unselectGroup(groupID) {
+export function unselectGroup(groupID: string) {
   return {
     type: GROUP_ACTIONS.UNSELECT_GROUP,
     groupID
   };
 }
 
-export function addToGroup(groupID, layerID, elementPrototype: ElementPrototypes, elementID) {
+export function addToGroup(
+  groupID: string,
+  layerID: string,
+  elementPrototype: ElementPrototypes,
+  elementID: string
+) {
   return {
     type: GROUP_ACTIONS.ADD_TO_GROUP,
     groupID,
@@ -37,7 +43,12 @@ export function addToGroup(groupID, layerID, elementPrototype: ElementPrototypes
   };
 }
 
-export function removeFromGroup(groupID, layerID, elementPrototype: ElementPrototypes, elementID) {
+export function removeFromGroup(
+  groupID: string,
+  layerID: string,
+  elementPrototype: ElementPrototypes,
+  elementID: string
+) {
   return {
     type: GROUP_ACTIONS.REMOVE_FROM_GROUP,
     groupID,
@@ -47,7 +58,10 @@ export function removeFromGroup(groupID, layerID, elementPrototype: ElementProto
   };
 }
 
-export function setGroupAttributes(groupID, attributes) {
+export function setGroupAttributes(
+  groupID: string,
+  attributes: Partial<GroupModel>
+) {
   return {
     type: GROUP_ACTIONS.SET_GROUP_ATTRIBUTES,
     groupID,
@@ -55,7 +69,10 @@ export function setGroupAttributes(groupID, attributes) {
   };
 }
 
-export function setGroupProperties(groupID, properties) {
+export function setGroupProperties(
+  groupID: string,
+  properties: GroupModel['properties']
+) {
   return {
     type: GROUP_ACTIONS.SET_GROUP_PROPERTIES,
     groupID,
@@ -63,7 +80,10 @@ export function setGroupProperties(groupID, properties) {
   };
 }
 
-export function setGroupBarycenter(groupID, barycenter) {
+export function setGroupBarycenter(
+  groupID: string,
+  barycenter: { x: number; y: number }
+) {
   return {
     type: GROUP_ACTIONS.SET_GROUP_BARYCENTER,
     groupID,
@@ -71,21 +91,21 @@ export function setGroupBarycenter(groupID, barycenter) {
   };
 }
 
-export function removeGroup(groupID) {
+export function removeGroup(groupID: string) {
   return {
     type: GROUP_ACTIONS.REMOVE_GROUP,
     groupID
   };
 }
 
-export function removeGroupAndDeleteElements(groupID) {
+export function removeGroupAndDeleteElements(groupID: string) {
   return {
     type: GROUP_ACTIONS.REMOVE_GROUP_AND_DELETE_ELEMENTS,
     groupID
   };
 }
 
-export function groupTranslate(groupID, x, y) {
+export function groupTranslate(groupID: string, x: number, y: number) {
   return {
     type: GROUP_ACTIONS.GROUP_TRANSLATE,
     groupID,
@@ -94,7 +114,7 @@ export function groupTranslate(groupID, x, y) {
   };
 }
 
-export function groupRotate(groupID, rotation) {
+export function groupRotate(groupID: string, rotation: number) {
   return {
     type: GROUP_ACTIONS.GROUP_ROTATE,
     groupID,

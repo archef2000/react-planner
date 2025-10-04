@@ -1,26 +1,35 @@
-import { Layer, Group } from './export';
-import {
-  IDBroker,
-  NameGenerator
-} from '../utils/export';
+import { produce } from 'immer';
 
 import {
-  MODE_IDLE,
-  MODE_DRAWING_ITEM,
   MODE_DRAGGING_ITEM,
+  MODE_DRAWING_ITEM,
+  MODE_IDLE,
   MODE_ROTATING_ITEM
 } from '../constants';
-import { produce } from 'immer';
-import { State, Item as ItemModel, catalogElementFactory } from '../models';
+import { catalogElementFactory, Item as ItemModel, State } from '../models';
+import { IDBroker, NameGenerator } from '../utils/export';
+
+import { Group, Layer } from './export';
 
 class Item {
-
-  static create(state: State, layerID: string, type: string, x: number, y: number, width: number, height: number, rotation: number) {
+  static create(
+    state: State,
+    layerID: string,
+    type: string,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    rotation: number
+  ) {
     const itemID = IDBroker.acquireID();
 
     const item = catalogElementFactory(state.catalog, type, {
       id: itemID,
-      name: NameGenerator.generateName('items', state.catalog.elements[type].info.title),
+      name: NameGenerator.generateName(
+        'items',
+        state.catalog.elements[type].info.title
+      ),
       type,
       height,
       width,
@@ -29,7 +38,7 @@ class Item {
       rotation
     }) as ItemModel;
 
-    const updatedState = produce(state, draft => {
+    const updatedState = produce(state, (draft) => {
       draft.scene.layers[layerID].items[itemID] = item;
     });
 
@@ -43,10 +52,10 @@ class Item {
   }
 
   static remove(state: State, layerID: string, itemID: string) {
-    return produce(state, draft => {
+    return produce(state, (draft) => {
       draft = this.unselect(draft, layerID, itemID);
       draft = Layer.removeElement(draft, layerID, 'items', itemID);
-      Object.values(draft.scene.groups).forEach(group => {
+      Object.values(draft.scene.groups).forEach((group) => {
         draft = Group.removeElement(draft, group.id, layerID, 'items', itemID);
       });
       return draft;
@@ -58,7 +67,7 @@ class Item {
   }
 
   static selectToolDrawingItem(state: State, sceneComponentType: string) {
-    return produce(state, draft => {
+    return produce(state, (draft) => {
       draft.mode = MODE_DRAWING_ITEM;
       draft.drawingSupport = {
         type: sceneComponentType
@@ -66,21 +75,36 @@ class Item {
     });
   }
 
-  static updateDrawingItem(state: State, layerID: string, x: number, y: number) {
+  static updateDrawingItem(
+    state: State,
+    layerID: string,
+    x: number,
+    y: number
+  ) {
     if (state.drawingSupport.currentID) {
-      return produce(state, draft => {
-        const item = draft.scene.layers[layerID]?.items[draft.drawingSupport.currentID];
+      return produce(state, (draft) => {
+        const item =
+          draft.scene.layers[layerID]?.items[draft.drawingSupport.currentID];
         if (item) {
           item.x = x;
           item.y = y;
         }
       });
     } else {
-      const { updatedState: stateI, item } = this.create(state, layerID, state.drawingSupport.type, x, y, 200, 100, 0);
+      const { updatedState: stateI, item } = this.create(
+        state,
+        layerID,
+        state.drawingSupport.type,
+        x,
+        y,
+        200,
+        100,
+        0
+      );
       state = Item.select(stateI, layerID, item.id);
       //draft.drawingSupport.currentID = item.id;
       //draft = { ...draft, drawingSupport: { ...draft.drawingSupport, currentID: item.id } };
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft.drawingSupport.currentID = item.id;
       });
     }
@@ -89,13 +113,19 @@ class Item {
   static endDrawingItem(state: State, layerID: string, x: number, y: number) {
     state = this.updateDrawingItem(state, layerID, x, y);
     state = Layer.unselectAll(state, layerID);
-    return produce(state, draft => {
+    return produce(state, (draft) => {
       draft.drawingSupport = { type: draft.drawingSupport.type };
-    });;
+    });
   }
 
-  static beginDraggingItem(state: State, layerID: string, itemID: string, x: number, y: number) {
-    return produce(state, draft => {
+  static beginDraggingItem(
+    state: State,
+    layerID: string,
+    itemID: string,
+    x: number,
+    y: number
+  ) {
+    return produce(state, (draft) => {
       const item = draft.scene.layers[layerID]?.items[itemID];
       if (item) {
         draft.mode = MODE_DRAGGING_ITEM;
@@ -112,8 +142,19 @@ class Item {
   }
 
   static updateDraggingItem(state: State, x: number, y: number) {
-    return produce(state, draft => {
-      const { layerID, itemID, startPointX, startPointY, originalX, originalY } = draft.draggingSupport;
+    return produce(state, (draft) => {
+      const draggingSupport = draft.draggingSupport as Required<
+        State['draggingSupport']
+      >;
+      if (!draggingSupport) return;
+      const {
+        layerID,
+        itemID,
+        startPointX,
+        startPointY,
+        originalX,
+        originalY
+      } = draggingSupport;
       const layer = draft.scene.layers[layerID];
       const item = layer?.items[itemID];
       if (layer && item) {
@@ -126,8 +167,19 @@ class Item {
   }
 
   static endDraggingItem(state: State, x: number, y: number) {
-    return produce(state, draft => {
-      const { layerID, itemID, startPointX, startPointY, originalX, originalY } = draft.draggingSupport;
+    return produce(state, (draft) => {
+      const draggingSupport = draft.draggingSupport as Required<
+        State['draggingSupport']
+      >;
+      if (!draggingSupport) return;
+      const {
+        layerID,
+        itemID,
+        startPointX,
+        startPointY,
+        originalX,
+        originalY
+      } = draggingSupport;
       const layer = draft.scene.layers[layerID];
       const item = layer?.items[itemID];
       if (layer && item) {
@@ -137,12 +189,18 @@ class Item {
         item.y = originalY + deltaY;
       }
       draft.mode = MODE_IDLE;
-      draft.draggingSupport = {};
+      draft.draggingSupport = undefined;
     });
   }
 
-  static beginRotatingItem(state: State, layerID: string, itemID: string, x: number, y: number) {
-    return produce(state, draft => {
+  static beginRotatingItem(
+    state: State,
+    layerID: string,
+    itemID: string,
+    x: number,
+    y: number
+  ) {
+    return produce(state, (draft) => {
       draft.mode = MODE_ROTATING_ITEM;
       draft.rotatingSupport = {
         layerID,
@@ -152,7 +210,8 @@ class Item {
   }
 
   static updateRotatingItem(state: State, x: number, y: number) {
-    return produce(state, draft => {
+    return produce(state, (draft) => {
+      if (!draft.rotatingSupport) return;
       const { rotatingSupport } = draft;
       const layerID = rotatingSupport.layerID;
       const itemID = rotatingSupport.itemID;
@@ -160,7 +219,7 @@ class Item {
 
       const deltaX = x - item.x;
       const deltaY = y - item.y;
-      let rotation = Math.atan2(deltaY, deltaX) * 180 / Math.PI - 90;
+      let rotation = (Math.atan2(deltaY, deltaX) * 180) / Math.PI - 90;
 
       if (-5 < rotation && rotation < 5) rotation = 0;
       if (-95 < rotation && rotation < -85) rotation = -90;
@@ -174,23 +233,38 @@ class Item {
 
   static endRotatingItem(state: State, x: number, y: number) {
     state = this.updateRotatingItem(state, x, y);
-    return produce(state, draft => {
+    return produce(state, (draft) => {
       draft.mode = MODE_IDLE;
     });
   }
 
-  static setProperties(state: State, layerID: string, itemID: string, properties: any) {
-    return produce(state, draft => {
+  static setProperties(
+    state: State,
+    layerID: string,
+    itemID: string,
+    properties: any
+  ) {
+    return produce(state, (draft) => {
       draft.scene.layers[layerID].items[itemID].properties = properties;
     });
   }
 
-  static setJsProperties(state: State, layerID: string, itemID: string, properties: any) {
+  static setJsProperties(
+    state: State,
+    layerID: string,
+    itemID: string,
+    properties: any
+  ) {
     return this.setProperties(state, layerID, itemID, properties);
   }
 
-  static updateProperties(state: State, layerID: string, itemID: string, properties: Record<string, any>) {
-    return produce(state, draft => {
+  static updateProperties(
+    state: State,
+    layerID: string,
+    itemID: string,
+    properties: Record<string, any>
+  ) {
+    return produce(state, (draft) => {
       const item = draft.scene.layers[layerID]?.items[itemID];
       if (item) {
         Object.entries(properties).forEach(([key, value]) => {
@@ -202,12 +276,22 @@ class Item {
     });
   }
 
-  static updateJsProperties(state: State, layerID: string, itemID: string, properties: any) {
+  static updateJsProperties(
+    state: State,
+    layerID: string,
+    itemID: string,
+    properties: any
+  ) {
     return this.updateProperties(state, layerID, itemID, properties);
   }
 
-  static setAttributes(state: State, layerID: string, itemID: string, attributes: any) {
-    return produce(state, draft => {
+  static setAttributes(
+    state: State,
+    layerID: string,
+    itemID: string,
+    attributes: any
+  ) {
+    return produce(state, (draft) => {
       const item = draft.scene.layers[layerID]?.items[itemID];
       if (item) {
         Object.assign(item, attributes);

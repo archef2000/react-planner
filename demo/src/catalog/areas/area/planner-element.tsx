@@ -1,4 +1,8 @@
-import { ElementsFactories, CatalogElementTextures, CatalogElementInfo } from "@archef2000/react-planner";
+import {
+  CatalogElementInfo,
+  CatalogElementTextures,
+  ElementsFactories
+} from '@archef2000/react-planner';
 
 const info: CatalogElementInfo = {
   title: 'area',
@@ -12,13 +16,13 @@ const textures: CatalogElementTextures = {
     name: 'Parquet',
     uri: require('./textures/parquet.jpg'),
     lengthRepeatScale: 0.004,
-    heightRepeatScale: 0.004,
+    heightRepeatScale: 0.004
   },
   tile1: {
     name: 'Tile1',
     uri: require('./textures/tile1.jpg'),
     lengthRepeatScale: 0.01,
-    heightRepeatScale: 0.01,
+    heightRepeatScale: 0.01
   },
   ceramic: {
     name: 'Ceramic Tile',
@@ -36,7 +40,7 @@ const textures: CatalogElementTextures = {
     name: 'Grass',
     uri: require('./textures/grass.jpg'),
     lengthRepeatScale: 0.01,
-    heightRepeatScale: 0.01,
+    heightRepeatScale: 0.01
   }
 };
 

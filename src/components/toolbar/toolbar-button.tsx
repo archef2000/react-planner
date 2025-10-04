@@ -1,4 +1,5 @@
-import React, { Component, MouseEventHandler, ReactNode, useState } from 'react';
+import React, { MouseEventHandler, ReactNode, useState } from 'react';
+
 import * as SharedStyle from '../../shared-style';
 
 //http://www.cssportal.com/css-tooltip-generator/
@@ -54,25 +55,27 @@ interface ToolbarButtonProps {
 }
 
 export default function ToolbarButton(props: ToolbarButtonProps) {
-  const [state, setState] = useState({ active: false })
-  const color = props.active || state.active ? SharedStyle.SECONDARY_COLOR.icon : SharedStyle.PRIMARY_COLOR.icon;
+  const [state, setState] = useState({ active: false });
+  const color =
+    props.active || state.active
+      ? SharedStyle.SECONDARY_COLOR.icon
+      : SharedStyle.PRIMARY_COLOR.icon;
 
   return (
-    <div style={STYLE}
-      onMouseOver={event => setState({ active: true })}
-      onMouseOut={event => setState({ active: false })}>
+    <div
+      style={STYLE}
+      onMouseOver={(event) => setState({ active: true })}
+      onMouseOut={(event) => setState({ active: false })}
+    >
       <div style={{ color }} onClick={props.onClick}>
         {props.children}
       </div>
-      {
-        state.active ?
-          <div style={STYLE_TOOLTIP}>
-            <span style={STYLE_TOOLTIP_PIN} />
-            {props.tooltip}
-          </div>
-          : null
-      }
+      {state.active ? (
+        <div style={STYLE_TOOLTIP}>
+          <span style={STYLE_TOOLTIP_PIN} />
+          {props.tooltip}
+        </div>
+      ) : null}
     </div>
-  )
+  );
 }
-

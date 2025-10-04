@@ -1,15 +1,43 @@
-import { State } from '../models';
+import { Value as ReactSVGPanZoomValue } from 'react-svg-pan-zoom';
+
 import {
-  UPDATE_2D_CAMERA,
+  MODE_2D_PAN,
+  MODE_2D_ZOOM_IN,
+  MODE_2D_ZOOM_OUT,
   SELECT_TOOL_PAN,
   SELECT_TOOL_ZOOM_IN,
   SELECT_TOOL_ZOOM_OUT,
-  MODE_2D_PAN,
-  MODE_2D_ZOOM_IN,
-  MODE_2D_ZOOM_OUT
+  UPDATE_2D_CAMERA
 } from '../constants';
+import { State } from '../models';
 
-export default function (state: State, action): State {
+export type Update2DCameraAction = {
+  type: typeof UPDATE_2D_CAMERA;
+  value: ReactSVGPanZoomValue;
+};
+
+export type SelectToolPanAction = {
+  type: typeof SELECT_TOOL_PAN;
+};
+
+export type SelectToolZoomInAction = {
+  type: typeof SELECT_TOOL_ZOOM_IN;
+};
+
+export type SelectToolZoomOutAction = {
+  type: typeof SELECT_TOOL_ZOOM_OUT;
+};
+
+export type Viewer2DAction =
+  | Update2DCameraAction
+  | SelectToolPanAction
+  | SelectToolZoomInAction
+  | SelectToolZoomOutAction;
+
+export default function viewer2DReducer(
+  state: State,
+  action: Viewer2DAction
+): State {
   switch (action.type) {
     case UPDATE_2D_CAMERA:
       return { ...state, viewer2D: action.value };
@@ -22,5 +50,8 @@ export default function (state: State, action): State {
 
     case SELECT_TOOL_ZOOM_OUT:
       return { ...state, mode: MODE_2D_ZOOM_OUT };
+
+    default:
+      return state;
   }
 }

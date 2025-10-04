@@ -1,10 +1,17 @@
-import { UPDATE_2D_CAMERA, SELECT_TOOL_PAN, SELECT_TOOL_ZOOM_IN, SELECT_TOOL_ZOOM_OUT } from '../constants';
+import { Value as ReactSVGPanZoomValue } from 'react-svg-pan-zoom';
 
-export function updateCameraView(value) {
+import {
+  SELECT_TOOL_PAN,
+  SELECT_TOOL_ZOOM_IN,
+  SELECT_TOOL_ZOOM_OUT,
+  UPDATE_2D_CAMERA
+} from '../constants';
+
+export function updateCameraView(value: ReactSVGPanZoomValue) {
   return {
     type: UPDATE_2D_CAMERA,
     value
-  }
+  };
 }
 
 export function selectToolPan() {

@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface PropertyHiddenProps {
   value: any;
   onUpdate: (value: any) => void;
@@ -9,6 +7,13 @@ interface PropertyHiddenProps {
   state: object;
 }
 
-export default function PropertyHidden({ value, onUpdate, configs, sourceElement, internalState, state }: PropertyHiddenProps) {
-  return null
+export default function PropertyHidden({
+  value,
+  onUpdate,
+  configs,
+  sourceElement,
+  internalState,
+  state
+}: PropertyHiddenProps) {
+  return null;
 }

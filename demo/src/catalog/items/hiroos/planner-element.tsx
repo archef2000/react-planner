@@ -1,15 +1,21 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const cubeMaterial = new Three.MeshLambertMaterial({ color: 0x65696c });
 const textureLoader = new Three.TextureLoader();
 const frontTexture1 = textureLoader.load(require('./hiroosTexture.jpg'));
+
 const newWidth = 175;
 const newDepth = 85;
 const newHeight = 195;
 
-function makeObjectMaxLOD(newWidth: number, newHeight: number, newDepth: number) {
+function makeObjectMaxLOD(
+  newWidth: number,
+  newHeight: number,
+  newDepth: number
+) {
   const rack = new Three.Mesh();
 
   //let backTexture;
@@ -31,7 +37,9 @@ function makeObjectMaxLOD(newWidth: number, newHeight: number, newDepth: number)
   rack.add(p1);
 
   const planeGeometryFront = new Three.PlaneGeometry(newWidth, newHeight);
-  const planeMaterialFront = new Three.MeshLambertMaterial({ map: frontTexture });
+  const planeMaterialFront = new Three.MeshLambertMaterial({
+    map: frontTexture
+  });
 
   const front = new Three.Mesh(planeGeometryFront, planeMaterialFront);
   front.position.set(0, 1, newDepth / 1.95);
@@ -45,10 +53,14 @@ function makeObjectMaxLOD(newWidth: number, newHeight: number, newDepth: number)
   // back.rotation.y+=Math.PI;
   // rack.add(back);
 
-  return rack
+  return rack;
 }
 
-function makeObjectMinLOD(newWidth: number, newHeight: number, newDepth: number) {
+function makeObjectMinLOD(
+  newWidth: number,
+  newHeight: number,
+  newDepth: number
+) {
   const rack = new Three.Mesh();
 
   //base
@@ -58,29 +70,29 @@ function makeObjectMinLOD(newWidth: number, newHeight: number, newDepth: number)
   p1.position.set(0, 1, 0);
   rack.add(p1);
 
-  return rack
+  return rack;
 }
 
 export default defineCatalogElement({
-  name: "hiroos",
-  prototype: "items",
+  name: 'hiroos',
+  prototype: 'items',
 
   info: {
     tag: ['furnishings', 'metal'],
-    title: "hiroos",
-    description: "hiroos",
+    title: 'hiroos',
+    description: 'hiroos',
     image: require('./hiroos.png')
   },
 
   properties: {
     patternColor: {
-      label: "pattern colori",
-      type: "color",
-      defaultValue: "#f5f4f4"
+      label: 'pattern colori',
+      type: 'color',
+      defaultValue: '#f5f4f4'
     },
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 0
       }
@@ -88,25 +100,41 @@ export default defineCatalogElement({
   },
 
   render2D: function (element, layer, scene) {
-    const fillValue = element.selected ? "#99c3fb" : element.properties.patternColor;
+    const fillValue = element.selected
+      ? '#99c3fb'
+      : element.properties.patternColor;
 
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
     return (
       <g transform={`translate(${-newWidth / 2},${-newDepth / 2})`}>
-        <rect key="1" x="0" y="0" width={newWidth} height={newDepth}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: fillValue }} />
-        <text key="2" x="0" y="0"
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={newWidth}
+          height={newDepth}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: fillValue
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${newWidth / 2}, ${newDepth / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.name}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {

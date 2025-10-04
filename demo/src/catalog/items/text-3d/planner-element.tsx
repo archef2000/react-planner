@@ -1,9 +1,11 @@
-import { MeshBasicMaterial, Mesh, BoxHelper } from 'three';
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import React from 'react';
-import { HELVETIKER } from './helvetiker_regular.typeface';
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import { BoxHelper, Mesh, MeshBasicMaterial } from 'three';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
+
+import { HELVETIKER } from './helvetiker_regular.typeface';
 
 const fontLoader = new FontLoader();
 const font = fontLoader.parse(HELVETIKER);
@@ -52,7 +54,8 @@ export default defineCatalogElement({
     const text = element.properties.text || '';
     const fontSize = element.properties.fontSize || defaultFontSize;
     const textHorizontalPadding = defaultFontSize;
-    const width = ((text.length - (text.length / 2)) * fontSize) + textHorizontalPadding;
+    const width =
+      (text.length - text.length / 2) * fontSize + textHorizontalPadding;
     const height = 2 * fontSize;
 
     return (
@@ -79,14 +82,15 @@ export default defineCatalogElement({
           {text}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
     const text = element.properties.text || '';
     const size = element.properties.fontSize || defaultFontSize;
     const textHorizontalPadding = defaultFontSize;
-    const width = ((text.length - (text.length / 2)) * size) + textHorizontalPadding;
+    const width =
+      (text.length - text.length / 2) * size + textHorizontalPadding;
     const color = element.properties.color || defaultColor;
 
     const mesh = new Mesh(
@@ -103,7 +107,7 @@ export default defineCatalogElement({
     }
 
     mesh.position.y += element.properties.altitude.length;
-    mesh.position.x -= (width / 2);
+    mesh.position.x -= width / 2;
 
     return mesh;
   }

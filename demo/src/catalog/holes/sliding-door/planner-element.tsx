@@ -1,9 +1,14 @@
-import { defineCatalogElement } from '@archef2000/react-planner';
 import React from 'react';
+
+import { defineCatalogElement } from '@archef2000/react-planner';
 import * as Three from 'three';
 
 const grey = new Three.MeshLambertMaterial({ color: 0x3f3f3f });
-const white = new Three.MeshLambertMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 });
+const white = new Three.MeshLambertMaterial({
+  color: 0xffffff,
+  transparent: true,
+  opacity: 0.5
+});
 const black = new Three.MeshLambertMaterial({ color: 0x000000 });
 
 function makeDoor(handleSide: boolean) {
@@ -16,10 +21,10 @@ function makeDoor(handleSide: boolean) {
   doorShape.lineTo(1, 0);
 
   const doorHole = new Three.Path();
-  doorHole.moveTo(.65, 1.75);
-  doorHole.lineTo(.35, 1.75);
-  doorHole.lineTo(.35, 1.25);
-  doorHole.lineTo(.65, 1.25);
+  doorHole.moveTo(0.65, 1.75);
+  doorHole.lineTo(0.35, 1.75);
+  doorHole.lineTo(0.35, 1.25);
+  doorHole.lineTo(0.65, 1.25);
   doorShape.holes.push(doorHole);
 
   const extrudeSettings = {
@@ -45,7 +50,7 @@ function makeDoor(handleSide: boolean) {
   if (handleSide) {
     door2.position.set(1.5, 1, 0.065);
   } else {
-    door2.position.set(-.5, 1, 0.065);
+    door2.position.set(-0.5, 1, 0.065);
   }
   door.add(door2);
 
@@ -59,7 +64,14 @@ function makeDoor(handleSide: boolean) {
   glass.position.set(0.5, 1.5, 0.025);
   door.add(glass);
 
-  const HandleGeometry1 = new Three.CylinderGeometry(0.051, 0.051, 0.0625, 80, 80, true);
+  const HandleGeometry1 = new Three.CylinderGeometry(
+    0.051,
+    0.051,
+    0.0625,
+    80,
+    80,
+    true
+  );
   black.side = Three.DoubleSide;
   const handle_p1 = new Three.Mesh(HandleGeometry1, black);
   handle_p1.position.set(0.2, 1, 0.025);
@@ -76,7 +88,7 @@ function makeDoor(handleSide: boolean) {
     handle_p2.position.x = 0.8;
   }
 
-  return slidingDoor
+  return slidingDoor;
 }
 
 export default defineCatalogElement({
@@ -124,8 +136,8 @@ export default defineCatalogElement({
       type: 'checkbox',
       defaultValue: false,
       values: {
-        'none': false,
-        'yes': true
+        none: false,
+        yes: true
       }
     },
     flip_vertical: {
@@ -133,24 +145,38 @@ export default defineCatalogElement({
       type: 'checkbox',
       defaultValue: true,
       values: {
-        'left': false,
-        'right': true
+        left: false,
+        right: true
       }
     }
   },
 
   render2D: function (element, layer, scene) {
-    const STYLE_HOLE_BASE = { stroke: '#000', strokeWidth: '14px', fill: '#000' };
-    const STYLE_HOLE_BASE2 = { stroke: '#000', strokeWidth: '16px', fill: '#000' };
-    const STYLE_HOLE_SELECTED = { stroke: '#0096fd', strokeWidth: '14px', fill: '#0096fd', cursor: 'move' };
+    const STYLE_HOLE_BASE = {
+      stroke: '#000',
+      strokeWidth: '14px',
+      fill: '#000'
+    };
+    const STYLE_HOLE_BASE2 = {
+      stroke: '#000',
+      strokeWidth: '16px',
+      fill: '#000'
+    };
+    const STYLE_HOLE_SELECTED = {
+      stroke: '#0096fd',
+      strokeWidth: '14px',
+      fill: '#0096fd',
+      cursor: 'move'
+    };
 
     const epsilon = 3;
     const flip: boolean = element.properties.flip_horizontal;
     const handleSide: boolean = element.properties.flip_vertical;
     const holeWidth = element.properties.width.length;
     const holeStyle = element.selected ? STYLE_HOLE_SELECTED : STYLE_HOLE_BASE;
-    const holeStyle2 = element.selected ? STYLE_HOLE_SELECTED : STYLE_HOLE_BASE2;
-    const length = element.properties.width.length;
+    const holeStyle2 = element.selected
+      ? STYLE_HOLE_SELECTED
+      : STYLE_HOLE_BASE2;
 
     let scaleX: number, scaleY: number;
     let pX1: number, pX2: number;
@@ -181,16 +207,44 @@ export default defineCatalogElement({
 
     return (
       <g transform={`translate(${-element.properties.width.length / 2}, 0)`}>
-        <line key='1' x1='0' y1={0 - epsilon} x2={holeWidth} y2={0 - epsilon} style={holeStyle}
-          transform={`scale(${scaleX},${scaleY})`} />
-        <line key='2' x1={pX1} y1={5 - epsilon} x2={pX2} y2={5 - epsilon} style={holeStyle2}
-          transform={`scale(${scaleX},${scaleY})`} />
-        <line key='3' x1={holeWidth} y1={0 - epsilon} x2={holeWidth} y2={15 + epsilon} style={holeStyle2}
-          transform={`scale(${scaleX},${scaleY})`} />
-        <line key='4' x1='0' y1={0 - epsilon} x2='0' y2={15 + epsilon} style={holeStyle2}
-          transform={`scale(${scaleX},${scaleY})`} />
+        <line
+          key="1"
+          x1="0"
+          y1={0 - epsilon}
+          x2={holeWidth}
+          y2={0 - epsilon}
+          style={holeStyle}
+          transform={`scale(${scaleX},${scaleY})`}
+        />
+        <line
+          key="2"
+          x1={pX1}
+          y1={5 - epsilon}
+          x2={pX2}
+          y2={5 - epsilon}
+          style={holeStyle2}
+          transform={`scale(${scaleX},${scaleY})`}
+        />
+        <line
+          key="3"
+          x1={holeWidth}
+          y1={0 - epsilon}
+          x2={holeWidth}
+          y2={15 + epsilon}
+          style={holeStyle2}
+          transform={`scale(${scaleX},${scaleY})`}
+        />
+        <line
+          key="4"
+          x1="0"
+          y1={0 - epsilon}
+          x2="0"
+          y2={15 + epsilon}
+          style={holeStyle2}
+          transform={`scale(${scaleX},${scaleY})`}
+        />
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {

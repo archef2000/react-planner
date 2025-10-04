@@ -1,30 +1,30 @@
 import {
-  TextureLoader,
-  Mesh,
-  RepeatWrapping,
-  Vector2,
-  BoxGeometry,
-  MeshBasicMaterial,
-  Group,
-  MeshStandardMaterial,
-  MeshStandardMaterialParameters,
-  BufferGeometry,
-  Float32BufferAttribute,
-  Vector3,
-  DoubleSide,
   BackSide,
+  BoxGeometry,
+  BufferGeometry,
+  DoubleSide,
+  Float32BufferAttribute,
   FrontSide,
-  SRGBColorSpace,
+  Group,
+  Mesh,
+  MeshBasicMaterial,
+  MeshStandardMaterial,
   Object3D,
   Object3DEventMap,
-  Texture
+  RepeatWrapping,
+  SRGBColorSpace,
+  Texture,
+  TextureLoader,
+  Vector2,
+  Vector3
 } from 'three';
-
 import { CSG } from 'three-csg-ts';
-import { verticesDistance } from '../../utils/geometry';
-import * as SharedStyle from '../../shared-style';
+
 import { Layer, Line, Scene } from '../../models';
+import * as SharedStyle from '../../shared-style';
 import { CatalogElementTextures } from '../../types';
+import { verticesDistance } from '../../utils/geometry';
+
 import { calcLineEnd } from './utils/calcPolygon';
 
 const halfPI = Math.PI / 2;
@@ -41,8 +41,11 @@ function getBaseTexture(uri: string): Texture {
   return tex;
 }
 
-
-const applyTexture = (texture: CatalogElementTextures[string], length: number, height: number) => {
+const applyTexture = (
+  texture: CatalogElementTextures[string],
+  length: number,
+  height: number
+) => {
   const material = new MeshStandardMaterial();
 
   const setupMap = (
@@ -79,17 +82,27 @@ const applyTexture = (texture: CatalogElementTextures[string], length: number, h
       base,
       length * texture.lengthRepeatScale,
       height * texture.heightRepeatScale,
-      (m) => { material.map = m; }
+      (m) => {
+        material.map = m;
+      }
     );
 
-    if (texture.normal) {
-      const baseNormal = getBaseTexture(texture.normal.uri);
+    const normal = texture.normal;
+    if (normal) {
+      const baseNormal = getBaseTexture(normal.uri);
       setupMap(
         baseNormal,
-        length * texture.normal.lengthRepeatScale,
-        height * texture.normal.heightRepeatScale,
-        (m) => { material.normalMap = m; },
-        () => { material.normalScale = new Vector2(texture.normal.normalScaleX, texture.normal.normalScaleY); }
+        length * normal.lengthRepeatScale,
+        height * normal.heightRepeatScale,
+        (m) => {
+          material.normalMap = m;
+        },
+        () => {
+          material.normalScale = new Vector2(
+            normal.normalScaleX,
+            normal.normalScaleY
+          );
+        }
       );
     }
   }
@@ -97,8 +110,12 @@ const applyTexture = (texture: CatalogElementTextures[string], length: number, h
   return material;
 };
 
-
-export function buildWall(element: Line, layer: Layer, scene: Scene, textures: CatalogElementTextures) {
+export function buildWall(
+  element: Line,
+  layer: Layer,
+  scene: Scene,
+  textures: CatalogElementTextures
+) {
   // Get the two vertices of the wall
   let vertex0 = layer.vertices[element.vertices[0]];
   let vertex1 = layer.vertices[element.vertices[1]];
@@ -116,23 +133,39 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
   const thickness = element.properties.thickness.length;
   const opacity = element.properties.opacity;
   const faceThickness = 0.2; // thickness of decorative textured panel
-  const faceDistance = 0.5;    // no artificial gap; panels will be shifted just outside the wall body
+  const faceDistance = 0.5; // no artificial gap; panels will be shifted just outside the wall body
 
   const distance = verticesDistance(vertex0, vertex1);
 
-
-  const points1 = calcLineEnd(layer, element.id, element.vertices[0], thickness);
-  const rawPoints2 = calcLineEnd(layer, element.id, element.vertices[1], thickness);
-  const points2 = rawPoints2.map(p => ({ x: distance - p.x, y: p.y }));
+  const points1 = calcLineEnd(
+    layer,
+    element.id,
+    element.vertices[0],
+    thickness
+  );
+  const rawPoints2 = calcLineEnd(
+    layer,
+    element.id,
+    element.vertices[1],
+    thickness
+  );
+  const points2 = rawPoints2.map((p) => ({ x: distance - p.x, y: p.y }));
 
   // Robustly pair front/back ends to avoid twists: match end corner closest (in plan y) to the start corner
   const endA = points2[0];
   const endB = points2[points2.length - 1];
-  const frontEnd = Math.abs(endA.y - points1[0].y) <= Math.abs(endB.y - points1[0].y) ? endA : endB;
-  const backEnd = (frontEnd === endA) ? endB : endA;
+  const frontEnd =
+    Math.abs(endA.y - points1[0].y) <= Math.abs(endB.y - points1[0].y)
+      ? endA
+      : endB;
+  const backEnd = frontEnd === endA ? endB : endA;
 
-  const frontPoints = [points1[0], frontEnd].map((p) => { return { y: p.y * -1, x: p.x } });
-  const backPoints = [points1[points1.length - 1], backEnd].map((p) => { return { y: p.y * -1, x: p.x } });
+  const frontPoints = [points1[0], frontEnd].map((p) => {
+    return { y: p.y * -1, x: p.x };
+  });
+  const backPoints = [points1[points1.length - 1], backEnd].map((p) => {
+    return { y: p.y * -1, x: p.x };
+  });
 
   const halfDistance = distance / 2;
 
@@ -146,7 +179,7 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
   const topY = height / 2;
 
   const xLocal = (x: number) => x - halfDistance; // center geometry on X=0 like BoxGeometry
-  const uFromX = (x: number) => x / distance;     // normalize along length for UVs
+  const uFromX = (x: number) => x / distance; // normalize along length for UVs
 
   // 8 corner points (bottom and top)
   const v0 = { x: xLocal(fEnd.x), y: bottomY, z: fEnd.y }; // front start bottom
@@ -168,19 +201,30 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
   };
 
   const tri = (
-    a: { x: number; y: number; z: number }, b: { x: number; y: number; z: number }, c: { x: number; y: number; z: number },
-    au = 0, av = 0, bu = 0, bv = 0, cu = 0, cv = 0
+    a: { x: number; y: number; z: number },
+    b: { x: number; y: number; z: number },
+    c: { x: number; y: number; z: number },
+    au = 0,
+    av = 0,
+    bu = 0,
+    bv = 0,
+    cu = 0,
+    cv = 0
   ) => {
-    push(a, au, av); push(b, bu, bv); push(c, cu, cv);
+    push(a, au, av);
+    push(b, bu, bv);
+    push(c, cu, cv);
   };
 
   // Front long face (map UVs: u along length [0..1], v along height [0..1])
-  const uF0 = uFromX(fStart.x), uF1 = uFromX(fEnd.x);
+  const uF0 = uFromX(fStart.x),
+    uF1 = uFromX(fEnd.x);
   tri(v0, v1, v5, uF0, 0, uF1, 0, uF1, 1);
   tri(v0, v5, v4, uF0, 0, uF1, 1, uF0, 1);
 
   // Back long face (UVs)
-  const uB0 = uFromX(bStart.x), uB1 = uFromX(bEnd.x);
+  const uB0 = uFromX(bStart.x),
+    uB1 = uFromX(bEnd.x);
   tri(v2, v3, v7, uB1, 0, uB0, 0, uB0, 1);
   tri(v2, v7, v6, uB1, 0, uB0, 1, uB1, 1);
 
@@ -201,15 +245,19 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
   tri(v4, v6, v7);
 
   const soulGeometry = new BufferGeometry();
-  soulGeometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+  soulGeometry.setAttribute(
+    'position',
+    new Float32BufferAttribute(positions, 3)
+  );
   soulGeometry.setAttribute('uv', new Float32BufferAttribute(uvs, 2));
   soulGeometry.computeVertexNormals();
 
   // Triangles order (each 2 tris): front(0-1), back(2-3), start(4-5), end(6-7), bottom(8-9), top(10-11)
   // Each triangle adds 3 vertices
   const frontVertCount = 2 * 3; // 6
-  const backVertCount = 2 * 3;  // 6
-  const remainingVertCount = (positions.length / 3) - frontVertCount - backVertCount;
+  const backVertCount = 2 * 3; // 6
+  const remainingVertCount =
+    positions.length / 3 - frontVertCount - backVertCount;
 
   soulGeometry.clearGroups();
   soulGeometry.addGroup(0, frontVertCount, 0); // front hidden
@@ -217,19 +265,38 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
   soulGeometry.addGroup(frontVertCount + backVertCount, remainingVertCount, 2); // visible sides/top/bottom
 
   // Hidden faces fully transparent
-  const frontHiddenMat = new MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, side: BackSide });
-  const backHiddenMat = new MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, side: FrontSide });
+  const frontHiddenMat = new MeshBasicMaterial({
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+    side: BackSide
+  });
+  const backHiddenMat = new MeshBasicMaterial({
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+    side: FrontSide
+  });
   // Visible faces adopt the opacity property
-  const sideVisibleMat = new MeshBasicMaterial({ color: (element.selected ? SharedStyle.MESH_SELECTED : 0xD3D3D3), side: DoubleSide, opacity, transparent: true });
+  const sideVisibleMat = new MeshBasicMaterial({
+    color: element.selected ? SharedStyle.MESH_SELECTED : 0xd3d3d3,
+    side: DoubleSide,
+    opacity,
+    transparent: true
+  });
 
-  let soul: Mesh = new Mesh(soulGeometry, [frontHiddenMat, backHiddenMat, sideVisibleMat]);
+  let soul: Mesh = new Mesh(soulGeometry, [
+    frontHiddenMat,
+    backHiddenMat,
+    sideVisibleMat
+  ]);
 
-  const alpha = Math.asin((vertex1.y - vertex0.y) / (distance));
+  const alpha = Math.asin((vertex1.y - vertex0.y) / distance);
 
   const sinAlpha = Math.sin(alpha);
   const cosAlpha = Math.cos(alpha);
 
-  element.holes.forEach(holeID => {
+  element.holes.forEach((holeID) => {
     const holeData = layer.holes[holeID];
 
     const holeWidth = holeData.properties.width.length;
@@ -260,10 +327,18 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
   soul.rotation.y = alpha;
   soul.name = 'soul';
 
-  const frontMaterial = applyTexture(textures[element.properties.textureB], distance, height);
-  const backMaterial = applyTexture(textures[element.properties.textureA], distance, height);
+  const frontMaterial = applyTexture(
+    textures[element.properties.textureB],
+    distance,
+    height
+  );
+  const backMaterial = applyTexture(
+    textures[element.properties.textureA],
+    distance,
+    height
+  );
 
-  [frontMaterial, backMaterial].forEach(mat => {
+  [frontMaterial, backMaterial].forEach((mat) => {
     mat.opacity = opacity;
     if (opacity < 1) mat.transparent = true;
   });
@@ -280,20 +355,34 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
     uB: number
   ) => {
     // Convert to arrays for convenience
-    const ax = a.x, ay = a.y, az = a.z;
-    const bx = b.x, by = b.y, bz = b.z;
-    const cx = c.x, cy = c.y, cz = c.z;
-    const dx = d.x, dy = d.y, dz = d.z;
+    const ax = a.x,
+      ay = a.y,
+      az = a.z;
+    const bx = b.x,
+      by = b.y,
+      bz = b.z;
+    const cx = c.x,
+      cy = c.y,
+      cz = c.z;
+    const dx = d.x,
+      dy = d.y,
+      dz = d.z;
 
     // Compute face normal (a->b) x (a->d)
-    const abx = bx - ax, aby = by - ay, abz = bz - az;
-    const adx = dx - ax, ady = dy - ay, adz = dz - az;
+    const abx = bx - ax,
+      aby = by - ay,
+      abz = bz - az;
+    const adx = dx - ax,
+      ady = dy - ay,
+      adz = dz - az;
     // cross(ab, ad)
     let nx = aby * adz - abz * ady;
     let ny = abz * adx - abx * adz;
     let nz = abx * ady - aby * adx;
     const nLen = Math.hypot(nx, ny, nz) || 1;
-    nx /= nLen; ny /= nLen; nz /= nLen;
+    nx /= nLen;
+    ny /= nLen;
+    nz /= nLen;
 
     const halfT = thicknessLocal / 2;
 
@@ -311,9 +400,24 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
     const pos: number[] = [];
     const uv: number[] = [];
 
-    const pushV = (v: number[], u = 0, vT = 0) => { pos.push(v[0], v[1], v[2]); uv.push(u, vT); };
-    const triV = (A: number[], B: number[], C: number[], Au = 0, Av = 0, Bu = 0, Bv = 0, Cu = 0, Cv = 0) => {
-      pushV(A, Au, Av); pushV(B, Bu, Bv); pushV(C, Cu, Cv);
+    const pushV = (v: number[], u = 0, vT = 0) => {
+      pos.push(v[0], v[1], v[2]);
+      uv.push(u, vT);
+    };
+    const triV = (
+      A: number[],
+      B: number[],
+      C: number[],
+      Au = 0,
+      Av = 0,
+      Bu = 0,
+      Bv = 0,
+      Cu = 0,
+      Cv = 0
+    ) => {
+      pushV(A, Au, Av);
+      pushV(B, Bu, Bv);
+      pushV(C, Cu, Cv);
     };
 
     // Front face (+normal side) with UVs
@@ -326,13 +430,17 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
 
     // Sides (no UVs needed)
     // Edge AB
-    triV(aB, aF, bF); triV(aB, bF, bB);
+    triV(aB, aF, bF);
+    triV(aB, bF, bB);
     // Edge BC
-    triV(bB, bF, cF); triV(bB, cF, cB);
+    triV(bB, bF, cF);
+    triV(bB, cF, cB);
     // Edge CD
-    triV(cB, cF, dF); triV(cB, dF, dB);
+    triV(cB, cF, dF);
+    triV(cB, dF, dB);
     // Edge DA
-    triV(dB, dF, aF); triV(dB, aF, aB);
+    triV(dB, dF, aF);
+    triV(dB, aF, aB);
 
     const g = new BufferGeometry();
     g.setAttribute('position', new Float32BufferAttribute(pos, 3));
@@ -342,11 +450,29 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
   };
 
   // Build face quads from existing corners
-  const uFrontA = uFromX(fStart.x), uFrontB = uFromX(fEnd.x);
-  const frontGeom = buildExtrudedQuad(v0, v1, v5, v4, faceThickness, uFrontA, uFrontB);
+  const uFrontA = uFromX(fStart.x),
+    uFrontB = uFromX(fEnd.x);
+  const frontGeom = buildExtrudedQuad(
+    v0,
+    v1,
+    v5,
+    v4,
+    faceThickness,
+    uFrontA,
+    uFrontB
+  );
 
-  const uBackA = uFromX(bStart.x), uBackB = uFromX(bEnd.x);
-  const backGeom = buildExtrudedQuad(v2, v3, v7, v6, faceThickness, uBackB, uBackA); // note reversed to keep u increasing along length
+  const uBackA = uFromX(bStart.x),
+    uBackB = uFromX(bEnd.x);
+  const backGeom = buildExtrudedQuad(
+    v2,
+    v3,
+    v7,
+    v6,
+    faceThickness,
+    uBackB,
+    uBackA
+  ); // note reversed to keep u increasing along length
 
   let frontFace: Mesh = new Mesh(frontGeom, frontMaterial);
   let backFace: Mesh = new Mesh(backGeom, backMaterial);
@@ -367,11 +493,11 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
   // Invert previous direction: move front along +thicknessDir and back along -thicknessDir
   const frontOutward = thicknessDir.clone();
   const backOutward = thicknessDir.clone().multiplyScalar(1);
-  const outwardShift = (faceThickness / 2) + faceDistance; // ensure panel sits fully outside + epsilon
-  const inwardShift = (faceThickness / 2) - faceDistance; // ensure panel sits fully outside + epsilon
+  const outwardShift = faceThickness / 2 + faceDistance; // ensure panel sits fully outside + epsilon
+  const inwardShift = faceThickness / 2 - faceDistance; // ensure panel sits fully outside + epsilon
 
   // Subtract holes from the face panels as well to avoid panels crossing openings
-  element.holes.forEach(holeID => {
+  element.holes.forEach((holeID) => {
     const holeData = layer.holes[holeID];
 
     const holeWidth = holeData.properties.width.length;
@@ -380,7 +506,11 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
     const offset = inverted ? 1 - holeData.offset : holeData.offset;
     const holeDistance = offset * distance;
 
-    const holeGeometry = new BoxGeometry(holeWidth, holeHeight, thickness + faceThickness * 2 + faceDistance * 2);
+    const holeGeometry = new BoxGeometry(
+      holeWidth,
+      holeHeight,
+      thickness + faceThickness * 2 + faceDistance * 2
+    );
     const holeMesh = new Mesh(holeGeometry);
 
     holeMesh.position.set(
@@ -399,13 +529,12 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
   });
 
   // Position/rotate like soul
-  [frontFace, backFace].forEach(face => {
+  [frontFace, backFace].forEach((face) => {
     face.position.y += height / 2;
     face.position.x += halfDistance * cosAlpha;
     face.position.z -= halfDistance * sinAlpha;
     face.rotation.y = alpha;
   });
-
 
   frontFace.translateOnAxis(frontOutward, inwardShift);
   backFace.translateOnAxis(backOutward, outwardShift);
@@ -419,22 +548,36 @@ export function buildWall(element: Line, layer: Layer, scene: Scene, textures: C
   return merged;
 }
 
-export function updatedWall(element: Line, layer: Layer, scene: Scene, textures: CatalogElementTextures, mesh: Object3D<Object3DEventMap>, oldElement: Line, differences, selfDestroy, selfBuild) {
-  const noPerf = () => { selfDestroy(); return selfBuild(); };
+export function updatedWall(
+  element: Line,
+  layer: Layer,
+  scene: Scene,
+  textures: CatalogElementTextures,
+  mesh: Object3D<Object3DEventMap>,
+  oldElement: Line,
+  differences: string[],
+  selfDestroy: () => void,
+  selfBuild: () => void
+) {
+  const noPerf = () => {
+    selfDestroy();
+    return selfBuild();
+  };
 
-  const soul = mesh.getObjectByName('soul');
-  const frontFace = mesh.getObjectByName('frontFace');
-  const backFace = mesh.getObjectByName('backFace');
+  const soul = mesh.getObjectByName('soul') as Mesh;
+  const frontFace = mesh.getObjectByName('frontFace') as Mesh;
+  const backFace = mesh.getObjectByName('backFace') as Mesh;
 
   if (differences[0] == 'selected') {
     const soulMesh = soul as Mesh;
     if (Array.isArray(soulMesh.material)) {
       const sideMat = soulMesh.material[2] as MeshBasicMaterial;
-      sideMat.color.set(element.selected ? SharedStyle.MESH_SELECTED : 0xD3D3D3);
+      sideMat.color.set(
+        element.selected ? SharedStyle.MESH_SELECTED : 0xd3d3d3
+      );
       sideMat.needsUpdate = true;
     }
-  }
-  else if (differences[0] == 'properties') {
+  } else if (differences[0] == 'properties') {
     if (differences[1] == 'thickness') {
       const newThickness = element.properties.thickness.length;
       const oldThickness = oldElement.properties.thickness.length;
@@ -454,10 +597,8 @@ export function updatedWall(element: Line, layer: Layer, scene: Scene, textures:
       backFace.position.x = soul.position.x - xTemp;
       backFace.position.z = soul.position.z - zTemp;
       return noPerf();
-    }
-    else return noPerf();
-  }
-  else return noPerf();
+    } else return noPerf();
+  } else return noPerf();
 
   return mesh;
 }

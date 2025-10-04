@@ -7,5 +7,11 @@ interface IfProps {
 }
 
 export default function If({ condition, style, children }: IfProps) {
-  return condition ? (Array.isArray(children) ? <div style={style}>{children}</div> : children) : null;
+  return condition ? (
+    Array.isArray(children) ? (
+      <div style={style}>{children}</div>
+    ) : (
+      children
+    )
+  ) : null;
 }

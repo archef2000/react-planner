@@ -1,8 +1,10 @@
-export function browserDownload(json) {
+export function browserDownload(json: object) {
   const fileOutputLink = document.createElement('a');
 
-  let filename = 'output' + Date.now() + '.json';
-  filename = window.prompt('Insert output filename', filename);
+  const filename = window.prompt(
+    'Insert output filename',
+    'output' + Date.now() + '.json'
+  );
   if (!filename) return;
 
   const output = JSON.stringify(json);
@@ -25,7 +27,7 @@ export function browserUpload(): Promise<string> {
       const file = (event.target as any).files[0];
       const reader = new FileReader();
       reader.addEventListener('load', (fileEvent) => {
-        const loadedData = String(fileEvent.target.result);
+        const loadedData = String(fileEvent.target?.result);
         resolve(loadedData);
       });
       reader.readAsText(file);

@@ -1,13 +1,14 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 50;
 const DEPTH = 30;
 const HEIGHT = 80;
 
-const red = new Three.MeshPhongMaterial({ color: 0xAA0000 });
-const grey = new Three.MeshLambertMaterial({ color: 0xAAAAAA });
+const red = new Three.MeshPhongMaterial({ color: 0xaa0000 });
+const grey = new Three.MeshLambertMaterial({ color: 0xaaaaaa });
 const black = new Three.MeshLambertMaterial({ color: 0x000000 });
 const textureLoader = new Three.TextureLoader();
 const frontTexture = textureLoader.load(require('./naspofront.png'));
@@ -32,7 +33,12 @@ function makeObjectMaxLOD() {
   roundedRectShape.lineTo(x, y + height - radius);
   roundedRectShape.quadraticCurveTo(x, y + height, x + radius, y + height);
   roundedRectShape.lineTo(x + width - radius, y + height);
-  roundedRectShape.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+  roundedRectShape.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width,
+    y + height - radius
+  );
   roundedRectShape.lineTo(x + width, y + radius);
   roundedRectShape.quadraticCurveTo(x + width, y, x + width - radius, y);
   roundedRectShape.lineTo(x + radius, y);
@@ -47,7 +53,10 @@ function makeObjectMaxLOD() {
     bevelSegments: 1
   };
 
-  const geometryBody = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
+  const geometryBody = new Three.ExtrudeGeometry(
+    roundedRectShape,
+    extrudeSettings
+  );
   const mesh = new Three.Mesh(geometryBody, red);
   mesh.position.set(0.1, 1.1, 0.1);
   naspo.add(mesh);
@@ -58,17 +67,33 @@ function makeObjectMaxLOD() {
   naspo.add(mesh1);
 
   const geometryPlane = new Three.PlaneGeometry(0.6, 0.9);
-  const mesh3 = new Three.Mesh(geometryPlane, new Three.MeshPhongMaterial({ map: frontTexture, transparent: true }));
+  const mesh3 = new Three.Mesh(
+    geometryPlane,
+    new Three.MeshPhongMaterial({ map: frontTexture, transparent: true })
+  );
   mesh3.position.set(0.5, 1.7, 0.31);
   naspo.add(mesh3);
 
-  const cylinderGeometry1 = new Three.CylinderGeometry(0.05, 0.05, 0.025, 80, 80);
+  const cylinderGeometry1 = new Three.CylinderGeometry(
+    0.05,
+    0.05,
+    0.025,
+    80,
+    80
+  );
   const handle_p1 = new Three.Mesh(cylinderGeometry1, grey);
   handle_p1.position.set(0.17, 1.7, 0.3);
   handle_p1.rotation.x = Math.PI / 2;
   naspo.add(handle_p1);
 
-  const cylinderGeometry2 = new Three.CylinderGeometry(0.051, 0.051, 0.05, 80, 80, true);
+  const cylinderGeometry2 = new Three.CylinderGeometry(
+    0.051,
+    0.051,
+    0.05,
+    80,
+    80,
+    true
+  );
   black.side = Three.DoubleSide;
   const handle_p2 = new Three.Mesh(cylinderGeometry2, black);
   handle_p2.position.set(0.17, 1.7, 0.31);
@@ -80,12 +105,24 @@ function makeObjectMaxLOD() {
   handle_p3.position.set(0.17, 1.7, 0.32);
   naspo.add(handle_p3);
 
-  const cylinderGeometry4 = new Three.CylinderGeometry(0.015, 0.015, 0.1, 80, 80);
+  const cylinderGeometry4 = new Three.CylinderGeometry(
+    0.015,
+    0.015,
+    0.1,
+    80,
+    80
+  );
   const pivot1 = new Three.Mesh(cylinderGeometry4, black);
   pivot1.position.set(0.99, 1.9, 0.28);
   naspo.add(pivot1);
 
-  const cylinderGeometry5 = new Three.CylinderGeometry(0.015, 0.015, 0.1, 80, 80);
+  const cylinderGeometry5 = new Three.CylinderGeometry(
+    0.015,
+    0.015,
+    0.1,
+    80,
+    80
+  );
   const pivot2 = new Three.Mesh(cylinderGeometry5, black);
   pivot2.position.set(0.99, 1.4, 0.28);
   naspo.add(pivot2);
@@ -100,7 +137,12 @@ function makeObjectMaxLOD() {
   roundedRectShape2.lineTo(x, y + height2 - radius2);
   roundedRectShape2.quadraticCurveTo(x, y + height2, x + radius2, y + height2);
   roundedRectShape2.lineTo(x + width2 - radius2, y + height2);
-  roundedRectShape2.quadraticCurveTo(x + width2, y + height2, x + width2, y + height2 - radius2);
+  roundedRectShape2.quadraticCurveTo(
+    x + width2,
+    y + height2,
+    x + width2,
+    y + height2 - radius2
+  );
   roundedRectShape2.lineTo(x + width2, y + radius2);
   roundedRectShape2.quadraticCurveTo(x + width2, y, x + width2 - radius2, y);
   roundedRectShape2.lineTo(x + radius2, y);
@@ -115,12 +157,15 @@ function makeObjectMaxLOD() {
     bevelSegments: 1
   };
 
-  const geometry2 = new Three.ExtrudeGeometry(roundedRectShape2, extrudeSettings2);
+  const geometry2 = new Three.ExtrudeGeometry(
+    roundedRectShape2,
+    extrudeSettings2
+  );
   const mesh2 = new Three.Mesh(geometry2, red);
   mesh2.position.set(0, 1.05, -0.33);
   naspo.add(mesh2);
 
-  return naspo
+  return naspo;
 }
 
 function makeObjectMiddleLOD() {
@@ -139,7 +184,12 @@ function makeObjectMiddleLOD() {
   roundedRectShape2.lineTo(x, y + height2 - radius2);
   roundedRectShape2.quadraticCurveTo(x, y + height2, x + radius2, y + height2);
   roundedRectShape2.lineTo(x + width2 - radius2, y + height2);
-  roundedRectShape2.quadraticCurveTo(x + width2, y + height2, x + width2, y + height2 - radius2);
+  roundedRectShape2.quadraticCurveTo(
+    x + width2,
+    y + height2,
+    x + width2,
+    y + height2 - radius2
+  );
   roundedRectShape2.lineTo(x + width2, y + radius2);
   roundedRectShape2.quadraticCurveTo(x + width2, y, x + width2 - radius2, y);
   roundedRectShape2.lineTo(x + radius2, y);
@@ -154,7 +204,10 @@ function makeObjectMiddleLOD() {
     bevelSegments: 1
   };
 
-  const geometry2 = new Three.ExtrudeGeometry(roundedRectShape2, extrudeSettings2);
+  const geometry2 = new Three.ExtrudeGeometry(
+    roundedRectShape2,
+    extrudeSettings2
+  );
   const mesh2 = new Three.Mesh(geometry2, red);
   mesh2.position.set(0, 1.05, -0.33);
   naspo.add(mesh2);
@@ -165,7 +218,10 @@ function makeObjectMiddleLOD() {
   naspo.add(mesh1);
 
   const geometryPlane = new Three.PlaneGeometry(0.6, 0.9);
-  const mesh3 = new Three.Mesh(geometryPlane, new Three.MeshPhongMaterial({ map: frontTexture, transparent: true }));
+  const mesh3 = new Three.Mesh(
+    geometryPlane,
+    new Three.MeshPhongMaterial({ map: frontTexture, transparent: true })
+  );
   mesh3.position.set(0.5, 1.7, 0.31);
   naspo.add(mesh3);
 
@@ -188,7 +244,12 @@ function makeObjectMinLOD() {
   roundedRectShape2.lineTo(x, y + height2 - radius2);
   roundedRectShape2.quadraticCurveTo(x, y + height2, x + radius2, y + height2);
   roundedRectShape2.lineTo(x + width2 - radius2, y + height2);
-  roundedRectShape2.quadraticCurveTo(x + width2, y + height2, x + width2, y + height2 - radius2);
+  roundedRectShape2.quadraticCurveTo(
+    x + width2,
+    y + height2,
+    x + width2,
+    y + height2 - radius2
+  );
   roundedRectShape2.lineTo(x + width2, y + radius2);
   roundedRectShape2.quadraticCurveTo(x + width2, y, x + width2 - radius2, y);
   roundedRectShape2.lineTo(x + radius2, y);
@@ -203,7 +264,10 @@ function makeObjectMinLOD() {
     bevelSegments: 1
   };
 
-  const geometry2 = new Three.ExtrudeGeometry(roundedRectShape2, extrudeSettings2);
+  const geometry2 = new Three.ExtrudeGeometry(
+    roundedRectShape2,
+    extrudeSettings2
+  );
   const mesh2 = new Three.Mesh(geometry2, red);
   mesh2.position.set(0, 1.05, -0.33);
   naspo.add(mesh2);
@@ -212,20 +276,20 @@ function makeObjectMinLOD() {
 }
 
 export default defineCatalogElement({
-  name: "naspo",
-  prototype: "items",
+  name: 'naspo',
+  prototype: 'items',
 
   info: {
     tag: ['furnishings', 'metal'],
-    title: "naspo",
-    description: "naspo",
+    title: 'naspo',
+    description: 'naspo',
     image: require('./naspo.png')
   },
 
   properties: {
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 60
       }
@@ -236,21 +300,35 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key="1" x="0" y="0" width={WIDTH} height={DEPTH}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#ff0000" }} />
-        <text key="2" x="0" y="0"
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#ff0000'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -271,7 +349,6 @@ export default defineCatalogElement({
     naspoMaxLOD.position.x += WIDTH / 2;
     naspoMaxLOD.position.y += -HEIGHT / 1.3 + newAltitude;
     naspoMaxLOD.scale.set(WIDTH / deltaX, HEIGHT / deltaY, DEPTH / deltaZ);
-
 
     /**************** LOD middle ***********************/
 

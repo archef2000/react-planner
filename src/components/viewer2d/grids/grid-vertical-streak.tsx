@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Grid } from '../../../models';
 
 interface GridVerticalStreakProps {
@@ -7,7 +8,11 @@ interface GridVerticalStreakProps {
   grid: Grid;
 }
 
-export default function GridVerticalStreak({ width, height, grid }: GridVerticalStreakProps) {
+export default function GridVerticalStreak({
+  width,
+  height,
+  grid
+}: GridVerticalStreakProps) {
   const step = grid.properties.step;
   let colors: string[];
 
@@ -22,8 +27,18 @@ export default function GridVerticalStreak({ width, height, grid }: GridVertical
   for (let x = 0; x <= width; x += step) {
     const color = colors[i % colors.length];
     i++;
-    rendered.push(<line key={x} x1={x} y1="0" x2={x} y2={height} strokeWidth="1" stroke={color} />);
+    rendered.push(
+      <line
+        key={x}
+        x1={x}
+        y1="0"
+        x2={x}
+        y2={height}
+        strokeWidth="1"
+        stroke={color}
+      />
+    );
   }
 
-  return (<g>{rendered}</g>);
+  return <g>{rendered}</g>;
 }

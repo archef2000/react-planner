@@ -1,6 +1,7 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 10;
 const DEPTH = 10;
@@ -16,101 +17,113 @@ const objectMinLOD = makeObjectMinLOD();
 function makeObjectMaxLOD() {
   const detector = new Three.Mesh();
 
-  const BaseGeometry1 = new Three.CylinderGeometry(.55, .55, .25, 32, 32);
+  const BaseGeometry1 = new Three.CylinderGeometry(0.55, 0.55, 0.25, 32, 32);
   const base_p1 = new Three.Mesh(BaseGeometry1, grey);
   detector.add(base_p1);
 
-  const BaseGeometry2 = new Three.CylinderGeometry(.65, .65, .1, 32, 32);
+  const BaseGeometry2 = new Three.CylinderGeometry(0.65, 0.65, 0.1, 32, 32);
   const base_p2 = new Three.Mesh(BaseGeometry2, grey);
-  base_p2.position.y += .125;
+  base_p2.position.y += 0.125;
   base_p1.add(base_p2);
 
-  const BaseGeometry3 = new Three.CylinderGeometry(.55, .65, .1, 32, 32);
+  const BaseGeometry3 = new Three.CylinderGeometry(0.55, 0.65, 0.1, 32, 32);
   const base_p3 = new Three.Mesh(BaseGeometry3, grey);
-  base_p3.position.y += .22;
+  base_p3.position.y += 0.22;
   base_p1.add(base_p3);
 
-  const BaseGeometry4 = new Three.CylinderGeometry(.65, .65, .1, 32, 32);
+  const BaseGeometry4 = new Three.CylinderGeometry(0.65, 0.65, 0.1, 32, 32);
   const base_p4 = new Three.Mesh(BaseGeometry4, grey);
-  base_p4.position.y += -.125;
+  base_p4.position.y += -0.125;
   base_p1.add(base_p4);
 
   const geometrySphereUp = new Three.SphereGeometry(0.025, 32, 32, 32);
   const led = new Three.Mesh(geometrySphereUp, red);
-  led.position.y += .28;
-  led.position.x += .4;
-  led.position.z += -.25;
+  led.position.y += 0.28;
+  led.position.x += 0.4;
+  led.position.z += -0.25;
   led.scale.set(1, 1.3, 1);
   base_p1.add(led);
 
-  for (let i = 0; i < Math.PI * 4; i += 4 * Math.PI / 3) {
-    const geometry = new Three.TorusGeometry(.45, .025, 32, 100, Math.PI / 3);
+  for (let i = 0; i < Math.PI * 4; i += (4 * Math.PI) / 3) {
+    const geometry = new Three.TorusGeometry(0.45, 0.025, 32, 100, Math.PI / 3);
     const torus = new Three.Mesh(geometry, black);
-    torus.position.y += .028;
-    torus.position.x += .01;
+    torus.position.y += 0.028;
+    torus.position.x += 0.01;
     torus.rotation.z += i;
     torus.rotation.x += Math.PI / 2;
     base_p3.add(torus);
 
-    const geometry2 = new Three.TorusGeometry(.35, .025, 32, 100, Math.PI / 3);
+    const geometry2 = new Three.TorusGeometry(
+      0.35,
+      0.025,
+      32,
+      100,
+      Math.PI / 3
+    );
     const torus2 = new Three.Mesh(geometry2, black);
-    torus2.position.y += .028;
-    torus2.position.x += .01;
+    torus2.position.y += 0.028;
+    torus2.position.x += 0.01;
     torus2.rotation.x += Math.PI / 2;
     torus2.rotation.z += i;
     base_p3.add(torus2);
 
-    const geometry3 = new Three.TorusGeometry(.25, .025, 32, 100, Math.PI / 3);
+    const geometry3 = new Three.TorusGeometry(
+      0.25,
+      0.025,
+      32,
+      100,
+      Math.PI / 3
+    );
     const torus3 = new Three.Mesh(geometry3, black);
-    torus3.position.y += .028;
-    torus3.position.x += .01;
+    torus3.position.y += 0.028;
+    torus3.position.x += 0.01;
     torus3.rotation.x += Math.PI / 2;
     torus3.rotation.z += i;
     base_p3.add(torus3);
   }
-  return detector
+  return detector;
 }
 
 function makeObjectMinLOD() {
   const detector = new Three.Mesh();
 
-  const BaseGeometry1 = new Three.CylinderGeometry(.55, .55, .25, 8, 8);
+  const BaseGeometry1 = new Three.CylinderGeometry(0.55, 0.55, 0.25, 8, 8);
   const base_p1 = new Three.Mesh(BaseGeometry1, grey);
   detector.add(base_p1);
 
-  const BaseGeometry2 = new Three.CylinderGeometry(.65, .65, .1, 8, 8);
+  const BaseGeometry2 = new Three.CylinderGeometry(0.65, 0.65, 0.1, 8, 8);
   const base_p2 = new Three.Mesh(BaseGeometry2, grey);
-  base_p2.position.y += .125;
+  base_p2.position.y += 0.125;
   base_p1.add(base_p2);
 
-  const BaseGeometry3 = new Three.CylinderGeometry(.55, .65, .1, 8, 8);
+  const BaseGeometry3 = new Three.CylinderGeometry(0.55, 0.65, 0.1, 8, 8);
   const base_p3 = new Three.Mesh(BaseGeometry3, grey);
-  base_p3.position.y += .22;
+  base_p3.position.y += 0.22;
   base_p1.add(base_p3);
 
-  const BaseGeometry4 = new Three.CylinderGeometry(.65, .65, .1, 8, 8);
+  const BaseGeometry4 = new Three.CylinderGeometry(0.65, 0.65, 0.1, 8, 8);
   const base_p4 = new Three.Mesh(BaseGeometry4, grey);
-  base_p4.position.y += -.125;
+  base_p4.position.y += -0.125;
   base_p1.add(base_p4);
 
-  return detector
+  return detector;
 }
 
 export default defineCatalogElement({
-  name: "smoke-detector",
-  prototype: "items",
+  name: 'smoke-detector',
+  prototype: 'items',
 
   info: {
     tag: ['furnishings', 'metal'],
-    title: "smoke detector",
-    description: "smoke detector",
+    title: 'smoke detector',
+    description: 'smoke detector',
     image: require('./smokeDetector.png')
   },
 
   properties: {
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 250
       }
@@ -121,21 +134,35 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key="1" x="0" y="0" width={WIDTH} height={DEPTH}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#ff0000" }} />
-        <text key="2" x="0" y="0"
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#ff0000'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${1.5 * DEPTH}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {

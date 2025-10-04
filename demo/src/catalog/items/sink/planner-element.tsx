@@ -1,12 +1,13 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const HEIGHT = 60;
 
 const steel = new Three.MeshLambertMaterial({ color: 0xffffff });
-const grey = new Three.MeshLambertMaterial({ color: 0xAAAAAA });
-const yellow = new Three.MeshLambertMaterial({ color: 0xFF9933 });
+const grey = new Three.MeshLambertMaterial({ color: 0xaaaaaa });
+const yellow = new Three.MeshLambertMaterial({ color: 0xff9933 });
 const blue = new Three.MeshLambertMaterial({ color: 0x0000ff });
 
 function makeObjectMaxLOD(newWidth: number, newDepth: number) {
@@ -25,12 +26,16 @@ function makeObjectMaxLOD(newWidth: number, newDepth: number) {
   rectShape.lineTo(x, y + height - radius);
   rectShape.quadraticCurveTo(x, y + height, x + radius, y + height);
   rectShape.lineTo(x + width - radius, y + height);
-  rectShape.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+  rectShape.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width,
+    y + height - radius
+  );
   rectShape.lineTo(x + width, y + radius);
   rectShape.quadraticCurveTo(x + width, y, x + width - radius, y);
   rectShape.lineTo(x + radius, y);
   rectShape.quadraticCurveTo(x, y, x, y + radius);
-
 
   const extrudeSettings = {
     steps: 2,
@@ -54,7 +59,12 @@ function makeObjectMaxLOD(newWidth: number, newDepth: number) {
   rectShape2.lineTo(x, y + height - radius);
   rectShape2.quadraticCurveTo(x, y + height, x + radius, y + height);
   rectShape2.lineTo(x + width - radius, y + height);
-  rectShape2.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+  rectShape2.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width,
+    y + height - radius
+  );
   rectShape2.lineTo(x + width, y + radius);
   rectShape2.quadraticCurveTo(x + width, y, x + width - radius, y);
   rectShape2.lineTo(x + radius, y);
@@ -82,20 +92,33 @@ function makeObjectMaxLOD(newWidth: number, newDepth: number) {
   sink.add(mesh2);
 
   //pipe
-  const pipe_p1 = new Three.Mesh(new Three.TorusGeometry(2.5, 2.5, 16, 16, Math.PI / 2), yellow);
+  const pipe_p1 = new Three.Mesh(
+    new Three.TorusGeometry(2.5, 2.5, 16, 16, Math.PI / 2),
+    yellow
+  );
   pipe_p1.position.set(newWidth / 2, newHeight / 5.5, newDepth / 2 - 2.5);
   pipe_p1.rotation.z = -Math.PI / 2;
   pipe_p1.rotation.y -= Math.PI / 2;
   sink.add(pipe_p1);
 
-  const cylinderGeometry1 = new Three.CylinderGeometry(2.25, 2.25, newDepth / 2, 80);
+  const cylinderGeometry1 = new Three.CylinderGeometry(
+    2.25,
+    2.25,
+    newDepth / 2,
+    80
+  );
   const pipe_p2 = new Three.Mesh(cylinderGeometry1, yellow);
   pipe_p2.rotation.z = Math.PI / 2;
   pipe_p2.rotation.y -= Math.PI / 2;
   pipe_p2.position.set(newWidth / 2, newHeight / 7.5, newDepth / 4.5);
   sink.add(pipe_p2);
 
-  const cylinderGeometry2 = new Three.CylinderGeometry(2.5, 2.5, newDepth / 12, 80);
+  const cylinderGeometry2 = new Three.CylinderGeometry(
+    2.5,
+    2.5,
+    newDepth / 12,
+    80
+  );
   const pipe_p3 = new Three.Mesh(cylinderGeometry2, yellow);
   pipe_p3.rotation.y -= Math.PI / 2;
   pipe_p3.position.set(newWidth / 2, newHeight / 4.85, newDepth / 2);
@@ -139,16 +162,30 @@ function makeObjectMaxLOD(newWidth: number, newDepth: number) {
   sink.add(mesh3);
 
   //hole
-  const cylinderGeometry7 = new Three.CylinderGeometry(newDepth / 20, newDepth / 20, newHeight / 100, 80);
+  const cylinderGeometry7 = new Three.CylinderGeometry(
+    newDepth / 20,
+    newDepth / 20,
+    newHeight / 100,
+    80
+  );
   const blackMaterial = new Three.MeshLambertMaterial({ color: 0x000000 });
   const hole_p1 = new Three.Mesh(cylinderGeometry7, blackMaterial);
   hole_p1.position.set(newWidth / 2, newHeight / 4, newDepth / 2);
   sink.add(hole_p1);
 
-  const cylinderGeometry8 = new Three.CylinderGeometry(newDepth / 10, newDepth / 10, newHeight / 200, 80, 80, false, 0, Math.PI);
+  const cylinderGeometry8 = new Three.CylinderGeometry(
+    newDepth / 10,
+    newDepth / 10,
+    newHeight / 200,
+    80,
+    80,
+    false,
+    0,
+    Math.PI
+  );
   const whiteMaterial = new Three.MeshLambertMaterial({ color: 0xffffff });
   const hole_p2 = new Three.Mesh(cylinderGeometry8, whiteMaterial);
-  hole_p2.scale.set(.25, .5, .5);
+  hole_p2.scale.set(0.25, 0.5, 0.5);
   hole_p2.rotation.z = Math.PI / 2;
   hole_p2.position.set(newWidth / 2, newHeight / 4, newDepth / 2);
   sink.add(hole_p2);
@@ -156,7 +193,7 @@ function makeObjectMaxLOD(newWidth: number, newDepth: number) {
   const hole_p3 = new Three.Mesh(cylinderGeometry8, whiteMaterial);
   hole_p3.rotation.z = Math.PI / 2;
   hole_p3.rotation.y = Math.PI / 2;
-  hole_p3.scale.set(.25, .5, .5);
+  hole_p3.scale.set(0.25, 0.5, 0.5);
   hole_p3.position.set(newWidth / 2, newHeight / 4, newDepth / 2);
   sink.add(hole_p3);
 
@@ -164,17 +201,17 @@ function makeObjectMaxLOD(newWidth: number, newDepth: number) {
   hole_p4.rotation.z = Math.PI / 2;
   hole_p4.rotation.y = Math.PI / 4;
   hole_p4.position.set(newWidth / 2, newHeight / 4, newDepth / 2);
-  hole_p4.scale.set(.25, .5, .5);
+  hole_p4.scale.set(0.25, 0.5, 0.5);
   sink.add(hole_p4);
 
   const hole_p5 = new Three.Mesh(cylinderGeometry8, whiteMaterial);
   hole_p5.rotation.z = Math.PI / 2;
   hole_p5.rotation.y = -Math.PI / 4;
   hole_p5.position.set(newWidth / 2, newHeight / 4, newDepth / 2);
-  hole_p5.scale.set(.25, .5, .5);
+  hole_p5.scale.set(0.25, 0.5, 0.5);
   sink.add(hole_p5);
 
-  return sink
+  return sink;
 }
 
 function makeObjectMinLOD(newWidth: number, newDepth: number) {
@@ -193,12 +230,16 @@ function makeObjectMinLOD(newWidth: number, newDepth: number) {
   rectShape.lineTo(x, y + height - radius);
   rectShape.quadraticCurveTo(x, y + height, x + radius, y + height);
   rectShape.lineTo(x + width - radius, y + height);
-  rectShape.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+  rectShape.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width,
+    y + height - radius
+  );
   rectShape.lineTo(x + width, y + radius);
   rectShape.quadraticCurveTo(x + width, y, x + width - radius, y);
   rectShape.lineTo(x + radius, y);
   rectShape.quadraticCurveTo(x, y, x, y + radius);
-
 
   const extrudeSettings = {
     steps: 2,
@@ -222,7 +263,12 @@ function makeObjectMinLOD(newWidth: number, newDepth: number) {
   rectShape2.lineTo(x, y + height - radius);
   rectShape2.quadraticCurveTo(x, y + height, x + radius, y + height);
   rectShape2.lineTo(x + width - radius, y + height);
-  rectShape2.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+  rectShape2.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width,
+    y + height - radius
+  );
   rectShape2.lineTo(x + width, y + radius);
   rectShape2.quadraticCurveTo(x + width, y, x + width - radius, y);
   rectShape2.lineTo(x + radius, y);
@@ -286,38 +332,38 @@ function makeObjectMinLOD(newWidth: number, newDepth: number) {
   mesh3.rotation.z -= Math.PI / 8;
   sink.add(mesh3);
 
-  return sink
+  return sink;
 }
 
 export default defineCatalogElement({
-  name: "sink",
-  prototype: "items",
+  name: 'sink',
+  prototype: 'items',
 
   info: {
     tag: ['furnishings', 'metal'],
-    title: "sink",
-    description: "sink",
+    title: 'sink',
+    description: 'sink',
     image: require('./sink.png')
   },
 
   properties: {
     width: {
-      label: "width",
-      type: "length-measure",
+      label: 'width',
+      type: 'length-measure',
       defaultValue: {
         length: 50
       }
     },
     depth: {
-      label: "depth",
-      type: "length-measure",
+      label: 'depth',
+      type: 'length-measure',
       defaultValue: {
         length: 40
       }
     },
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 80
       }
@@ -330,22 +376,37 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
-    const rect_style = { stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#84e1ce" };
+    const rect_style = {
+      stroke: element.selected ? '#0096fd' : '#000',
+      strokeWidth: '2px',
+      fill: '#84e1ce'
+    };
 
     return (
       <g transform={`translate(${-newWidth / 2},${-newDepth / 2})`}>
-        <rect key="1" x="0" y="0" width={newWidth} height={newDepth} style={rect_style} />
-        <text key="2" x="0" y="0"
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={newWidth}
+          height={newDepth}
+          style={rect_style}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${newWidth / 2}, ${newDepth / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -365,7 +426,11 @@ export default defineCatalogElement({
     const deltaY = Math.abs(value.max.y - value.min.y);
     const deltaZ = Math.abs(value.max.z - value.min.z);
 
-    sinkMaxLOD.scale.set(newWidth / deltaX, newHeight / deltaY, newDepth / deltaZ);
+    sinkMaxLOD.scale.set(
+      newWidth / deltaX,
+      newHeight / deltaY,
+      newDepth / deltaZ
+    );
     sinkMaxLOD.position.y += -newHeight / 5 + newAltitude;
     sinkMaxLOD.position.z -= newDepth / 4;
     sinkMaxLOD.position.x -= newWidth / 2;
@@ -374,7 +439,11 @@ export default defineCatalogElement({
 
     const sinkMinLOD = new Three.Object3D();
     sinkMinLOD.add(makeObjectMinLOD(newWidth, newDepth).clone());
-    sinkMinLOD.scale.set(newWidth / deltaX, newHeight / deltaY, newDepth / deltaZ);
+    sinkMinLOD.scale.set(
+      newWidth / deltaX,
+      newHeight / deltaY,
+      newDepth / deltaZ
+    );
     sinkMinLOD.position.y += -newHeight / 5 + newAltitude;
     sinkMinLOD.position.z -= newDepth / 4;
     sinkMinLOD.position.x -= newWidth / 2;

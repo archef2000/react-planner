@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import * as SharedStyle from '../../shared-style';
+
+import { ReactPlannerContext } from '@archef2000/react-planner';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
+
+import * as SharedStyle from '../../shared-style';
 
 const STYLE = {
   borderTop: '1px solid #222',
@@ -42,11 +45,11 @@ interface PanelState {
 }
 
 export default class Panel extends Component<PanelProps, PanelState> {
-  constructor(props, context) {
+  constructor(props: PanelProps, context: typeof ReactPlannerContext) {
     super(props, context);
 
     this.state = {
-      opened: props.hasOwnProperty('opened') ? props.opened : false,
+      opened: !!props.opened,
       hover: false
     };
   }
@@ -60,31 +63,35 @@ export default class Panel extends Component<PanelProps, PanelState> {
   }
 
   render() {
-
     const { name, headComponents, children } = this.props;
     const { opened, hover } = this.state;
 
     return (
       <div style={STYLE}>
         <h3
-          style={{ ...STYLE_TITLE, color: hover ? SharedStyle.SECONDARY_COLOR.main : SharedStyle.PRIMARY_COLOR.text_alt }}
+          style={{
+            ...STYLE_TITLE,
+            color: hover
+              ? SharedStyle.SECONDARY_COLOR.main
+              : SharedStyle.PRIMARY_COLOR.text_alt
+          }}
           onMouseEnter={() => this.toggleHover()}
           onMouseLeave={() => this.toggleHover()}
           onClick={() => this.toggleOpen()}
         >
           {name}
           {headComponents}
-          {
-            opened ?
-              <FaAngleUp style={STYLE_ARROW} /> :
-              <FaAngleDown style={STYLE_ARROW} />
-          }
+          {opened ? (
+            <FaAngleUp style={STYLE_ARROW} />
+          ) : (
+            <FaAngleDown style={STYLE_ARROW} />
+          )}
         </h3>
 
         <div style={{ ...STYLE_CONTENT, display: opened ? 'block' : 'none' }}>
           {children}
         </div>
       </div>
-    )
+    );
   }
 }

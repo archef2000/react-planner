@@ -1,6 +1,7 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 10;
 const DEPTH = 20;
@@ -9,7 +10,11 @@ const HEIGHT = 20;
 const grey = new Three.MeshLambertMaterial({ color: 0xaaaaaa });
 const black = new Three.MeshLambertMaterial({ color: 0x000000 });
 const white = new Three.MeshLambertMaterial({ color: 0xffffff });
-const glassMaterial = new Three.MeshLambertMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 });
+const glassMaterial = new Three.MeshLambertMaterial({
+  color: 0xffffff,
+  transparent: true,
+  opacity: 0.5
+});
 
 const objectMaxLOD = makeObjectMaxLOD();
 const objectMinLOD = makeObjectMinLOD();
@@ -38,8 +43,16 @@ function makeObjectMaxLOD() {
     const led_1 = new Three.Mesh(geometrySphereUp2, white);
     const led_2 = new Three.Mesh(geometrySphereUp2, white);
 
-    led_1.position.set(Math.cos(2 * Math.PI / 14 * i) * 0.115, 0.2497, Math.sin(2 * Math.PI / 14 * i) * 0.115);
-    led_2.position.set(Math.cos(2 * Math.PI / 16 * i) * 0.17, 0.25, Math.sin(2 * Math.PI / 16 * i) * 0.17);
+    led_1.position.set(
+      Math.cos(((2 * Math.PI) / 14) * i) * 0.115,
+      0.2497,
+      Math.sin(((2 * Math.PI) / 14) * i) * 0.115
+    );
+    led_2.position.set(
+      Math.cos(((2 * Math.PI) / 16) * i) * 0.17,
+      0.25,
+      Math.sin(((2 * Math.PI) / 16) * i) * 0.17
+    );
     led_1.scale.set(1, 1, 1.3);
     led_2.scale.set(1, 1, 1.3);
     led_1.rotation.x += Math.PI / 2;
@@ -53,7 +66,14 @@ function makeObjectMaxLOD() {
   glass.position.set(0, 0.27, 0);
   body.add(glass);
 
-  const cylinderGeometry3 = new Three.CylinderGeometry(0.2, 0.2, 0.1, 80, 16, true);
+  const cylinderGeometry3 = new Three.CylinderGeometry(
+    0.2,
+    0.2,
+    0.1,
+    80,
+    16,
+    true
+  );
   const cover = new Three.Mesh(cylinderGeometry3, grey);
   cover.position.set(0, 0.25, 0);
   body.add(cover);
@@ -64,7 +84,13 @@ function makeObjectMaxLOD() {
   body.add(base);
 
   for (let i = 0.265; i <= 0.5; i += 0.165) {
-    const cylinderGeometry = new Three.CylinderGeometry(0.02, 0.02, 0.055, 6, 6);
+    const cylinderGeometry = new Three.CylinderGeometry(
+      0.02,
+      0.02,
+      0.055,
+      6,
+      6
+    );
     const locknut1 = new Three.Mesh(cylinderGeometry, black);
     const locknut2 = new Three.Mesh(cylinderGeometry, black);
     locknut1.position.set(0.08, -0.6, i);
@@ -102,25 +128,49 @@ function makeObjectMaxLOD() {
   arm_p2.position.set(0, -0.02, 0.325);
   body.add(arm_p2);
 
-  const cylinderGeometry5 = new Three.CylinderGeometry(0.05, 0.05, 0.14, 80, 16);
+  const cylinderGeometry5 = new Three.CylinderGeometry(
+    0.05,
+    0.05,
+    0.14,
+    80,
+    16
+  );
   const arm_p3 = new Three.Mesh(cylinderGeometry5, black);
   arm_p3.rotation.x += Math.PI / 2;
   arm_p3.position.set(0, -0.02, 0.325);
   body.add(arm_p3);
 
-  const cylinderGeometry6 = new Three.CylinderGeometry(0.025, 0.025, 0.16, 80, 16);
+  const cylinderGeometry6 = new Three.CylinderGeometry(
+    0.025,
+    0.025,
+    0.16,
+    80,
+    16
+  );
   const arm_p3b = new Three.Mesh(cylinderGeometry6, grey);
   arm_p3b.rotation.x += Math.PI / 2;
   arm_p3b.position.set(0, -0.02, 0.325);
   body.add(arm_p3b);
 
-  const cylinderGeometry7 = new Three.CylinderGeometry(0.026, 0.026, 0.12, 80, 16);
+  const cylinderGeometry7 = new Three.CylinderGeometry(
+    0.026,
+    0.026,
+    0.12,
+    80,
+    16
+  );
   const arm_p4 = new Three.Mesh(cylinderGeometry7, black);
   arm_p4.rotation.z += Math.PI / 2;
   arm_p4.position.set(0, -0.02, 0.23);
   body.add(arm_p4);
 
-  const cylinderGeometry8 = new Three.CylinderGeometry(0.02, 0.02, 0.16, 80, 16);
+  const cylinderGeometry8 = new Three.CylinderGeometry(
+    0.02,
+    0.02,
+    0.16,
+    80,
+    16
+  );
   const arm_p5 = new Three.Mesh(cylinderGeometry8, grey);
   arm_p5.rotation.z += Math.PI / 2;
   arm_p5.position.set(0, -0.02, 0.23);
@@ -134,7 +184,14 @@ function makeObjectMaxLOD() {
   joint.lineTo(0.1, 0.1);
   joint.bezierCurveTo(0.05, 0.05, 0.05, 0.05, 0.1, 0);
 
-  const extrudeSettings2 = { depth: 0.1, bevelEnabled: false, bevelSegments: 1, steps: 1, bevelSize: 1, bevelThickness: 1 };
+  const extrudeSettings2 = {
+    depth: 0.1,
+    bevelEnabled: false,
+    bevelSegments: 1,
+    steps: 1,
+    bevelSize: 1,
+    bevelThickness: 1
+  };
 
   const geometry4 = new Three.ExtrudeGeometry(joint, extrudeSettings2);
 
@@ -165,13 +222,25 @@ function makeObjectMaxLOD() {
   cover_2.rotation.y += Math.PI / 2;
   body.add(cover_2);
 
-  const cylinderGeometry9 = new Three.CylinderGeometry(0.025, 0.02, 0.3, 80, 16);
+  const cylinderGeometry9 = new Three.CylinderGeometry(
+    0.025,
+    0.02,
+    0.3,
+    80,
+    16
+  );
   const antenna_p1 = new Three.Mesh(cylinderGeometry9, black);
   antenna_p1.rotation.x += Math.PI / 2;
   antenna_p1.position.set(0, -0.5, -0.18);
   body.add(antenna_p1);
 
-  const cylinderGeometry10 = new Three.CylinderGeometry(0.02, 0.015, 0.3, 80, 16);
+  const cylinderGeometry10 = new Three.CylinderGeometry(
+    0.02,
+    0.015,
+    0.3,
+    80,
+    16
+  );
   const antenna_p2 = new Three.Mesh(cylinderGeometry10, black);
   antenna_p2.rotation.x += Math.PI / 2;
   antenna_p2.position.set(0, -0.5, -0.35);
@@ -187,7 +256,13 @@ function makeObjectMaxLOD() {
   antenna_p4.position.set(0, -0.5, 0);
   body.add(antenna_p4);
 
-  const cylinderGeometry11 = new Three.CylinderGeometry(0.025, 0.025, 0.1, 80, 16);
+  const cylinderGeometry11 = new Three.CylinderGeometry(
+    0.025,
+    0.025,
+    0.1,
+    80,
+    16
+  );
   const antenna_p5 = new Three.Mesh(cylinderGeometry11, black);
   antenna_p5.position.set(0, -0.42, 0);
   body.add(antenna_p5);
@@ -209,17 +284,36 @@ function makeObjectMinLOD() {
   sphereUp.position.set(0, -0.25, 0);
   body.add(sphereUp);
 
-  const cylinderGeometry2b = new Three.CylinderGeometry(0.085, 0.085, 0.5, 8, 8);
+  const cylinderGeometry2b = new Three.CylinderGeometry(
+    0.085,
+    0.085,
+    0.5,
+    8,
+    8
+  );
   const focus = new Three.Mesh(cylinderGeometry2b, black);
   focus.position.set(0, 0.04, 0);
   body.add(focus);
 
-  const cylinderGeometry2 = new Three.CylinderGeometry(0.195, 0.195, 0.05, 8, 8);
+  const cylinderGeometry2 = new Three.CylinderGeometry(
+    0.195,
+    0.195,
+    0.05,
+    8,
+    8
+  );
   const glass = new Three.Mesh(cylinderGeometry2, glassMaterial);
   glass.position.set(0, 0.27, 0);
   body.add(glass);
 
-  const cylinderGeometry3 = new Three.CylinderGeometry(0.2, 0.2, 0.1, 8, 8, true);
+  const cylinderGeometry3 = new Three.CylinderGeometry(
+    0.2,
+    0.2,
+    0.1,
+    8,
+    8,
+    true
+  );
   const cover = new Three.Mesh(cylinderGeometry3, grey);
   cover.position.set(0, 0.25, 0);
   body.add(cover);
@@ -258,25 +352,49 @@ function makeObjectMinLOD() {
   arm_p2.position.set(0, -0.02, 0.325);
   body.add(arm_p2);
 
-  const cylinderGeometry5 = new Three.CylinderGeometry(0.05, 0.05, 0.14, 80, 16);
+  const cylinderGeometry5 = new Three.CylinderGeometry(
+    0.05,
+    0.05,
+    0.14,
+    80,
+    16
+  );
   const arm_p3 = new Three.Mesh(cylinderGeometry5, black);
   arm_p3.rotation.x += Math.PI / 2;
   arm_p3.position.set(0, -0.02, 0.325);
   body.add(arm_p3);
 
-  const cylinderGeometry6 = new Three.CylinderGeometry(0.025, 0.025, 0.16, 80, 16);
+  const cylinderGeometry6 = new Three.CylinderGeometry(
+    0.025,
+    0.025,
+    0.16,
+    80,
+    16
+  );
   const arm_p3b = new Three.Mesh(cylinderGeometry6, grey);
   arm_p3b.rotation.x += Math.PI / 2;
   arm_p3b.position.set(0, -0.02, 0.325);
   body.add(arm_p3b);
 
-  const cylinderGeometry7 = new Three.CylinderGeometry(0.026, 0.026, 0.12, 80, 16);
+  const cylinderGeometry7 = new Three.CylinderGeometry(
+    0.026,
+    0.026,
+    0.12,
+    80,
+    16
+  );
   const arm_p4 = new Three.Mesh(cylinderGeometry7, black);
   arm_p4.rotation.z += Math.PI / 2;
   arm_p4.position.set(0, -0.02, 0.23);
   body.add(arm_p4);
 
-  const cylinderGeometry8 = new Three.CylinderGeometry(0.02, 0.02, 0.16, 80, 16);
+  const cylinderGeometry8 = new Three.CylinderGeometry(
+    0.02,
+    0.02,
+    0.16,
+    80,
+    16
+  );
   const arm_p5 = new Three.Mesh(cylinderGeometry8, grey);
   arm_p5.rotation.z += Math.PI / 2;
   arm_p5.position.set(0, -0.02, 0.23);
@@ -290,7 +408,14 @@ function makeObjectMinLOD() {
   joint.lineTo(0.1, 0.1);
   joint.bezierCurveTo(0.05, 0.05, 0.05, 0.05, 0.1, 0);
 
-  const extrudeSettings2 = { depth: 0.1, bevelEnabled: false, bevelSegments: 1, steps: 1, bevelSize: 1, bevelThickness: 1 };
+  const extrudeSettings2 = {
+    depth: 0.1,
+    bevelEnabled: false,
+    bevelSegments: 1,
+    steps: 1,
+    bevelSize: 1,
+    bevelThickness: 1
+  };
 
   const geometry4 = new Three.ExtrudeGeometry(joint, extrudeSettings2);
 
@@ -329,7 +454,13 @@ function makeObjectMinLOD() {
   antenna_p4.position.set(0, -0.5, 0);
   body.add(antenna_p4);
 
-  const cylinderGeometry11 = new Three.CylinderGeometry(0.025, 0.025, 0.1, 8, 8);
+  const cylinderGeometry11 = new Three.CylinderGeometry(
+    0.025,
+    0.025,
+    0.1,
+    8,
+    8
+  );
   const antenna_p5 = new Three.Mesh(cylinderGeometry11, black);
   antenna_p5.position.set(0, -0.42, 0);
   body.add(antenna_p5);
@@ -362,21 +493,35 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key='1' x='0' y='0' width={WIDTH} height={DEPTH}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: '2px', fill: '#84e1ce' }} />
-        <text key='2' x='0' y='0'
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#84e1ce'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: 'middle', fontSize: '11px' }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -395,17 +540,24 @@ export default defineCatalogElement({
 
     video_cameraMaxLOD.position.y += HEIGHT / 8 + newAltitude;
     video_cameraMaxLOD.position.z += DEPTH / 2;
-    video_cameraMaxLOD.scale.set(DEPTH / deltaZ, HEIGHT / deltaY, WIDTH / deltaX);
+    video_cameraMaxLOD.scale.set(
+      DEPTH / deltaZ,
+      HEIGHT / deltaY,
+      WIDTH / deltaX
+    );
 
     /**************** LOD min ***********************/
 
     const video_cameraMinLOD = new Three.Object3D();
     video_cameraMinLOD.add(objectMinLOD.clone());
 
-
     video_cameraMinLOD.position.y += HEIGHT / 8 + newAltitude;
     video_cameraMinLOD.position.z += DEPTH / 2;
-    video_cameraMinLOD.scale.set(DEPTH / deltaZ, HEIGHT / deltaY, WIDTH / deltaX);
+    video_cameraMinLOD.scale.set(
+      DEPTH / deltaZ,
+      HEIGHT / deltaY,
+      WIDTH / deltaX
+    );
 
     /**** all level of detail ***/
 

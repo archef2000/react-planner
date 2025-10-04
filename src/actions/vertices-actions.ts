@@ -1,23 +1,49 @@
+import {
+  BEGIN_DRAGGING_VERTEX,
+  END_DRAGGING_VERTEX,
+  UPDATE_DRAGGING_VERTEX
+} from '../constants';
 import { SnapMaskType } from '../types';
-import { BEGIN_DRAGGING_VERTEX, UPDATE_DRAGGING_VERTEX, END_DRAGGING_VERTEX } from '../constants'
 
-export function beginDraggingVertex(layerID: string, vertexID: string, x: number, y: number, snapMask: SnapMaskType) {
+export function beginDraggingVertex(
+  layerID: string,
+  vertexID: string,
+  x: number,
+  y: number,
+  snapMask: SnapMaskType
+) {
   return {
     type: BEGIN_DRAGGING_VERTEX,
-    layerID, vertexID, x, y, snapMask
+    layerID,
+    vertexID,
+    x,
+    y,
+    snapMask
   };
 }
 
-export function updateDraggingVertex(x: number, y: number, snapMask: SnapMaskType) {
+export function updateDraggingVertex(
+  x: number,
+  y: number,
+  snapMask: SnapMaskType
+) {
   return {
     type: UPDATE_DRAGGING_VERTEX,
-    x, y, snapMask
+    x,
+    y,
+    snapMask
   };
 }
 
-export function endDraggingVertex(x: number, y: number, snapMask: SnapMaskType) {
+export function endDraggingVertex(
+  x: number,
+  y: number,
+  snapMask: SnapMaskType
+) {
   return {
     type: END_DRAGGING_VERTEX,
-    x, y, snapMask
+    x,
+    y,
+    snapMask
   };
 }

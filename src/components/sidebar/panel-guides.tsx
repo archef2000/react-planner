@@ -1,11 +1,14 @@
-import React, { Component, memo, useContext, useState } from 'react';
-import Panel from './panel';
-import * as SharedStyle from '../../shared-style';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import { FaTrash, FaTimes } from 'react-icons/fa';
-import { FormNumberInput } from '../style/export';
-import ReactPlannerContext from '../../react-planner-context';
+import React, { memo, useContext, useState } from 'react';
+
+import { FaTimes, FaTrash } from 'react-icons/fa';
+import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+
 import { State } from '../../models';
+import ReactPlannerContext from '../../react-planner-context';
+import * as SharedStyle from '../../shared-style';
+import { FormNumberInput } from '../style/export';
+
+import Panel from './panel';
 
 const tabStyle = { margin: '1em' } as const;
 
@@ -25,6 +28,23 @@ const tableTabStyle = {
   textAlign: 'center'
 } as const;
 
+const listTabStyle = {
+  display: 'inline-block',
+  border: '1px solid transparent',
+  borderBottom: 'none',
+  bottom: '-1px',
+  position: 'relative',
+  listStyle: 'none',
+  padding: '6px 12px',
+  cursor: 'pointer'
+} as const;
+
+const activeTabStyle = {
+  border: '1px solid white',
+  borderBottom: '0px solid white',
+  color: SharedStyle.SECONDARY_COLOR.main
+} as const;
+
 export interface PanelGuidesProps {
   state: State;
 }
@@ -37,42 +57,63 @@ function PanelGuides(props: PanelGuidesProps) {
 
   const { guides } = state.scene;
 
+  const [selectedTab, setSelectedTab] = useState(0);
   return (
     <Panel name={translator.t('Guides')}>
-      <Tabs id='guidesTabs' style={tabStyle}>
-        <TabList>
-          <Tab>{translator.t('Horizontal')}</Tab>
-          <Tab>{translator.t('Vertical')}</Tab>
+      <Tabs
+        id="guidesTabs"
+        style={tabStyle}
+        selectedIndex={selectedTab}
+        onSelect={(i) => setSelectedTab(i)}
+      >
+        <TabList style={{ borderBottom: '1px solid #aaa' }}>
+          <Tab
+            style={
+              selectedTab === 0
+                ? { ...listTabStyle, ...activeTabStyle }
+                : listTabStyle
+            }
+          >
+            {translator.t('Horizontal')}
+          </Tab>
+          <Tab
+            style={
+              selectedTab === 1
+                ? { ...listTabStyle, ...activeTabStyle }
+                : listTabStyle
+            }
+          >
+            {translator.t('Vertical')}
+          </Tab>
           {/*<Tab>{translator.t('Circular')}</Tab>*/}
         </TabList>
 
         <TabPanel>
           <table style={tableTabStyle}>
             <tbody>
-              {Object.entries(guides.horizontal)
-                .map(([hgKey, hgVal], ind) => {
-                  return (
-                    <tr key={hgKey}>
-                      <td style={{ width: '2em' }}>{ind + 1}</td>
-                      <td>{hgVal}</td>
-                      <td style={{ width: '5em' }}>
-                        {/*<FaPencil style={iconStyle} />*/}
-                        <FaTrash
-                          style={iconStyle}
-                          onClick={e =>
-                            projectActions.removeHorizontalGuide(hgKey)
-                          }
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
+              {Object.entries(guides.horizontal).map(([hgKey, hgVal], ind) => {
+                return (
+                  <tr key={hgKey}>
+                    <td style={{ width: '2em' }}>{ind + 1}</td>
+                    <td>{hgVal}</td>
+                    <td style={{ width: '5em' }}>
+                      {/*<FaPencil style={iconStyle} />*/}
+                      <FaTrash
+                        style={iconStyle}
+                        onClick={(e) =>
+                          projectActions.removeHorizontalGuide(hgKey)
+                        }
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
               {addHGVisible ? (
                 <tr>
                   <td
                     colSpan={3}
                     style={addGuideStyle}
-                    onClick={e => setAddHGVisible(false)}
+                    onClick={(e) => setAddHGVisible(false)}
                   >
                     {translator.t('+ Add Horizontal Giude')}
                   </td>
@@ -82,7 +123,7 @@ function PanelGuides(props: PanelGuidesProps) {
                   <td colSpan={2}>
                     <FormNumberInput
                       value={0}
-                      onChange={e => {
+                      onChange={(e) => {
                         projectActions.addHorizontalGuide(e.target.value);
                         return setAddHGVisible(true);
                       }}
@@ -93,7 +134,7 @@ function PanelGuides(props: PanelGuidesProps) {
                   <td>
                     <FaTimes
                       style={iconStyle}
-                      onClick={e => setAddHGVisible(true)}
+                      onClick={(e) => setAddHGVisible(true)}
                     />
                   </td>
                 </tr>
@@ -104,30 +145,29 @@ function PanelGuides(props: PanelGuidesProps) {
         <TabPanel>
           <table style={tableTabStyle}>
             <tbody>
-              {Object.entries(guides.vertical)
-                .map(([hgKey, hgVal], ind) => {
-                  return (
-                    <tr key={hgKey}>
-                      <td style={{ width: '2em' }}>{ind + 1}</td>
-                      <td>{hgVal}</td>
-                      <td style={{ width: '5em' }}>
-                        {/*<FaPencil style={iconStyle} />*/}
-                        <FaTrash
-                          style={iconStyle}
-                          onClick={e =>
-                            projectActions.removeVerticalGuide(hgKey)
-                          }
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
+              {Object.entries(guides.vertical).map(([hgKey, hgVal], ind) => {
+                return (
+                  <tr key={hgKey}>
+                    <td style={{ width: '2em' }}>{ind + 1}</td>
+                    <td>{hgVal}</td>
+                    <td style={{ width: '5em' }}>
+                      {/*<FaPencil style={iconStyle} />*/}
+                      <FaTrash
+                        style={iconStyle}
+                        onClick={(e) =>
+                          projectActions.removeVerticalGuide(hgKey)
+                        }
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
               {addVGVisible ? (
                 <tr>
                   <td
                     colSpan={3}
                     style={addGuideStyle}
-                    onClick={e => setAddVGVisible(false)}
+                    onClick={(e) => setAddVGVisible(false)}
                   >
                     {translator.t('+ Add Vertical Giude')}
                   </td>
@@ -137,7 +177,7 @@ function PanelGuides(props: PanelGuidesProps) {
                   <td colSpan={2}>
                     <FormNumberInput
                       value={0}
-                      onChange={e => {
+                      onChange={(e) => {
                         projectActions.addVerticalGuide(e.target.value);
                         return setAddVGVisible(true);
                       }}
@@ -148,7 +188,7 @@ function PanelGuides(props: PanelGuidesProps) {
                   <td>
                     <FaTimes
                       style={iconStyle}
-                      onClick={e => setAddVGVisible(true)}
+                      onClick={(e) => setAddVGVisible(true)}
                     />
                   </td>
                 </tr>
@@ -164,11 +204,11 @@ function PanelGuides(props: PanelGuidesProps) {
   );
 }
 
-
-function shouldUpdate(prevProps: PanelGuidesProps, nextProps: PanelGuidesProps) {
-  return (
-    prevProps.state.scene.guides !== nextProps.state.scene.guides
-  );
+function propsAreEqual(
+  prevProps: PanelGuidesProps,
+  nextProps: PanelGuidesProps
+) {
+  return prevProps.state.scene.guides === nextProps.state.scene.guides;
 }
 
-export default memo(PanelGuides, shouldUpdate)
+export default memo(PanelGuides, propsAreEqual);

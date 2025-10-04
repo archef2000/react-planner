@@ -1,40 +1,40 @@
-import { Layer, Group } from './export';
-
-import {
-  IDBroker,
-  NameGenerator
-} from '../utils/export';
-
-import {
-  nearestSnap,
-  addLineSegmentSnap,
-} from '../utils/snap';
-
-import {
-  MODE_IDLE,
-  MODE_DRAWING_HOLE,
-  MODE_DRAGGING_HOLE,
-} from '../constants';
-
-import {
-  GeometryUtils
-} from '../utils/export';
-import { State, catalogElementFactory, Hole as HoleModel } from '../models';
 import { produce } from 'immer';
 
+import { MODE_DRAGGING_HOLE, MODE_DRAWING_HOLE, MODE_IDLE } from '../constants';
+import { catalogElementFactory, Hole as HoleModel, State } from '../models';
+import { GeometryUtils, IDBroker, NameGenerator } from '../utils/export';
+import { addLineSegmentSnap, nearestSnap, SnapElement } from '../utils/snap';
+
+import { Layer } from './export';
+
 class Hole {
-  static create(state: State, layerID: string, type, lineID: string, offset: number, properties?) {
+  static create(
+    state: State,
+    layerID: string,
+    type: string,
+    lineID: string,
+    offset: number,
+    properties?: HoleModel['properties']
+  ) {
     const holeID = IDBroker.acquireID();
 
-    const hole = catalogElementFactory(state.catalog, type, {
-      id: holeID,
-      name: NameGenerator.generateName('holes', state.catalog.elements[type].info.title),
+    const hole = catalogElementFactory(
+      state.catalog,
       type,
-      offset,
-      line: lineID
-    }, properties);
+      {
+        id: holeID,
+        name: NameGenerator.generateName(
+          'holes',
+          state.catalog.elements[type].info.title
+        ),
+        type,
+        offset,
+        line: lineID
+      },
+      properties
+    );
 
-    state = produce(state, draft => {
+    state = produce(state, (draft) => {
       if (!draft.scene.layers[layerID].holes) {
         draft.scene.layers[layerID].holes = {};
       }
@@ -48,7 +48,7 @@ class Hole {
   }
 
   static select(state: State, layerID: string, holeID: string) {
-    return produce(state, draft => {
+    return produce(state, (draft) => {
       draft = Layer.select(draft, layerID);
       draft = Layer.selectElement(draft, layerID, 'holes', holeID);
       return draft;
@@ -56,7 +56,7 @@ class Hole {
   }
 
   static remove(state: State, layerID: string, holeID: string) {
-    return produce(state, draft => {
+    return produce(state, (draft) => {
       const hole = draft.scene.layers[layerID]?.holes[holeID];
       if (!hole) return;
 
@@ -70,7 +70,7 @@ class Hole {
 
       delete draft.scene.layers[layerID].holes[holeID];
 
-      Object.values(draft.scene.groups).forEach(group => {
+      Object.values(draft.scene.groups).forEach((group) => {
         if (group.elements[layerID]?.holes) {
           const index = group.elements[layerID].holes.indexOf(holeID);
           if (index !== -1) {
@@ -82,7 +82,7 @@ class Hole {
   }
 
   static unselect(state: State, layerID: string, holeID: string) {
-    return produce(state, draft => {
+    return produce(state, (draft) => {
       const layer = draft.scene.layers[layerID];
       if (layer) {
         const index = layer.selected.holes.indexOf(holeID);
@@ -97,15 +97,24 @@ class Hole {
   }
 
   static selectToolDrawingHole(state: State, sceneComponentType: string) {
-    return produce(state, draft => {
-      const snapElements = [];
-      const layer = draft.scene.layers[draft.scene.selectedLayer];
+    return produce(state, (draft) => {
+      const snapElements: SnapElement[] = [];
+      const layer = draft.scene.layers[draft.scene.selectedLayer as string];
       const { lines, vertices } = layer;
 
-      Object.values(lines).forEach(line => {
+      Object.values(lines).forEach((line) => {
         const v0 = vertices[line.vertices[0]];
         const v1 = vertices[line.vertices[1]];
-        addLineSegmentSnap(snapElements, v0.x, v0.y, v1.x, v1.y, 20, 1, line.id);
+        addLineSegmentSnap(
+          snapElements,
+          v0.x,
+          v0.y,
+          v1.x,
+          v1.y,
+          20,
+          1,
+          line.id
+        );
       });
 
       draft.mode = MODE_DRAWING_HOLE;
@@ -114,9 +123,17 @@ class Hole {
     });
   }
 
-  static updateDrawingHole(state: State, layerID: string, x: number, y: number) {
-    return produce(state, draft => {
-      const snap = nearestSnap(draft.snapElements, x, y, { ...draft.snapMask, SNAP_SEGMENT: true });
+  static updateDrawingHole(
+    state: State,
+    layerID: string,
+    x: number,
+    y: number
+  ) {
+    return produce(state, (draft) => {
+      const snap = nearestSnap(draft.snapElements, x, y, {
+        ...draft.snapMask,
+        SNAP_SEGMENT: true
+      });
       if (!snap) return;
 
       ({ x, y } = snap.point);
@@ -129,14 +146,27 @@ class Hole {
       const v0 = draft.scene.layers[layerID].vertices[v0ID];
       const v1 = draft.scene.layers[layerID].vertices[v1ID];
 
-      const offset = GeometryUtils.pointPositionOnLineSegment(v0.x, v0.y, v1.x, v1.y, x, y);
+      const offset = GeometryUtils.pointPositionOnLineSegment(
+        v0.x,
+        v0.y,
+        v1.x,
+        v1.y,
+        x,
+        y
+      );
 
       if (selectedHoleID) {
         const hole = draft.scene.layers[layerID].holes[selectedHoleID];
         hole.offset = offset;
         hole.line = lineID;
       } else {
-        const { updatedState: stateH, hole } = this.create(draft, layerID, draft.drawingSupport.type, lineID, offset);
+        const { updatedState: stateH, hole } = this.create(
+          draft,
+          layerID,
+          draft.drawingSupport.type,
+          lineID,
+          offset
+        );
         draft = this.select(stateH, layerID, hole.id);
       }
       return draft;
@@ -144,7 +174,7 @@ class Hole {
   }
 
   static endDrawingHole(state: State, layerID: string, x: number, y: number) {
-    return produce(state, draft => {
+    return produce(state, (draft) => {
       const updatedState = this.updateDrawingHole(draft, layerID, x, y);
       Object.assign(draft, updatedState);
       Layer.unselectAll(draft, layerID);
@@ -153,15 +183,29 @@ class Hole {
     });
   }
 
-  static beginDraggingHole(state: State, layerID: string, holeID: string, x: number, y: number) {
-    return produce(state, draft => {
+  static beginDraggingHole(
+    state: State,
+    layerID: string,
+    holeID: string,
+    x: number,
+    y: number
+  ) {
+    return produce(state, (draft) => {
       const layer = draft.scene.layers[layerID];
       const hole = layer.holes[holeID];
       const line = layer.lines[hole.line];
       const v0 = layer.vertices[line.vertices[0]];
       const v1 = layer.vertices[line.vertices[1]];
 
-      const snapElements = addLineSegmentSnap([], v0.x, v0.y, v1.x, v1.y, 9999999, 1, null);
+      const snapElements = addLineSegmentSnap(
+        [],
+        v0.x,
+        v0.y,
+        v1.x,
+        v1.y,
+        9999999,
+        1
+      );
 
       draft.mode = MODE_DRAGGING_HOLE;
       draft.snapElements = snapElements;
@@ -169,49 +213,78 @@ class Hole {
         layerID,
         holeID,
         startPointX: x,
-        startPointY: y,
+        startPointY: y
       };
     });
   }
 
   static updateDraggingHole(state: State, x: number, y: number) {
-    return produce(state, draft => {
-      const snap = nearestSnap(draft.snapElements, x, y, { ...draft.snapMask, SNAP_SEGMENT: true });
+    return produce(state, (draft) => {
+      const draggingSupport = draft.draggingSupport as Required<
+        State['draggingSupport']
+      >;
+      if (!draggingSupport) return;
+      const snap = nearestSnap(draft.snapElements, x, y, {
+        ...draft.snapMask,
+        SNAP_SEGMENT: true
+      });
       if (!snap) return;
 
       ({ x, y } = snap.point);
 
-      const { layerID, holeID } = draft.draggingSupport;
+      const { layerID, holeID } = draggingSupport;
       const hole = draft.scene.layers[layerID].holes[holeID];
       const line = draft.scene.layers[layerID].lines[hole.line];
       const v0 = draft.scene.layers[layerID].vertices[line.vertices[0]];
       const v1 = draft.scene.layers[layerID].vertices[line.vertices[1]];
 
-      const offset = GeometryUtils.pointPositionOnLineSegment(v0.x, v0.y, v1.x, v1.y, x, y);
+      const offset = GeometryUtils.pointPositionOnLineSegment(
+        v0.x,
+        v0.y,
+        v1.x,
+        v1.y,
+        x,
+        y
+      );
       hole.offset = offset;
     });
   }
 
   static endDraggingHole(state: State, x: number, y: number) {
-    return produce(state, draft => {
+    return produce(state, (draft) => {
       const updatedState = this.updateDraggingHole(draft, x, y);
       Object.assign(draft, updatedState);
       draft.mode = MODE_IDLE;
     });
   }
 
-  static setProperties(state: State, layerID: string, holeID: string, properties: any) {
-    return produce(state, draft => {
+  static setProperties(
+    state: State,
+    layerID: string,
+    holeID: string,
+    properties: any
+  ) {
+    return produce(state, (draft) => {
       draft.scene.layers[layerID].holes[holeID].properties = properties;
     });
   }
 
-  static setJsProperties(state: State, layerID: string, holeID: string, properties: any) {
+  static setJsProperties(
+    state: State,
+    layerID: string,
+    holeID: string,
+    properties: any
+  ) {
     return this.setProperties(state, layerID, holeID, properties);
   }
 
-  static updateProperties(state: State, layerID: string, holeID: string, properties: Record<string, any>) {
-    return produce(state, draft => {
+  static updateProperties(
+    state: State,
+    layerID: string,
+    holeID: string,
+    properties: Record<string, any>
+  ) {
+    return produce(state, (draft) => {
       const hole = draft.scene.layers[layerID]?.holes[holeID];
       if (hole) {
         Object.entries(properties).forEach(([key, value]) => {
@@ -223,12 +296,22 @@ class Hole {
     });
   }
 
-  static updateJsProperties(state: State, layerID: string, holeID: string, properties: any) {
+  static updateJsProperties(
+    state: State,
+    layerID: string,
+    holeID: string,
+    properties: any
+  ) {
     return this.updateProperties(state, layerID, holeID, properties);
   }
 
-  static setAttributes(state: State, layerID: string, holeID: string, holesAttributes: any) {
-    return produce(state, draft => {
+  static setAttributes(
+    state: State,
+    layerID: string,
+    holeID: string,
+    holesAttributes: any
+  ) {
+    return produce(state, (draft) => {
       const hole = draft.scene.layers[layerID]?.holes[holeID];
       if (hole) {
         const { offsetA, offsetB, offset, ...rest } = holesAttributes;

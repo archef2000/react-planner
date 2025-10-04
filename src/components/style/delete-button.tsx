@@ -1,19 +1,25 @@
 import React from 'react';
-import Button from './button';
+
 import * as SharedStyle from '../../shared-style';
 
+import Button, { ButtonProps } from './button';
+
 const STYLE = {
-  borderColor: "#c12e2a",
-  backgroundColor: "#c9302c",
+  borderColor: '#c12e2a',
+  backgroundColor: '#c9302c',
   color: SharedStyle.COLORS.white
 } as const;
 
 const STYLE_HOVER = {
-  backgroundColor: "#972726",
-  borderColor: "#c12e2a",
+  backgroundColor: '#972726',
+  borderColor: '#c12e2a',
   color: SharedStyle.COLORS.white
 } as const;
 
-export default function FormDeleteButton({ children, ...rest }) {
-  return <Button style={STYLE} styleHover={STYLE_HOVER} {...rest}>{children}</Button>
+export default function FormDeleteButton({ children, ...rest }: ButtonProps) {
+  return (
+    <Button style={STYLE} styleHover={STYLE_HOVER} {...rest}>
+      {children}
+    </Button>
+  );
 }

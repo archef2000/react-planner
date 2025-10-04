@@ -1,17 +1,17 @@
+import ReactPlannerActions from './actions/export';
 import { CatalogFactory, CatalogFn } from './catalog/catalog';
-import Translator from './translator/translator';
+import ElementsFactories from './catalog/factories/export';
+import ReactPlannerClasses from './class/export';
+import ReactPlannerComponents from './components/export';
+import * as ReactPlannerConstants from './constants';
 import * as Models from './models';
-import reducer from './reducers/reducer';
+import Plugins from './plugins/export';
 import ReactPlanner from './react-planner';
 import ReactPlannerContext from './react-planner-context';
-import Plugins from './plugins/export';
-import * as ReactPlannerConstants from './constants';
-import * as ReactPlannerSharedStyle from './shared-style';
-import ReactPlannerComponents from './components/export';
-import ReactPlannerActions from './actions/export';
 import ReactPlannerReducers from './reducers/export';
-import ReactPlannerClasses from './class/export';
-import ElementsFactories from './catalog/factories/export';
+import reducer from './reducers/reducer';
+import * as ReactPlannerSharedStyle from './shared-style';
+import Translator from './translator/translator';
 import ReactPlannerUtils from './utils/export';
 
 export * from './types';

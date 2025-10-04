@@ -1,47 +1,49 @@
-import * as Three from 'three';
-
 import React from 'react';
+
+import {
+  defineCatalogElement,
+  ReactPlannerConstants
+} from '@archef2000/react-planner';
 import convert from 'convert-units';
-import { defineCatalogElement } from '@archef2000/react-planner';
-import { ReactPlannerConstants } from '@archef2000/react-planner';
+import * as Three from 'three';
 import { BoxHelper, BufferGeometry } from 'three';
 
 export default defineCatalogElement({
-  name: "simple-stair",
-  prototype: "items",
+  name: 'simple-stair',
+  prototype: 'items',
 
   info: {
-    title: "simple stair",
+    title: 'simple stair',
     tag: ['building', 'stair'],
-    description: "Simple stair",
+    description: 'Simple stair',
     image: require('./simple-stair.png')
   },
 
   properties: {
     width: {
-      label: "Width",
-      type: "length-measure",
+      label: 'Width',
+      type: 'length-measure',
       defaultValue: {
         length: 50
       }
     },
     depth: {
-      label: "Depth",
-      type: "length-measure",
+      label: 'Depth',
+      type: 'length-measure',
       defaultValue: {
         length: 300
       }
     },
     height: {
-      label: "Height",
-      type: "length-measure",
+      label: 'Height',
+      type: 'length-measure',
       defaultValue: {
         length: 300
       }
     },
     altitude: {
-      label: "Altitude",
-      type: "length-measure",
+      label: 'Altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 0
       }
@@ -59,22 +61,62 @@ export default defineCatalogElement({
 
     const angle = element.rotation + 90;
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
-    const style = { stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#84e1ce" } as const;
-    const arrow_style = { stroke: element.selected ? '#0096fd' : undefined, strokeWidth: "2px", fill: "#84e1ce" } as const;
+    const style = {
+      stroke: element.selected ? '#0096fd' : '#000',
+      strokeWidth: '2px',
+      fill: '#84e1ce'
+    } as const;
+    const arrow_style = {
+      stroke: element.selected ? '#0096fd' : undefined,
+      strokeWidth: '2px',
+      fill: '#84e1ce'
+    } as const;
 
     return (
       <g transform={`translate(${-newWidth / 2},${-newDepth / 2})`}>
-        <rect key="1" x="0" y="0" width={newWidth} height={newDepth} style={style} />
-        <line key="2" x1={newWidth / 2} x2={newWidth / 2} y1={newDepth} y2={newDepth + 30} style={arrow_style} />
-        <line key="3" x1={.35 * newWidth} x2={newWidth / 2} y1={newDepth + 15} y2={newDepth + 30} style={arrow_style} />
-        <line key="4" x1={newWidth / 2} x2={.65 * newWidth} y1={newDepth + 30} y2={newDepth + 15} style={arrow_style} />
-        <text key="5" x="0" y="0"
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={newWidth}
+          height={newDepth}
+          style={style}
+        />
+        <line
+          key="2"
+          x1={newWidth / 2}
+          x2={newWidth / 2}
+          y1={newDepth}
+          y2={newDepth + 30}
+          style={arrow_style}
+        />
+        <line
+          key="3"
+          x1={0.35 * newWidth}
+          x2={newWidth / 2}
+          y1={newDepth + 15}
+          y2={newDepth + 30}
+          style={arrow_style}
+        />
+        <line
+          key="4"
+          x1={newWidth / 2}
+          x2={0.65 * newWidth}
+          y1={newDepth + 30}
+          y2={newDepth + 15}
+          style={arrow_style}
+        />
+        <text
+          key="5"
+          x="0"
+          y="0"
           transform={`translate(${newWidth / 2}, ${newDepth / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
@@ -105,7 +147,6 @@ export default defineCatalogElement({
 
     // compute step dimensions with Blondel formula
     const a = (63 * newHeight) / (newDepth + 2 * newHeight);
-    const p = 63 - 2 * a;
 
     const numberOfSteps = Math.round(newHeight / a);
     const stepHeight = newHeight / numberOfSteps;
@@ -115,19 +156,26 @@ export default defineCatalogElement({
     // Build planes for every step
     const stepPlaneGeometry = new Three.PlaneGeometry(stepWidth, stepHeight);
     assignUVs(stepPlaneGeometry);
-    const stepPlaneMaterial = new Three.MeshBasicMaterial({ side: Three.FrontSide });
+    const stepPlaneMaterial = new Three.MeshBasicMaterial({
+      side: Three.FrontSide
+    });
     stepPlaneMaterial.map = loader.load(require('./textures/white-paint.jpg'));
     stepPlaneMaterial.needsUpdate = true;
     stepPlaneMaterial.map.wrapS = Three.RepeatWrapping;
     stepPlaneMaterial.map.wrapT = Three.RepeatWrapping;
-    stepPlaneMaterial.map.repeat.set(stepWidth * whitePaintTextureRepeatFactor, stepHeight * whitePaintTextureRepeatFactor);
+    stepPlaneMaterial.map.repeat.set(
+      stepWidth * whitePaintTextureRepeatFactor,
+      stepHeight * whitePaintTextureRepeatFactor
+    );
 
     // Build stair profile shape
     const starProfileShapePoints: [number, number][] = [];
 
     for (let i = 0; i < numberOfSteps; i++) {
-      starProfileShapePoints.push([(numberOfSteps - i) * stepDepth, i * stepHeight],
-        [(numberOfSteps - i) * stepDepth, (i + 1) * stepHeight]);
+      starProfileShapePoints.push(
+        [(numberOfSteps - i) * stepDepth, i * stepHeight],
+        [(numberOfSteps - i) * stepDepth, (i + 1) * stepHeight]
+      );
 
       const stepPlane = new Three.Mesh(stepPlaneGeometry, stepPlaneMaterial);
       stepPlane.position.x += stepWidth / 2;
@@ -142,43 +190,71 @@ export default defineCatalogElement({
       stair.add(stepCover);
     }
 
-    starProfileShapePoints.push([0, numberOfSteps * stepHeight],
+    starProfileShapePoints.push(
+      [0, numberOfSteps * stepHeight],
       [0, (numberOfSteps - 1) * stepHeight],
-      [(numberOfSteps - 1) * stepDepth, 0]);
+      [(numberOfSteps - 1) * stepDepth, 0]
+    );
 
     const stairShapeProfile = new Three.Shape();
-    stairShapeProfile.moveTo(starProfileShapePoints[0][0], starProfileShapePoints[0][1]);
+    stairShapeProfile.moveTo(
+      starProfileShapePoints[0][0],
+      starProfileShapePoints[0][1]
+    );
     for (let i = 1; i < starProfileShapePoints.length; i++) {
-      stairShapeProfile.lineTo(starProfileShapePoints[i][0], starProfileShapePoints[i][1]);
+      stairShapeProfile.lineTo(
+        starProfileShapePoints[i][0],
+        starProfileShapePoints[i][1]
+      );
     }
 
-    const stairShapeProfileGeometry = new Three.ShapeGeometry(stairShapeProfile);
+    const stairShapeProfileGeometry = new Three.ShapeGeometry(
+      stairShapeProfile
+    );
     assignUVs(stairShapeProfileGeometry);
-    const stairProfileMaterial = new Three.MeshPhongMaterial({ side: Three.FrontSide });
+    const stairProfileMaterial = new Three.MeshPhongMaterial({
+      side: Three.FrontSide
+    });
 
-    stairProfileMaterial.map = loader.load(require('./textures/white-paint.jpg'));
+    stairProfileMaterial.map = loader.load(
+      require('./textures/white-paint.jpg')
+    );
     stairProfileMaterial.needsUpdate = true;
     stairProfileMaterial.map.wrapS = Three.RepeatWrapping;
     stairProfileMaterial.map.wrapT = Three.RepeatWrapping;
-    stairProfileMaterial.map.repeat.set(numberOfSteps * stepDepth * whitePaintTextureRepeatFactor,
-      numberOfSteps * stepHeight * whitePaintTextureRepeatFactor);
+    stairProfileMaterial.map.repeat.set(
+      numberOfSteps * stepDepth * whitePaintTextureRepeatFactor,
+      numberOfSteps * stepHeight * whitePaintTextureRepeatFactor
+    );
 
-    const stairProfile = new Three.Mesh(stairShapeProfileGeometry, stairProfileMaterial);
+    const stairProfile = new Three.Mesh(
+      stairShapeProfileGeometry,
+      stairProfileMaterial
+    );
 
     stairProfile.rotation.y = -Math.PI / 2;
 
     stair.add(stairProfile);
 
-    const stairProfileMaterial2 = new Three.MeshPhongMaterial({ side: Three.BackSide });
+    const stairProfileMaterial2 = new Three.MeshPhongMaterial({
+      side: Three.BackSide
+    });
 
-    stairProfileMaterial2.map = loader.load(require('./textures/white-paint.jpg'));
+    stairProfileMaterial2.map = loader.load(
+      require('./textures/white-paint.jpg')
+    );
     stairProfileMaterial2.needsUpdate = true;
     stairProfileMaterial2.map.wrapS = Three.RepeatWrapping;
     stairProfileMaterial2.map.wrapT = Three.RepeatWrapping;
-    stairProfileMaterial2.map.repeat.set(numberOfSteps * stepDepth * whitePaintTextureRepeatFactor,
-      numberOfSteps * stepHeight * whitePaintTextureRepeatFactor);
+    stairProfileMaterial2.map.repeat.set(
+      numberOfSteps * stepDepth * whitePaintTextureRepeatFactor,
+      numberOfSteps * stepHeight * whitePaintTextureRepeatFactor
+    );
 
-    const stairProfile2 = new Three.Mesh(stairShapeProfileGeometry, stairProfileMaterial2);
+    const stairProfile2 = new Three.Mesh(
+      stairShapeProfileGeometry,
+      stairProfileMaterial2
+    );
 
     stairProfile2.rotation.y = -Math.PI / 2;
     stairProfile2.position.x += newWidth;
@@ -190,17 +266,28 @@ export default defineCatalogElement({
     /*** CLOSURE 1 ***/
     const closure1Slope = -Math.atan(stepDepth / stepHeight);
     const stairClosure1Width = newWidth;
-    const stairClosure1Height = (numberOfSteps - 1) * stepHeight / Math.cos(closure1Slope);
-    const stairClosure1Geometry = new Three.PlaneGeometry(stairClosure1Width, stairClosure1Height);
+    const stairClosure1Height =
+      ((numberOfSteps - 1) * stepHeight) / Math.cos(closure1Slope);
+    const stairClosure1Geometry = new Three.PlaneGeometry(
+      stairClosure1Width,
+      stairClosure1Height
+    );
 
-    const closure1Material = new Three.MeshPhongMaterial({ side: Three.BackSide });
+    const closure1Material = new Three.MeshPhongMaterial({
+      side: Three.BackSide
+    });
     closure1Material.map = loader.load(require('./textures/white-paint.jpg'));
     closure1Material.needsUpdate = true;
     closure1Material.map.wrapS = Three.RepeatWrapping;
     closure1Material.map.wrapT = Three.RepeatWrapping;
-    closure1Material.map.repeat.set(stairClosure1Width * whitePaintTextureRepeatFactor,
-      stairClosure1Height * whitePaintTextureRepeatFactor);
-    const stairClosure1 = new Three.Mesh(stairClosure1Geometry, closure1Material);
+    closure1Material.map.repeat.set(
+      stairClosure1Width * whitePaintTextureRepeatFactor,
+      stairClosure1Height * whitePaintTextureRepeatFactor
+    );
+    const stairClosure1 = new Three.Mesh(
+      stairClosure1Geometry,
+      closure1Material
+    );
     const pivotClosure1 = new Three.Object3D();
     stairClosure1.position.y += stairClosure1Height / 2;
     pivotClosure1.add(stairClosure1);
@@ -242,24 +329,39 @@ export default defineCatalogElement({
     const center = [
       (boundingBox.max.x - boundingBox.min.x) / 2 + boundingBox.min.x,
       (boundingBox.max.y - boundingBox.min.y) / 2 + boundingBox.min.y,
-      (boundingBox.max.z - boundingBox.min.z) / 2 + boundingBox.min.z];
+      (boundingBox.max.z - boundingBox.min.z) / 2 + boundingBox.min.z
+    ];
 
     stair.position.x -= center[0];
     stair.position.y -= center[1] - (boundingBox.max.y - boundingBox.min.y) / 2;
     stair.position.z -= center[2];
 
     // I re-scale the stair following the initial attributes
-    stair.scale.set(newWidth / (boundingBox.max.x - boundingBox.min.x),
+    stair.scale.set(
+      newWidth / (boundingBox.max.x - boundingBox.min.x),
       newHeight / (boundingBox.max.y - boundingBox.min.y),
-      newDepth / (boundingBox.max.z - boundingBox.min.z));
+      newDepth / (boundingBox.max.z - boundingBox.min.z)
+    );
 
     stair.position.y += newAltitude;
 
     return stair;
   },
 
-  async updateRender3D(element, layer, scene, mesh, oldElement, differences, selfDestroy, selfBuild) {
-    const noPerf = () => { selfDestroy(); return selfBuild(); };
+  async updateRender3D(
+    element,
+    layer,
+    scene,
+    mesh,
+    oldElement,
+    differences,
+    selfDestroy,
+    selfBuild
+  ) {
+    const noPerf = () => {
+      selfDestroy();
+      return selfBuild();
+    };
 
     if (differences.indexOf('selected') !== -1) {
       mesh.traverse((child) => {
@@ -271,7 +373,7 @@ export default defineCatalogElement({
     }
 
     if (differences.indexOf('rotation') !== -1) {
-      mesh.rotation.y = element.rotation * Math.PI / 180;
+      mesh.rotation.y = (element.rotation * Math.PI) / 180;
       return mesh;
     }
 
@@ -335,8 +437,8 @@ export default defineCatalogElement({
 function assignUVs(geometry: BufferGeometry) {
   geometry.computeBoundingBox();
 
-  const max = geometry.boundingBox.max;
-  const min = geometry.boundingBox.min;
+  const max = (geometry.boundingBox as Three.Box3).max;
+  const min = (geometry.boundingBox as Three.Box3).min;
 
   const offset = new Three.Vector2(0 - min.x, 0 - min.y);
   const range = new Three.Vector2(max.x - min.x, max.y - min.y);
@@ -363,14 +465,23 @@ function buildStepCover(width: number, height: number, depth: number) {
 
   const stepCoverLength = 2;
 
-  const planeGeometry = new Three.PlaneGeometry(width + stepCoverLength * 2, depth + stepCoverHeight);
+  const planeGeometry = new Three.PlaneGeometry(
+    width + stepCoverLength * 2,
+    depth + stepCoverHeight
+  );
   const planeMaterial = new Three.MeshBasicMaterial({ side: Three.FrontSide });
   assignUVs(planeGeometry);
 
-  const planeGeometry2 = new Three.PlaneGeometry(depth + stepCoverLength, stepCoverHeight);
+  const planeGeometry2 = new Three.PlaneGeometry(
+    depth + stepCoverLength,
+    stepCoverHeight
+  );
   assignUVs(planeGeometry2);
 
-  const planeGeometry3 = new Three.PlaneGeometry(width + stepCoverLength * 2, stepCoverHeight);
+  const planeGeometry3 = new Three.PlaneGeometry(
+    width + stepCoverLength * 2,
+    stepCoverHeight
+  );
   assignUVs(planeGeometry3);
 
   planeMaterial.map = loader.load(require('./textures/marble.jpg'));
@@ -430,4 +541,4 @@ function buildStepCover(width: number, height: number, depth: number) {
   stepCover.add(plane6);
 
   return stepCover;
-};
+}

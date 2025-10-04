@@ -1,10 +1,7 @@
-import WallFactory from './wall-factory';
 import AreaFactory from './area-factory';
+import WallFactory from './wall-factory';
 
-export {
-  WallFactory,
-  AreaFactory
-};
+export { AreaFactory, WallFactory };
 
 export default {
   WallFactory,

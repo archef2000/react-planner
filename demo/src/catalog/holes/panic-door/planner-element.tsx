@@ -1,15 +1,20 @@
 import React from 'react';
-import * as Three from 'three';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 // TODO: better scaling
 
 const black = new Three.MeshLambertMaterial({ color: 0x000000 });
 const green = new Three.MeshLambertMaterial({ color: 0x348781 });
-const red = new Three.MeshLambertMaterial({ color: 0xFF0000 });
-const turquoise = new Three.MeshLambertMaterial({ color: 0x43C6DB, opacity: 0.7, transparent: true });
-const metalBlue = new Three.MeshLambertMaterial({ color: 0xB7CEEC });
-const metalBlueGrey = new Three.MeshLambertMaterial({ color: 0x566D7E });
+const red = new Three.MeshLambertMaterial({ color: 0xff0000 });
+const turquoise = new Three.MeshLambertMaterial({
+  color: 0x43c6db,
+  opacity: 0.7,
+  transparent: true
+});
+const metalBlue = new Three.MeshLambertMaterial({ color: 0xb7ceec });
+const metalBlueGrey = new Three.MeshLambertMaterial({ color: 0x566d7e });
 
 function makePanicDoor(handleSide: boolean) {
   const panicDoor = new Three.Mesh();
@@ -39,13 +44,23 @@ function makePanicDoor(handleSide: boolean) {
   panicDoor.add(leftDoor);
   leftDoor.add(doorLock);
 
-  return panicDoor
+  return panicDoor;
 }
 
 function makeDoorLock() {
   const DoorLock = new Three.Object3D();
-  const doorLockGeometry1 = new Three.CylinderGeometry(0.012, 0.012, 1.905, Math.round(32));
-  const doorLockGeometry2 = new Three.CylinderGeometry(0.007, 0.007, 1.907, Math.round(32));
+  const doorLockGeometry1 = new Three.CylinderGeometry(
+    0.012,
+    0.012,
+    1.905,
+    Math.round(32)
+  );
+  const doorLockGeometry2 = new Three.CylinderGeometry(
+    0.007,
+    0.007,
+    1.907,
+    Math.round(32)
+  );
   const doorLock1 = new Three.Mesh(doorLockGeometry1, metalBlue);
   const doorLock2 = new Three.Mesh(doorLockGeometry2, metalBlueGrey);
   DoorLock.position.set(-0.275, 0.7 / 2, 0);
@@ -76,8 +91,18 @@ function makeLock() {
 function makeSafetyHandle() {
   const handle = new Three.Object3D();
   const HandleSupportGeometry = new Three.BoxGeometry(0.5, 0.1, 0.005);
-  const PushGeometry = new Three.CylinderGeometry(0.04, 0.04, 0.48, Math.round(32));
-  const CoverPushGeometry = new Three.CylinderGeometry(0.042, 0.042, 0.01, Math.round(32));
+  const PushGeometry = new Three.CylinderGeometry(
+    0.04,
+    0.04,
+    0.48,
+    Math.round(32)
+  );
+  const CoverPushGeometry = new Three.CylinderGeometry(
+    0.042,
+    0.042,
+    0.01,
+    Math.round(32)
+  );
   const handleSupport = new Three.Mesh(HandleSupportGeometry, black);
   const PushButton = new Three.Mesh(PushGeometry, red);
   const CoverPush1 = new Three.Mesh(CoverPushGeometry, black);
@@ -96,8 +121,18 @@ function makeSafetyHandle() {
 
 function makePivot() {
   const DoorPivot = new Three.Object3D();
-  const DownPivotGeometry = new Three.CylinderGeometry(0.009, 0.009, 0.04, Math.round(32));
-  const UpPivotGeometry = new Three.CylinderGeometry(0.01, 0.01, 0.04, Math.round(32));
+  const DownPivotGeometry = new Three.CylinderGeometry(
+    0.009,
+    0.009,
+    0.04,
+    Math.round(32)
+  );
+  const UpPivotGeometry = new Three.CylinderGeometry(
+    0.01,
+    0.01,
+    0.04,
+    Math.round(32)
+  );
   const downPivot1 = new Three.Mesh(DownPivotGeometry, green);
   const upPivot1 = new Three.Mesh(UpPivotGeometry, green);
   const downPivot2 = new Three.Mesh(DownPivotGeometry, green);
@@ -134,9 +169,23 @@ function makeHandle(handleSide_value: boolean) {
 
 function makeHilt() {
   const hilt = new Three.Object3D();
-  const Geometry_p1 = new Three.CylinderGeometry(0.01, 0.01, 0.03, Math.round(32));
-  const Geometry_p2 = new Three.SphereGeometry(0.01, Math.round(32), Math.round(32));
-  const Geometry_p3 = new Three.CylinderGeometry(0.01, 0.01, 0.07, Math.round(32));
+  const Geometry_p1 = new Three.CylinderGeometry(
+    0.01,
+    0.01,
+    0.03,
+    Math.round(32)
+  );
+  const Geometry_p2 = new Three.SphereGeometry(
+    0.01,
+    Math.round(32),
+    Math.round(32)
+  );
+  const Geometry_p3 = new Three.CylinderGeometry(
+    0.01,
+    0.01,
+    0.07,
+    Math.round(32)
+  );
   const piece1 = new Three.Mesh(Geometry_p1, black);
   const piece2 = new Three.Mesh(Geometry_p2, black);
   const piece3 = new Three.Mesh(Geometry_p3, black);
@@ -156,7 +205,12 @@ function makeHilt() {
 function makeHandleBase(handleSide_value: boolean) {
   const base = new Three.Object3D();
   const BaseGeometry1 = new Three.BoxGeometry(0.038, 0.14, 0.01);
-  const BaseGeometry2 = new Three.CylinderGeometry(0.023, 0.023, 0.01, Math.round(32));
+  const BaseGeometry2 = new Three.CylinderGeometry(
+    0.023,
+    0.023,
+    0.01,
+    Math.round(32)
+  );
   const lock = makeLockKey();
   const base1 = new Three.Mesh(BaseGeometry1, black);
   const base2 = new Three.Mesh(BaseGeometry2, black);
@@ -164,8 +218,7 @@ function makeHandleBase(handleSide_value: boolean) {
   base2.rotation.x = Math.PI / 2;
   lock.position.y = -0.03;
   base2.position.y = -0.033;
-  if (!handleSide_value)
-    base1.position.x = 0.4;
+  if (!handleSide_value) base1.position.x = 0.4;
   base2.scale.z = 1.5;
   base1.add(lock);
   base1.add(base2);
@@ -175,7 +228,12 @@ function makeHandleBase(handleSide_value: boolean) {
 
 function makeLockKey() {
   const Lock = new Three.Object3D();
-  const geometry1 = new Three.CylinderGeometry(0.005, 0.005, 0.02, Math.round(32));
+  const geometry1 = new Three.CylinderGeometry(
+    0.005,
+    0.005,
+    0.02,
+    Math.round(32)
+  );
   const geometry2 = new Three.BoxGeometry(0.008, 0.02, 0.02);
   const geometry3 = new Three.BoxGeometry(0.007, 0.0203, 0.0018);
   const LockPiece1 = new Three.Mesh(geometry1, metalBlue);
@@ -194,7 +252,12 @@ function makeDoorStructure() {
   const lowBaseDoorGeometry = new Three.BoxGeometry(0.6, 1.2, 0.01);
   const middleBaseDoorGeometry = new Three.BoxGeometry(0.2, 0.7, 0.01);
   const highBaseDoorGeometry = new Three.BoxGeometry(0.2, 0.2, 0.01);
-  const BorderCoverDoorGeometry1 = new Three.CylinderGeometry(0.005, 0.005, 1.9, Math.round(32));
+  const BorderCoverDoorGeometry1 = new Three.CylinderGeometry(
+    0.005,
+    0.005,
+    1.9,
+    Math.round(32)
+  );
   const BorderCoverDoorGeometry2 = new Three.BoxGeometry(0.03, 1.9, 0.01);
   const MiddleDoorGeometry2 = new Three.BoxGeometry(0.2, 0.7, 0.06);
   const MiddleDoorGeometry1 = new Three.BoxGeometry(0.19, 0.7, 0.06);
@@ -297,8 +360,8 @@ export default defineCatalogElement({
       type: 'checkbox',
       defaultValue: true,
       values: {
-        'none': false,
-        'yes': true,
+        none: false,
+        yes: true
       }
     },
     flip_vertical: {
@@ -306,17 +369,37 @@ export default defineCatalogElement({
       type: 'checkbox',
       defaultValue: true,
       values: {
-        'left': false,
-        'right': true,
+        left: false,
+        right: true
       }
-    },
+    }
   },
 
   render2D: function (element, layer, scene) {
-    const STYLE_HOLE_BASE = { stroke: '#ff0000', strokeWidth: '3px', fill: '#ff0000' };
-    const STYLE_HOLE_SELECTED = { stroke: '#ff0000', strokeWidth: '4px', fill: '#ff0000', cursor: 'move' };
-    const STYLE_ARC_BASE = { stroke: '#ff0000', strokeWidth: '3px', strokeDasharray: '5,5', fill: 'none' };
-    const STYLE_ARC_SELECTED = { stroke: '#ff0000', strokeWidth: '4px', strokeDasharray: '5,5', fill: 'none', cursor: 'move' };
+    const STYLE_HOLE_BASE = {
+      stroke: '#ff0000',
+      strokeWidth: '3px',
+      fill: '#ff0000'
+    };
+    const STYLE_HOLE_SELECTED = {
+      stroke: '#ff0000',
+      strokeWidth: '4px',
+      fill: '#ff0000',
+      cursor: 'move'
+    };
+    const STYLE_ARC_BASE = {
+      stroke: '#ff0000',
+      strokeWidth: '3px',
+      strokeDasharray: '5,5',
+      fill: 'none'
+    };
+    const STYLE_ARC_SELECTED = {
+      stroke: '#ff0000',
+      strokeWidth: '4px',
+      strokeDasharray: '5,5',
+      fill: 'none',
+      cursor: 'move'
+    };
 
     const epsilon = 3;
 
@@ -327,7 +410,6 @@ export default defineCatalogElement({
     const arcPath = `M${0},${0}  A${holeWidth},${holeWidth} 0 0,1 ${holeWidth},${holeWidth}`;
     const holeStyle = element.selected ? STYLE_HOLE_SELECTED : STYLE_HOLE_BASE;
     const arcStyle = element.selected ? STYLE_ARC_SELECTED : STYLE_ARC_BASE;
-    const length = element.properties.width.length;
 
     let scaleX, scaleY;
     let rotateAngle;
@@ -347,8 +429,7 @@ export default defineCatalogElement({
         pY2 = holeWidth;
         rotateAngle = 180;
         scaleY = -1;
-      }
-      else {
+      } else {
         tX = 0;
         tY = -holeWidth;
         pX1 = 0;
@@ -369,8 +450,7 @@ export default defineCatalogElement({
         pY2 = -holeWidth;
         rotateAngle = -90;
         scaleY = -1;
-      }
-      else {
+      } else {
         tX = 0;
         tY = 0;
         pX1 = holeWidth;
@@ -383,11 +463,22 @@ export default defineCatalogElement({
     }
     return (
       <g transform={`translate(${-element.properties.width.length / 2}, 0)`}>
-        <path key='1' d={arcPath} style={arcStyle}
-          transform={`translate(${tX},${tY}) scale(${scaleX},${scaleY}) rotate(${rotateAngle})`} />
-        <line key='2' x1={pX1} y1={pY1 - epsilon} x2={pX2} y2={pY2 - epsilon} style={holeStyle}
-          transform={`scale(${-scaleX},${scaleY})`} />
-        <path key='5' d={holePath} style={holeStyle} />
+        <path
+          key="1"
+          d={arcPath}
+          style={arcStyle}
+          transform={`translate(${tX},${tY}) scale(${scaleX},${scaleY}) rotate(${rotateAngle})`}
+        />
+        <line
+          key="2"
+          x1={pX1}
+          y1={pY1 - epsilon}
+          x2={pX2}
+          y2={pY2 - epsilon}
+          style={holeStyle}
+          transform={`scale(${-scaleX},${scaleY})`}
+        />
+        <path key="5" d={holePath} style={holeStyle} />
       </g>
     );
   },

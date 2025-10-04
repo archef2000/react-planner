@@ -1,7 +1,7 @@
 //JS porting of this code http://www.geeksforgeeks.org/biconnected-components/
 
 function create_array(length: number) {
-  const array = [];
+  const array: any[] = [];
   for (let i = 0; i < length; ++i) {
     array.push([]);
   }
@@ -24,16 +24,17 @@ export default class Graph {
   V: number;
   E: number;
   adj: number[][];
-  children: number;
+  children: number = 0;
 
   constructor(v: number) {
     this.count = 0; // count is number of biconnected components
-    this.subgraphs = []; //biconnected components - each subgraph is an array of Edge objects
-    this.time = 0;  // time is used to find discovery times
+    // biconnected components - each subgraph is an array of Edge objects
+    this.subgraphs = [];
+    this.time = 0; // time is used to find discovery times
 
-    this.V = v;     // No. of vertices
-    this.E = 0;     // No. of Edges
-    this.adj = create_array(v);  // Adjacency List
+    this.V = v; // No. of vertices
+    this.E = 0; // No. of Edges
+    this.adj = create_array(v); // Adjacency List
   }
 
   //Function to add an edge into the graph
@@ -58,14 +59,20 @@ export default class Graph {
   //             discovery time) that can be reached from subtree
   //             rooted with current vertex
   // *st -- >> To store visited edges
-  _BCCUtil(u: number, disc: number[], low: number[], st: Edge[], parent: number[]) {
+  _BCCUtil(
+    u: number,
+    disc: number[],
+    low: number[],
+    st: Edge[],
+    parent: number[]
+  ) {
     // Initialize discovery time and low value
     disc[u] = low[u] = ++this.time;
     this.children = 0;
 
     // Go through all vertices adjacent to this
     // v is current adjacent of 'u'
-    this.adj[u].forEach(v => {
+    this.adj[u].forEach((v) => {
       // If v is not visited yet, then recur for it
       if (disc[v] == -1) {
         this.children++;
@@ -78,16 +85,17 @@ export default class Graph {
         // Check if the subtree rooted with 'v' has a
         // connection to one of the ancestors of 'u'
         // Case 1 -- per Strongly Connected Components Article
-        if (low[u] > low[v])
-          low[u] = low[v];
+        if (low[u] > low[v]) low[u] = low[v];
 
         // If u is an articulation point,
         // pop all edges from stack till u -- v
-        if ((disc[u] == 1 && this.children > 1) || (disc[u] > 1 && low[v] >= disc[u])) {
+        if (
+          (disc[u] == 1 && this.children > 1) ||
+          (disc[u] > 1 && low[v] >= disc[u])
+        ) {
           let subgraph = [];
           while (st[st.length - 1].u != u || st[st.length - 1].v != v) {
             subgraph.push(st[st.length - 1]);
-            //console.log(st[st.length - 1].u + "--" + st[st.length - 1].v + " ");
             st.splice(st.length - 1, 1);
           }
 
@@ -106,11 +114,10 @@ export default class Graph {
       // (i.e. it's a back edge, not cross edge).
       // Case 2 -- per Strongly Connected Components Article
       else if (v != parent[u] && disc[v] < low[u]) {
-        if (low[u] > disc[v])
-          low[u] = disc[v];
+        if (low[u] > disc[v]) low[u] = disc[v];
         st.push(new Edge(u, v));
       }
-    })
+    });
   }
 
   BCC() {
@@ -128,8 +135,7 @@ export default class Graph {
     }
 
     for (let i = 0; i < V; i++) {
-      if (disc[i] == -1)
-        this._BCCUtil(i, disc, low, st, parent);
+      if (disc[i] == -1) this._BCCUtil(i, disc, low, st, parent);
 
       let j = 0;
 

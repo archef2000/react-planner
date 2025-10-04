@@ -1,6 +1,7 @@
-import * as Three from 'three';
 import React from 'react';
-import { defineCatalogElement, Models } from '@archef2000/react-planner'
+
+import { defineCatalogElement, Models } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 function buildToiletGeom(
   width: number,
@@ -28,7 +29,10 @@ function buildToiletGeom(
   const dark = new Three.MeshLambertMaterial({ color: 0x333333 });
 
   const seatOuterHalfX = width * 0.5;
-  const seatThickness = seatThicknessValue > 0 ? seatThicknessValue : Math.max(1.2, seatHeight * 0.06);
+  const seatThickness =
+    seatThicknessValue > 0
+      ? seatThicknessValue
+      : Math.max(1.2, seatHeight * 0.06);
   const openingWidth = Math.max(10, Math.min(opening, seatOuterHalfX * 1.8));
   const seatOuterRX = Math.min(openingWidth / 2 + 5, width / 2);
   let seatInnerRX = Math.max(1, seatOuterRX - ringWidth);
@@ -44,15 +48,18 @@ function buildToiletGeom(
   // bowl
   const lowerSlider = Math.min(Math.max(roundLower, 0), 100);
   const lowerIntensity = lowerSlider / 100;
-  const maxReductionFactor = 0.60;
+  const maxReductionFactor = 0.6;
   const bottomRadius = baseOuterR * (1 - maxReductionFactor * lowerIntensity);
-  const roundingStart = Math.min(Math.max(roundingStartHeight, 0), bowlHeight - 0.01);
+  const roundingStart = Math.min(
+    Math.max(roundingStartHeight, 0),
+    bowlHeight - 0.01
+  );
   const bowlProfile: Three.Vector2[] = [];
   bowlProfile.push(new Three.Vector2(0, 0)); // bottom closed
 
   const arcSteps = Math.max(8, Math.floor(steps));
   const smoothSlider = Math.min(Math.max(roundingSmoothness, 0), 100);
-  const easingExponent = (smoothSlider / 100) * (3);
+  const easingExponent = (smoothSlider / 100) * 3;
   if (roundingStart > 0) {
     for (let i = 0; i <= arcSteps; i++) {
       const t = i / arcSteps; // 0..1 along rounding height
@@ -72,7 +79,10 @@ function buildToiletGeom(
   // Vertical section from roundingStart to bowlHeight (constant radius)
   if (roundingStart < bowlHeight) {
     const last = bowlProfile[bowlProfile.length - 1];
-    if (Math.abs(last.x - baseOuterR) > 1e-5 || Math.abs(last.y - roundingStart) > 1e-5) {
+    if (
+      Math.abs(last.x - baseOuterR) > 1e-5 ||
+      Math.abs(last.y - roundingStart) > 1e-5
+    ) {
       bowlProfile.push(new Three.Vector2(baseOuterR, roundingStart));
     }
     if (Math.abs(bowlHeight - roundingStart) > 1e-5) {
@@ -91,7 +101,16 @@ function buildToiletGeom(
   const buildTopRimShape = () => {
     if (!seatBackFlat) {
       const shape = new Three.Shape();
-      shape.absellipse(0, 0, seatOuterHalfX, seatOuterHalfZ, 0, Math.PI * 2, false, 0);
+      shape.absellipse(
+        0,
+        0,
+        seatOuterHalfX,
+        seatOuterHalfZ,
+        0,
+        Math.PI * 2,
+        false,
+        0
+      );
       const hole = new Three.Path();
       hole.absellipse(0, 0, seatInnerRX, seatInnerRZ, 0, Math.PI * 2, true, 0);
       shape.holes.push(hole);
@@ -172,7 +191,16 @@ function buildToiletGeom(
   const buildSeatShape = () => {
     if (!seatBackFlat) {
       const shape = new Three.Shape();
-      shape.absellipse(0, 0, seatOuterRX, seatOuterRZ, 0, Math.PI * 2, false, 0);
+      shape.absellipse(
+        0,
+        0,
+        seatOuterRX,
+        seatOuterRZ,
+        0,
+        Math.PI * 2,
+        false,
+        0
+      );
       const hole = new Three.Path();
       hole.absellipse(0, 0, seatInnerRX, seatInnerRZ, 0, Math.PI * 2, true, 0);
       shape.holes.push(hole);
@@ -209,7 +237,11 @@ function buildToiletGeom(
     return shape;
   };
   const seatShape = buildSeatShape();
-  const seatGeom = new Three.ExtrudeGeometry(seatShape, { depth: seatThickness, bevelEnabled: false, curveSegments: lowDetail ? 24 : 48 });
+  const seatGeom = new Three.ExtrudeGeometry(seatShape, {
+    depth: seatThickness,
+    bevelEnabled: false,
+    curveSegments: lowDetail ? 24 : 48
+  });
   const seatMesh = new Three.Mesh(seatGeom, porcelain);
   seatMesh.material.side = Three.DoubleSide;
   seatMesh.rotation.x = -Math.PI / 2;
@@ -220,14 +252,31 @@ function buildToiletGeom(
     const tankWidth = width * (tankWidthRatio / 100);
     const tankHeightLocal = Math.max(0, tankBodyHeight);
     if (tankHeightLocal > 0) {
-      const tankGeom = new Three.BoxGeometry(tankWidth, tankHeightLocal, tankDepth);
+      const tankGeom = new Three.BoxGeometry(
+        tankWidth,
+        tankHeightLocal,
+        tankDepth
+      );
       const tankMesh = new Three.Mesh(tankGeom, porcelain);
-      tankMesh.position.set(0, seatHeight + tankBottomOffset + tankHeightLocal / 2, -depth / 2 + tankDepth / 2);
+      tankMesh.position.set(
+        0,
+        seatHeight + tankBottomOffset + tankHeightLocal / 2,
+        -depth / 2 + tankDepth / 2
+      );
       group.add(tankMesh);
-      const btnGeom = new Three.CylinderGeometry(tankWidth * 0.08, tankWidth * 0.08, 2, 16);
+      const btnGeom = new Three.CylinderGeometry(
+        tankWidth * 0.08,
+        tankWidth * 0.08,
+        2,
+        16
+      );
       const btnMesh = new Three.Mesh(btnGeom, dark);
       btnMesh.rotation.x = Math.PI / 2;
-      btnMesh.position.set(0, seatHeight + tankBottomOffset + tankHeightLocal + 1, tankMesh.position.z - tankDepth / 4);
+      btnMesh.position.set(
+        0,
+        seatHeight + tankBottomOffset + tankHeightLocal + 1,
+        tankMesh.position.z - tankDepth / 4
+      );
       group.add(btnMesh);
     }
   }
@@ -241,8 +290,9 @@ export default defineCatalogElement({
   info: {
     tag: ['sanitary', 'bathroom'],
     title: 'Toilet',
-    description: 'Adjustable toilet (width, depth, seat height, tank body height, color, show/hide tank)',
-    image: require("./toilet.png"),
+    description:
+      'Adjustable toilet (width, depth, seat height, tank body height, color, show/hide tank)',
+    image: require('./toilet.png')
   },
   properties: {
     width: {
@@ -354,9 +404,13 @@ export default defineCatalogElement({
       label: 'Bottom rounding',
       type: 'number',
       defaultValue: 20
-    },
+    }
   },
-  render2D: function (element: Models.Item, layer: Models.Layer, scene: Models.Scene) {
+  render2D: function (
+    element: Models.Item,
+    layer: Models.Layer,
+    scene: Models.Scene
+  ) {
     const w = element.properties.width.length;
     const d = element.properties.depth.length;
     const showTank = element.properties.showTank;
@@ -365,7 +419,7 @@ export default defineCatalogElement({
     const tankDepthValue = element.properties.tankDepth.length;
 
     const angle = element.rotation + 90;
-    const textRotation = Math.sin(angle * Math.PI / 180) < 0 ? 180 : 0;
+    const textRotation = Math.sin((angle * Math.PI) / 180) < 0 ? 180 : 0;
     const selected = element.selected;
     const fill = selected ? '#99c3fb' : element.properties.color;
 
@@ -373,7 +427,19 @@ export default defineCatalogElement({
     const ry = d / 2;
     let shapeNode: React.ReactNode;
     if (!seatBackFlat) {
-      shapeNode = <ellipse cx={w / 2} cy={d / 2} rx={rx} ry={ry} style={{ stroke: selected ? '#0096fd' : '#000', strokeWidth: '2px', fill }} />;
+      shapeNode = (
+        <ellipse
+          cx={w / 2}
+          cy={d / 2}
+          rx={rx}
+          ry={ry}
+          style={{
+            stroke: selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill
+          }}
+        />
+      );
     } else {
       const cx = w / 2;
       const cy = d / 2;
@@ -391,12 +457,24 @@ export default defineCatalogElement({
       pts.push(`L ${cx - rx},${cy + ry}`);
       pts.push('Z');
       const dPath = pts.join(' ');
-      shapeNode = <path d={dPath} style={{ stroke: selected ? '#0096fd' : '#000', strokeWidth: '2px', fill }} />;
+      shapeNode = (
+        <path
+          d={dPath}
+          style={{
+            stroke: selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill
+          }}
+        />
+      );
     }
 
     let tankNode: React.ReactNode = null;
     if (showTank) {
-      const tankW = Math.min(w, Math.max(2, (w * (tankWidthRatio || 100)) / 100));
+      const tankW = Math.min(
+        w,
+        Math.max(2, (w * (tankWidthRatio || 100)) / 100)
+      );
       const tankD = Math.min(d * 0.5, Math.max(2, tankDepthValue));
       const tankX = (w - tankW) / 2;
       tankNode = (
@@ -405,7 +483,12 @@ export default defineCatalogElement({
           y={d - tankD}
           width={tankW}
           height={tankD}
-          style={{ stroke: selected ? '#0096fd' : '#000', strokeWidth: '1px', fill, fillOpacity: 0.85 }}
+          style={{
+            stroke: selected ? '#0096fd' : '#000',
+            strokeWidth: '1px',
+            fill,
+            fillOpacity: 0.85
+          }}
         />
       );
     }
@@ -414,11 +497,22 @@ export default defineCatalogElement({
       <g transform={`translate(${-w / 2},${-d / 2})`}>
         {shapeNode}
         {tankNode}
-        <text x="0" y="0" transform={`translate(${w / 2}, ${d / 2 - 5}) scale(1,-1) rotate(${textRotation})`} style={{ textAnchor: 'middle', fontSize: '11px' }}>{element.type}</text>
+        <text
+          x="0"
+          y="0"
+          transform={`translate(${w / 2}, ${d / 2 - 5}) scale(1,-1) rotate(${textRotation})`}
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
+          {element.type}
+        </text>
       </g>
     );
   },
-  async render3D(element: Models.Item, layer: Models.Layer, scene: Models.Scene) {
+  async render3D(
+    element: Models.Item,
+    layer: Models.Layer,
+    scene: Models.Scene
+  ) {
     const w = element.properties.width.length;
     const d = element.properties.depth.length;
     const seatH = element.properties.seatHeight.length;
@@ -438,9 +532,49 @@ export default defineCatalogElement({
     const ringWidthProp = element.properties.ringWidth.length;
 
     const maxLOD = new Three.Object3D();
-    maxLOD.add(buildToiletGeom(w, d, seatH, tankBodyHeight, tankBottomOffset, color, showTank, false, roundLower, opening, ringWidthProp, seatBackFlat, roundingStartHeight, tankWidthRatio, tankDepth, seatThicknessValue, roundingSmoothness));
+    maxLOD.add(
+      buildToiletGeom(
+        w,
+        d,
+        seatH,
+        tankBodyHeight,
+        tankBottomOffset,
+        color,
+        showTank,
+        false,
+        roundLower,
+        opening,
+        ringWidthProp,
+        seatBackFlat,
+        roundingStartHeight,
+        tankWidthRatio,
+        tankDepth,
+        seatThicknessValue,
+        roundingSmoothness
+      )
+    );
     const minLOD = new Three.Object3D();
-    minLOD.add(buildToiletGeom(w, d, seatH, tankBodyHeight, tankBottomOffset, color, showTank, true, roundLower, opening, ringWidthProp, seatBackFlat, roundingStartHeight, tankWidthRatio, tankDepth, seatThicknessValue, roundingSmoothness));
+    minLOD.add(
+      buildToiletGeom(
+        w,
+        d,
+        seatH,
+        tankBodyHeight,
+        tankBottomOffset,
+        color,
+        showTank,
+        true,
+        roundLower,
+        opening,
+        ringWidthProp,
+        seatBackFlat,
+        roundingStartHeight,
+        tankWidthRatio,
+        tankDepth,
+        seatThicknessValue,
+        roundingSmoothness
+      )
+    );
 
     const centerAndPlace = (obj: Three.Object3D) => {
       const box = new Three.Box3().setFromObject(obj);
@@ -475,15 +609,29 @@ export default defineCatalogElement({
     return lod;
   },
 
-  async updateRender3D(element: Models.Item, layer: Models.Layer, scene: Models.Scene, mesh: Three.Object3D, oldElement: Models.Item, differences: any, selfDestroy: Function, selfBuild: Function) {
+  async updateRender3D(
+    element: Models.Item,
+    layer: Models.Layer,
+    scene: Models.Scene,
+    mesh: Three.Object3D,
+    oldElement: Models.Item,
+    differences: any,
+    selfDestroy: Function,
+    selfBuild: Function
+  ) {
     const diffs = Array.isArray(differences) ? differences : [differences];
     if (typeof console !== 'undefined' && console.debug) {
-      console.debug('[toilet] updateRender3D diffs:', diffs, 'element id:', element.id);
+      console.debug(
+        '[toilet] updateRender3D diffs:',
+        diffs,
+        'element id:',
+        element.id
+      );
     }
 
     if (diffs.length === 1 && diffs[0] === 'selected') {
       let hasBox = false;
-      mesh.traverse(child => {
+      mesh.traverse((child) => {
         if (child instanceof Three.BoxHelper) {
           hasBox = true;
           child.visible = element.selected;

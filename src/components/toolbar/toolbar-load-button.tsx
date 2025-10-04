@@ -1,9 +1,12 @@
 import React, { useContext } from 'react';
+
 import { FaFolderOpen as IconLoad } from 'react-icons/fa';
-import ToolbarButton from './toolbar-button';
-import { browserUpload } from '../../utils/browser';
-import ReactPlannerContext from '../../react-planner-context';
+
 import { State } from '../../models';
+import ReactPlannerContext from '../../react-planner-context';
+import { browserUpload } from '../../utils/browser';
+
+import ToolbarButton from './toolbar-button';
 
 interface ToolbarLoadButtonProps {
   state: State;
@@ -12,7 +15,7 @@ interface ToolbarLoadButtonProps {
 export default function ToolbarLoadButton({ state }: ToolbarLoadButtonProps) {
   const { projectActions, translator } = useContext(ReactPlannerContext);
 
-  const loadProjectFromFile = event => {
+  const loadProjectFromFile = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     browserUpload().then((data) => {
       projectActions.loadProject(JSON.parse(data));
@@ -20,7 +23,11 @@ export default function ToolbarLoadButton({ state }: ToolbarLoadButtonProps) {
   };
 
   return (
-    <ToolbarButton active={false} tooltip={translator.t("Load project")} onClick={loadProjectFromFile}>
+    <ToolbarButton
+      active={false}
+      tooltip={translator.t('Load project')}
+      onClick={loadProjectFromFile}
+    >
       <IconLoad />
     </ToolbarButton>
   );

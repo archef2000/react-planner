@@ -1,4 +1,8 @@
-import { ElementsFactories, CatalogElementTextures, CatalogElementInfo } from '@archef2000/react-planner';
+import {
+  CatalogElementInfo,
+  CatalogElementTextures,
+  ElementsFactories
+} from '@archef2000/react-planner';
 
 const info: CatalogElementInfo = {
   title: 'wall',
@@ -43,9 +47,8 @@ const textures: CatalogElementTextures = {
     // 1x1 semi-transparent PNG (light blue tint)
     uri: require('./textures/glass.jpg'),
     lengthRepeatScale: 1,
-    heightRepeatScale: 1,
+    heightRepeatScale: 1
   }
 };
 
 export default ElementsFactories.WallFactory('wall', info, textures);
-

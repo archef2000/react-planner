@@ -1,21 +1,33 @@
 import React from 'react';
-import Viewer2D from './viewer2d/viewer2d';
-import Viewer3D from './viewer3d/viewer3d';
-import Viewer3DFirstPerson from './viewer3d/viewer3d-first-person';
-import CatalogList from './catalog-view/catalog-list';
-import ProjectConfigurator from './configurator/project-configurator';
 
 import * as constants from '../constants';
 import { StateProps } from '../models';
 
+import CatalogList from './catalog-view/catalog-list';
+import ProjectConfigurator from './configurator/project-configurator';
+import Viewer2D from './viewer2d/viewer2d';
+import Viewer3D from './viewer3d/viewer3d';
+import Viewer3DFirstPerson from './viewer3d/viewer3d-first-person';
+
 interface ContentProps {
-  state: StateProps
+  state: StateProps;
   width: number;
   height: number;
-  customContents: { [key: string]: React.ComponentType<{ state: StateProps; width: number; height: number }> };
+  customContents: {
+    [key: string]: React.ComponentType<{
+      state: StateProps;
+      width: number;
+      height: number;
+    }>;
+  };
 }
 
-export default function Content({ width, height, state, customContents }: ContentProps) {
+export default function Content({
+  width,
+  height,
+  state,
+  customContents
+}: ContentProps) {
   const mode = state.mode;
 
   switch (mode) {
@@ -23,7 +35,9 @@ export default function Content({ width, height, state, customContents }: Conten
       return <Viewer3D state={state} width={width} height={height} />;
 
     case constants.MODE_3D_FIRST_PERSON:
-      return <Viewer3DFirstPerson state={state} width={width} height={height} />;
+      return (
+        <Viewer3DFirstPerson state={state} width={width} height={height} />
+      );
 
     case constants.MODE_VIEWING_CATALOG:
       return <CatalogList state={state} width={width} height={height} />;
@@ -44,12 +58,14 @@ export default function Content({ width, height, state, customContents }: Conten
       return <Viewer2D state={state} width={width} height={height} />;
 
     case constants.MODE_CONFIGURING_PROJECT:
-      return <ProjectConfigurator width={width} height={height} state={state} />;
+      return (
+        <ProjectConfigurator width={width} height={height} state={state} />
+      );
 
     default:
       if (customContents.hasOwnProperty(mode)) {
         const CustomContent = customContents[mode];
-        return <CustomContent width={width} height={height} state={state} />
+        return <CustomContent width={width} height={height} state={state} />;
       } else {
         throw new Error(`Mode ${mode} doesn't have a mapped content`);
       }

@@ -1,21 +1,33 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 70;
 const DEPTH = 70;
 const HEIGHT = 100;
 
-const grey = new Three.MeshBasicMaterial({ color: 0xD3D3D3 });
+const grey = new Three.MeshBasicMaterial({ color: 0xd3d3d3 });
 const metalGrey = new Three.MeshBasicMaterial({ color: 0x808080 });
 const white = new Three.MeshBasicMaterial({ color: 0x000000 });
 const black = new Three.MeshBasicMaterial({ color: 0x000000 });
 
-
 function makeBackrest() {
   const backrest = new Three.Object3D();
-  const backrestGeometry1 = new Three.CylinderGeometry(0.01, 0.01, 0.18, 32, 32);
-  const backrestGeometry2 = new Three.CylinderGeometry(0.01, 0.01, 0.04, 32, 32);
+  const backrestGeometry1 = new Three.CylinderGeometry(
+    0.01,
+    0.01,
+    0.18,
+    32,
+    32
+  );
+  const backrestGeometry2 = new Three.CylinderGeometry(
+    0.01,
+    0.01,
+    0.04,
+    32,
+    32
+  );
   const NodeGeometry = new Three.SphereGeometry(0.01, 32, 32);
   const backrest1 = new Three.Mesh(backrestGeometry1, black);
   const backrest2 = new Three.Mesh(backrestGeometry2, black);
@@ -24,16 +36,16 @@ function makeBackrest() {
   const node1 = new Three.Mesh(NodeGeometry, black);
   const node2 = new Three.Mesh(NodeGeometry, black);
   const backrestPillow = makeBackrestPillow();
-  backrest1.rotation.z = Math.PI * (90 + 6) / 180;
+  backrest1.rotation.z = (Math.PI * (90 + 6)) / 180;
   backrest1.position.z = 0.05;
   backrest1.position.x = 0.09;
-  backrest2.rotation.z = -Math.PI * 96 / 180;
-  backrest2.position.x = 0.02 * Math.cos(Math.PI * 6 / 180);
-  backrest3.rotation.z = Math.PI * (90 + 6) / 180;
+  backrest2.rotation.z = (-Math.PI * 96) / 180;
+  backrest2.position.x = 0.02 * Math.cos((Math.PI * 6) / 180);
+  backrest3.rotation.z = (Math.PI * (90 + 6)) / 180;
   backrest3.position.z = -0.05;
   backrest3.position.x = 0.09;
-  backrest4.rotation.z = -Math.PI * 96 / 180;
-  backrest4.position.x = 0.02 * Math.cos(Math.PI * 6 / 180);
+  backrest4.rotation.z = (-Math.PI * 96) / 180;
+  backrest4.position.x = 0.02 * Math.cos((Math.PI * 6) / 180);
   node1.position.y = 0.09;
   node2.position.y = 0.09;
   node1.add(backrest2);
@@ -61,16 +73,16 @@ function makeBackrestMinLOD() {
   const node1 = new Three.Mesh(NodeGeometry, black);
   const node2 = new Three.Mesh(NodeGeometry, black);
   const backrestPillow = makeBackrestPillowMinLOD();
-  backrest1.rotation.z = Math.PI * (90 + 6) / 180;
+  backrest1.rotation.z = (Math.PI * (90 + 6)) / 180;
   backrest1.position.z = 0.05;
   backrest1.position.x = 0.09;
-  backrest2.rotation.z = -Math.PI * 96 / 180;
-  backrest2.position.x = 0.02 * Math.cos(Math.PI * 6 / 180);
-  backrest3.rotation.z = Math.PI * (90 + 6) / 180;
+  backrest2.rotation.z = (-Math.PI * 96) / 180;
+  backrest2.position.x = 0.02 * Math.cos((Math.PI * 6) / 180);
+  backrest3.rotation.z = (Math.PI * (90 + 6)) / 180;
   backrest3.position.z = -0.05;
   backrest3.position.x = 0.09;
-  backrest4.rotation.z = -Math.PI * 96 / 180;
-  backrest4.position.x = 0.02 * Math.cos(Math.PI * 6 / 180);
+  backrest4.rotation.z = (-Math.PI * 96) / 180;
+  backrest4.position.x = 0.02 * Math.cos((Math.PI * 6) / 180);
   node1.position.y = 0.09;
   node2.position.y = 0.09;
   node1.add(backrest2);
@@ -86,15 +98,26 @@ function makeBackrestMinLOD() {
   return backrest;
 }
 
-
 function makeWheel() {
   const ArmrestGeometry = new Three.CylinderGeometry(0.027, 0.02, 0.3, 32, 32);
   const SupportGeometry = new Three.CylinderGeometry(0.02, 0.01, 0.02, 32, 32);
   const PivotGeometry = new Three.CylinderGeometry(0.008, 0.008, 0.01, 32, 32);
   const SupportGeometryStart = new Three.SphereGeometry(0.02, 32, 32);
   const WheelGeometry = new Three.CylinderGeometry(0.025, 0.025, 0.05, 32, 32);
-  const InsideWheelGeometry = new Three.CylinderGeometry(0.02, 0.02, 0.051, 32, 32);
-  const WheelCoverGeometry = new Three.CylinderGeometry(0.026, 0.026, 0.045, 32, 32);
+  const InsideWheelGeometry = new Three.CylinderGeometry(
+    0.02,
+    0.02,
+    0.051,
+    32,
+    32
+  );
+  const WheelCoverGeometry = new Three.CylinderGeometry(
+    0.026,
+    0.026,
+    0.045,
+    32,
+    32
+  );
   const armrest = new Three.Mesh(ArmrestGeometry, metalGrey);
   const support = new Three.Mesh(SupportGeometry, metalGrey);
   const pivot = new Three.Mesh(PivotGeometry, grey);
@@ -104,10 +127,10 @@ function makeWheel() {
   const InsideWheel = new Three.Mesh(InsideWheelGeometry, metalGrey);
   const Armrest1 = new Three.Object3D();
   const Armrest2 = new Three.Object3D();
-  armrest.rotation.z = Math.PI * 80 / 180;
+  armrest.rotation.z = (Math.PI * 80) / 180;
   armrest.position.x = 0.01 + 0.15;
-  Armrest1.rotation.z = -Math.PI * 80 / 180;
-  Armrest1.position.y = -Math.sin(Math.PI * 80 / 180) * 0.15;
+  Armrest1.rotation.z = (-Math.PI * 80) / 180;
+  Armrest1.position.y = -Math.sin((Math.PI * 80) / 180) * 0.15;
   support.position.y = -0.01;
   pivot.position.y = -0.01 - 0.005;
   Wheel.rotation.x = Math.PI / 2;
@@ -130,7 +153,13 @@ function makeWheelMinLOD() {
   const PivotGeometry = new Three.CylinderGeometry(0.008, 0.008, 0.01, 8, 8);
   const SupportGeometryStart = new Three.SphereGeometry(0.02, 8, 8);
   const WheelGeometry = new Three.CylinderGeometry(0.025, 0.025, 0.05, 8, 8);
-  const InsideWheelGeometry = new Three.CylinderGeometry(0.02, 0.02, 0.051, 8, 8);
+  const InsideWheelGeometry = new Three.CylinderGeometry(
+    0.02,
+    0.02,
+    0.051,
+    8,
+    8
+  );
   const armrest = new Three.Mesh(ArmrestGeometry, metalGrey);
   const support = new Three.Mesh(SupportGeometry, metalGrey);
   const pivot = new Three.Mesh(PivotGeometry, grey);
@@ -139,10 +168,10 @@ function makeWheelMinLOD() {
   const InsideWheel = new Three.Mesh(InsideWheelGeometry, metalGrey);
   const Armrest1 = new Three.Object3D();
   const Armrest2 = new Three.Object3D();
-  armrest.rotation.z = Math.PI * 80 / 180;
+  armrest.rotation.z = (Math.PI * 80) / 180;
   armrest.position.x = 0.01 + 0.15;
-  Armrest1.rotation.z = -Math.PI * 80 / 180;
-  Armrest1.position.y = -Math.sin(Math.PI * 80 / 180) * 0.15;
+  Armrest1.rotation.z = (-Math.PI * 80) / 180;
+  Armrest1.position.y = -Math.sin((Math.PI * 80) / 180) * 0.15;
   support.position.y = -0.01;
   pivot.position.y = -0.01 - 0.005;
   Wheel.rotation.x = Math.PI / 2;
@@ -235,10 +264,28 @@ function makeBody() {
   const body = new Three.Object3D();
   const SupportPillowGeometry1 = new Three.BoxGeometry(0.28, 0.06, 0.07);
   const SupportPillowGeometry2 = new Three.BoxGeometry(0.3, 0.04, 0.09);
-  const ShortHandleGeometry = new Three.CylinderGeometry(0.0045, 0.0045, 0.07, 32, 32);
-  const LongHandleGeometry = new Three.CylinderGeometry(0.0045, 0.0045, 0.09, 32, 32);
+  const ShortHandleGeometry = new Three.CylinderGeometry(
+    0.0045,
+    0.0045,
+    0.07,
+    32,
+    32
+  );
+  const LongHandleGeometry = new Three.CylinderGeometry(
+    0.0045,
+    0.0045,
+    0.09,
+    32,
+    32
+  );
   const HandleGeometry = new Three.CylinderGeometry(0.007, 0.005, 0.06, 32);
-  const ArmrestSupportGeometry = new Three.CylinderGeometry(0.01, 0.01, 0.2, 32, 32);
+  const ArmrestSupportGeometry = new Three.CylinderGeometry(
+    0.01,
+    0.01,
+    0.2,
+    32,
+    32
+  );
   const SupportPillow1 = new Three.Mesh(SupportPillowGeometry1, metalGrey);
   const SupportPillow2 = new Three.Mesh(SupportPillowGeometry2, metalGrey);
   const LongHandle = new Three.Mesh(LongHandleGeometry, white);
@@ -251,21 +298,21 @@ function makeBody() {
   const armrest1 = makeArmrest();
   const armrest2 = makeArmrest();
   SupportPillow1.position.y = 0.03;
-  SupportPillow2.rotation.z = Math.PI * 6 / 180;
+  SupportPillow2.rotation.z = (Math.PI * 6) / 180;
   SupportPillow2.position.y = 0.06;
-  LongHandle.rotation.x = Math.PI * 80 / 180;
+  LongHandle.rotation.x = (Math.PI * 80) / 180;
   LongHandle.position.z = 0.035 + 0.045;
   LongHandle.position.x = 0.1;
-  ShortHandle.rotation.x = -Math.PI * 80 / 180;
+  ShortHandle.rotation.x = (-Math.PI * 80) / 180;
   ShortHandle.position.z = -0.035 - 0.035;
   ShortHandle.position.x = 0.08;
   Handle2.position.y = 0.035 + 0.03;
   Handle1.position.y = 0.045 + 0.03;
   Pillow.position.y = 0.02 + 0.02;
   ArmrestBase1.rotation.x = Math.PI / 2;
-  ArmrestBase1.rotation.y = -Math.PI * 6 / 180;
+  ArmrestBase1.rotation.y = (-Math.PI * 6) / 180;
   ArmrestBase2.rotation.x = Math.PI / 2;
-  ArmrestBase2.rotation.y = -Math.PI * 6 / 180;
+  ArmrestBase2.rotation.y = (-Math.PI * 6) / 180;
   ArmrestBase1.position.z = 0.045 + 0.1;
   ArmrestBase2.position.z = -0.045 - 0.1;
   armrest1.position.y = 0.1;
@@ -288,7 +335,13 @@ function makeBodyMinLOD() {
   const body = new Three.Object3D();
   const SupportPillowGeometry1 = new Three.BoxGeometry(0.28, 0.06, 0.07);
   const SupportPillowGeometry2 = new Three.BoxGeometry(0.3, 0.04, 0.09);
-  const ArmrestSupportGeometry = new Three.CylinderGeometry(0.01, 0.01, 0.2, 8, 8);
+  const ArmrestSupportGeometry = new Three.CylinderGeometry(
+    0.01,
+    0.01,
+    0.2,
+    8,
+    8
+  );
   const SupportPillow1 = new Three.Mesh(SupportPillowGeometry1, metalGrey);
   const SupportPillow2 = new Three.Mesh(SupportPillowGeometry2, metalGrey);
   const ArmrestBase1 = new Three.Mesh(ArmrestSupportGeometry, metalGrey);
@@ -297,13 +350,13 @@ function makeBodyMinLOD() {
   const armrest1 = makeArmrestMinLOD();
   const armrest2 = makeArmrestMinLOD();
   SupportPillow1.position.y = 0.03;
-  SupportPillow2.rotation.z = Math.PI * 6 / 180;
+  SupportPillow2.rotation.z = (Math.PI * 6) / 180;
   SupportPillow2.position.y = 0.06;
   Pillow.position.y = 0.02 + 0.02;
   ArmrestBase1.rotation.x = Math.PI / 2;
-  ArmrestBase1.rotation.y = -Math.PI * 6 / 180;
+  ArmrestBase1.rotation.y = (-Math.PI * 6) / 180;
   ArmrestBase2.rotation.x = Math.PI / 2;
-  ArmrestBase2.rotation.y = -Math.PI * 6 / 180;
+  ArmrestBase2.rotation.y = (-Math.PI * 6) / 180;
   ArmrestBase1.position.z = 0.045 + 0.1;
   ArmrestBase2.position.z = -0.045 - 0.1;
   armrest1.position.y = 0.1;
@@ -330,9 +383,13 @@ function makeArmrest() {
   const P2 = new Three.Mesh(GeometryP2, metalGrey);
   const P3 = new Three.Mesh(GeometryP3, white);
   P1.rotation.x = Math.PI / 2;
-  P1.rotation.z = -Math.PI * 25 / 180;
-  P1.position.set(0.12 * Math.sin(P1.rotation.z), 0, -0.12 * Math.cos(P1.rotation.z));
-  P2.rotation.z = Math.PI * 100 / 180;
+  P1.rotation.z = (-Math.PI * 25) / 180;
+  P1.position.set(
+    0.12 * Math.sin(P1.rotation.z),
+    0,
+    -0.12 * Math.cos(P1.rotation.z)
+  );
+  P2.rotation.z = (Math.PI * 100) / 180;
   P2.position.x = 0.02;
   P2.position.y = 0.0035;
   node2.position.y = -0.12;
@@ -357,9 +414,13 @@ function makeArmrestMinLOD() {
   const P2 = new Three.Mesh(GeometryP2, metalGrey);
   const P3 = new Three.Mesh(GeometryP3, white);
   P1.rotation.x = Math.PI / 2;
-  P1.rotation.z = -Math.PI * 25 / 180;
-  P1.position.set(0.12 * Math.sin(P1.rotation.z), 0, -0.12 * Math.cos(P1.rotation.z));
-  P2.rotation.z = Math.PI * 100 / 180;
+  P1.rotation.z = (-Math.PI * 25) / 180;
+  P1.position.set(
+    0.12 * Math.sin(P1.rotation.z),
+    0,
+    -0.12 * Math.cos(P1.rotation.z)
+  );
+  P2.rotation.z = (Math.PI * 100) / 180;
   P2.position.x = 0.02;
   P2.position.y = 0.0035;
   node2.position.y = -0.12;
@@ -397,7 +458,14 @@ function makePillow() {
 }
 
 function makeEdge() {
-  const EdgeGeometry = new Three.CylinderGeometry(0.02, 0.02, 0.4, 32, 32, true); // openEnded is set here
+  const EdgeGeometry = new Three.CylinderGeometry(
+    0.02,
+    0.02,
+    0.4,
+    32,
+    32,
+    true
+  ); // openEnded is set here
   const AngleGeometry = new Three.SphereGeometry(0.02, 32, 32);
   const angle = new Three.Mesh(AngleGeometry, white);
   const edge = new Three.Mesh(EdgeGeometry, white);
@@ -408,15 +476,41 @@ function makeEdge() {
 
 function makeBase() {
   const base = new Three.Object3D();
-  const CylinderGeometry1 = new Three.CylinderGeometry(0.027, 0.027, 0.05, 32, 32);
+  const CylinderGeometry1 = new Three.CylinderGeometry(
+    0.027,
+    0.027,
+    0.05,
+    32,
+    32
+  );
   const CylinderGeometry2 = new Three.CylinderGeometry(0.03, 0.03, 0.2, 32, 32);
-  const CylinderGeometry3 = new Three.CylinderGeometry(0.04, 0.04, 0.06, 32, 32);
-  const CylinderCoverGeometryCylinder2 = new Three.TorusGeometry(0.04, 0.025, 32, 100);
-  const CylinderGeometry4 = new Three.CylinderGeometry(0.02, 0.02, 0.14, 32, 32);
+  const CylinderGeometry3 = new Three.CylinderGeometry(
+    0.04,
+    0.04,
+    0.06,
+    32,
+    32
+  );
+  const CylinderCoverGeometryCylinder2 = new Three.TorusGeometry(
+    0.04,
+    0.025,
+    32,
+    100
+  );
+  const CylinderGeometry4 = new Three.CylinderGeometry(
+    0.02,
+    0.02,
+    0.14,
+    32,
+    32
+  );
   const Cylinder1 = new Three.Mesh(CylinderGeometry1, metalGrey);
   const Cylinder2 = new Three.Mesh(CylinderGeometry2, metalGrey);
   const CoverCylinder1 = new Three.Mesh(CylinderGeometry3, metalGrey);
-  const CoverCylinder2 = new Three.Mesh(CylinderCoverGeometryCylinder2, metalGrey);
+  const CoverCylinder2 = new Three.Mesh(
+    CylinderCoverGeometryCylinder2,
+    metalGrey
+  );
   const Cylinder3 = new Three.Mesh(CylinderGeometry4, metalGrey);
   const Wheel = makeWheels();
   Cylinder1.position.y = -0.1 - 0.025;
@@ -436,15 +530,29 @@ function makeBase() {
 
 function makeBaseMinLOD() {
   const base = new Three.Object3D();
-  const CylinderGeometry1 = new Three.CylinderGeometry(0.027, 0.027, 0.05, 8, 8);
+  const CylinderGeometry1 = new Three.CylinderGeometry(
+    0.027,
+    0.027,
+    0.05,
+    8,
+    8
+  );
   const CylinderGeometry2 = new Three.CylinderGeometry(0.03, 0.03, 0.2, 8, 8);
   const CylinderGeometry3 = new Three.CylinderGeometry(0.04, 0.04, 0.06, 8, 8);
-  const CylinderCoverGeometryCylinder2 = new Three.TorusGeometry(0.04, 0.025, 8, 100);
+  const CylinderCoverGeometryCylinder2 = new Three.TorusGeometry(
+    0.04,
+    0.025,
+    8,
+    100
+  );
   const CylinderGeometry4 = new Three.CylinderGeometry(0.02, 0.02, 0.14, 8, 8);
   const Cylinder1 = new Three.Mesh(CylinderGeometry1, metalGrey);
   const Cylinder2 = new Three.Mesh(CylinderGeometry2, metalGrey);
   const CoverCylinder1 = new Three.Mesh(CylinderGeometry3, metalGrey);
-  const CoverCylinder2 = new Three.Mesh(CylinderCoverGeometryCylinder2, metalGrey);
+  const CoverCylinder2 = new Three.Mesh(
+    CylinderCoverGeometryCylinder2,
+    metalGrey
+  );
   const Cylinder3 = new Three.Mesh(CylinderGeometry4, metalGrey);
   const Wheel = makeWheelsMinLOD();
   Cylinder1.position.y = -0.1 - 0.025;
@@ -466,7 +574,7 @@ function makeWheels() {
   const wheels = new Three.Object3D();
   for (let i = 0; i < 5; i++) {
     const wheel = makeWheel();
-    wheel.rotation.y = 2 * Math.PI * i * 72 / 360;
+    wheel.rotation.y = (2 * Math.PI * i * 72) / 360;
     wheels.add(wheel);
   }
   return wheels;
@@ -476,7 +584,7 @@ function makeWheelsMinLOD() {
   const wheels = new Three.Object3D();
   for (let i = 0; i < 5; i++) {
     const wheel = makeWheelMinLOD();
-    wheel.rotation.y = 2 * Math.PI * i * 72 / 360;
+    wheel.rotation.y = (2 * Math.PI * i * 72) / 360;
     wheels.add(wheel);
   }
   return wheels;
@@ -500,7 +608,7 @@ function makeObjectMaxLOD() {
   chairDesk.rotation.y = -0.5 * Math.PI;
   chairDesk.position.z -= 0.02;
 
-  return chairDesk
+  return chairDesk;
 }
 
 function makeObjectMinLOD() {
@@ -518,24 +626,24 @@ function makeObjectMinLOD() {
   chairDesk.rotation.y = -0.5 * Math.PI;
   chairDesk.position.z -= 0.02;
 
-  return chairDesk
+  return chairDesk;
 }
 
 export default defineCatalogElement({
-  name: "chairdesk",
-  prototype: "items",
+  name: 'chairdesk',
+  prototype: 'items',
 
   info: {
     tag: ['furnishings', 'wood'],
-    title: "chairdesk",
-    description: "office chair",
+    title: 'chairdesk',
+    description: 'office chair',
     image: require('./chairdesk.png')
   },
 
   properties: {
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 0
       }
@@ -546,23 +654,36 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key="1" x="0" y="0" width={WIDTH} height={DEPTH}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#84e1ce" }} />
-        <text key="2" x="0" y="0"
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#84e1ce'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
     );
   },
-
 
   async render3D(element, layer, scene) {
     const newAltitude = element.properties.altitude.length;

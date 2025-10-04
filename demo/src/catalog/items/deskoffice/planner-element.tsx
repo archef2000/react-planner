@@ -1,12 +1,19 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const textureLoader = new Three.TextureLoader();
-const white = textureLoader.load(require("./white.jpg"));
+const white = textureLoader.load(require('./white.jpg'));
+
 const whiteMaterial = new Three.MeshLambertMaterial({ color: 0x000000 });
-const wood = textureLoader.load(require("./wood.jpg"));
-const glassMaterial = new Three.MeshLambertMaterial({ color: 0xc6c6c6, transparent: true, opacity: .5 });
+const wood = textureLoader.load(require('./wood.jpg'));
+
+const glassMaterial = new Three.MeshLambertMaterial({
+  color: 0xc6c6c6,
+  transparent: true,
+  opacity: 0.5
+});
 
 function makeMonitor(newDepth: number) {
   const monitor = new Three.Object3D();
@@ -32,7 +39,7 @@ function makeMonitor(newDepth: number) {
   edge4.position.set(0, 0.61, -0.21);
   monitor.add(edge4);
 
-  const cubeGeometryBase3 = new Three.BoxGeometry(0.4, 0.40, 0.05);
+  const cubeGeometryBase3 = new Three.BoxGeometry(0.4, 0.4, 0.05);
   const screen = new Three.Mesh(cubeGeometryBase3, whiteMaterial);
   screen.position.set(-0.02, 0.61, 0);
   screen.rotation.y = Math.PI / 2;
@@ -47,12 +54,21 @@ function makeMonitor(newDepth: number) {
   const deltaY = Math.abs(value.max.y - value.min.y);
   const deltaZ = Math.abs(value.max.z - value.min.z);
 
-  monitor.scale.set(newDepth / 3 / deltaX, newDepth / 4 / deltaY, newDepth / 4 / deltaZ);
+  monitor.scale.set(
+    newDepth / 3 / deltaX,
+    newDepth / 4 / deltaY,
+    newDepth / 4 / deltaZ
+  );
 
-  return monitor
+  return monitor;
 }
 
-function makeObjectMaxLOD(newWidthA: number, newWidthB: number, newHeight: number, newDepth: number) {
+function makeObjectMaxLOD(
+  newWidthA: number,
+  newWidthB: number,
+  newHeight: number,
+  newDepth: number
+) {
   const desk = new Three.Mesh();
 
   const rectShape = new Three.Shape();
@@ -98,8 +114,14 @@ function makeObjectMaxLOD(newWidthA: number, newWidthB: number, newHeight: numbe
     rectShape2.lineTo(-(newWidthB / 2 - newWidthA / 2), newDepth);
 
     hole.moveTo(newWidthB / 20, newDepth / 20);
-    hole.lineTo(newWidthA / 2 - newWidthB / 2 + newWidthB / 20, newDepth - newDepth / 20);
-    hole.lineTo(newWidthA - (newWidthA / 2 - newWidthB / 2) - newWidthB / 20, newDepth - newDepth / 20);
+    hole.lineTo(
+      newWidthA / 2 - newWidthB / 2 + newWidthB / 20,
+      newDepth - newDepth / 20
+    );
+    hole.lineTo(
+      newWidthA - (newWidthA / 2 - newWidthB / 2) - newWidthB / 20,
+      newDepth - newDepth / 20
+    );
     hole.lineTo(newWidthA - newWidthB / 20, newDepth / 20);
     rectShape2.holes.push(hole);
   } else if (newWidthA > newWidthB) {
@@ -109,9 +131,15 @@ function makeObjectMaxLOD(newWidthA: number, newWidthB: number, newHeight: numbe
     rectShape2.lineTo(-(newWidthB / 2 - newWidthA / 2), newDepth);
 
     hole.moveTo(newWidthA / 2 - newWidthB / 2 - newWidthA / 20, newDepth / 20);
-    hole.lineTo(newWidthA - (newWidthA / 2 - newWidthB / 2) + newWidthA / 20, newDepth / 20);
+    hole.lineTo(
+      newWidthA - (newWidthA / 2 - newWidthB / 2) + newWidthA / 20,
+      newDepth / 20
+    );
     hole.lineTo(newWidthB + newWidthA / 20, newDepth - newDepth / 20);
-    hole.lineTo(newWidthA - newWidthB - newWidthA / 20, newDepth - newDepth / 20);
+    hole.lineTo(
+      newWidthA - newWidthB - newWidthA / 20,
+      newDepth - newDepth / 20
+    );
     rectShape2.holes.push(hole);
   } else if (newWidthA === newWidthB) {
     rectShape2.moveTo(0, 0);
@@ -137,22 +165,35 @@ function makeObjectMaxLOD(newWidthA: number, newWidthB: number, newHeight: numbe
   mesh3.rotation.x += Math.PI / 1.5;
 
   if (newWidthA < newWidthB) {
-    mesh3.scale.set(.98, 1, 1);
+    mesh3.scale.set(0.98, 1, 1);
     mesh3.position.x += 3;
   }
-  if (newWidthA > newWidthB || newWidthA === newWidthB) mesh3.scale.set(1, 1, 1);
+  if (newWidthA > newWidthB || newWidthA === newWidthB)
+    mesh3.scale.set(1, 1, 1);
 
   const glass = new Three.Shape();
   if (newWidthA < newWidthB) {
     glass.moveTo(newWidthB / 20, newDepth / 20);
-    glass.lineTo(newWidthA / 2 - newWidthB / 2 + newWidthB / 20, newDepth - newDepth / 20);
-    glass.lineTo(newWidthA - (newWidthA / 2 - newWidthB / 2) - newWidthB / 20, newDepth - newDepth / 20);
+    glass.lineTo(
+      newWidthA / 2 - newWidthB / 2 + newWidthB / 20,
+      newDepth - newDepth / 20
+    );
+    glass.lineTo(
+      newWidthA - (newWidthA / 2 - newWidthB / 2) - newWidthB / 20,
+      newDepth - newDepth / 20
+    );
     glass.lineTo(newWidthA - newWidthB / 20, newDepth / 20);
   } else if (newWidthA > newWidthB) {
     glass.moveTo(newWidthA / 2 - newWidthB / 2 - newWidthA / 20, newDepth / 20);
-    glass.lineTo(newWidthA - (newWidthA / 2 - newWidthB / 2) + newWidthA / 20, newDepth / 20);
+    glass.lineTo(
+      newWidthA - (newWidthA / 2 - newWidthB / 2) + newWidthA / 20,
+      newDepth / 20
+    );
     glass.lineTo(newWidthB + newWidthA / 20, newDepth - newDepth / 20);
-    glass.lineTo(newWidthA - newWidthB - newWidthA / 20, newDepth - newDepth / 20);
+    glass.lineTo(
+      newWidthA - newWidthB - newWidthA / 20,
+      newDepth - newDepth / 20
+    );
   } else if (newWidthA === newWidthB) {
     glass.moveTo(newWidthA / 20, newDepth / 20);
     glass.lineTo(newWidthA - newWidthA / 20, newDepth / 20);
@@ -165,20 +206,24 @@ function makeObjectMaxLOD(newWidthA: number, newWidthB: number, newHeight: numbe
   mesh4.position.y += newHeight;
   mesh4.rotation.x += Math.PI / 2;
 
-  const geometry5 = new Three.BoxGeometry(newWidthA, newDepth / 20, 1.6 * newHeight);
+  const geometry5 = new Three.BoxGeometry(
+    newWidthA,
+    newDepth / 20,
+    1.6 * newHeight
+  );
   const mesh5 = new Three.Mesh(geometry5, woodTexture);
   mesh5.rotation.x += Math.PI / 2;
   mesh5.position.set(newWidthA / 2, newHeight / 5, 0);
 
-  let c;
+  let c = 0;
 
   if (newWidthA < newWidthB) {
-    c = (newWidthB / 2 - newWidthA / 2);
+    c = newWidthB / 2 - newWidthA / 2;
   } else if (newWidthA > newWidthB) {
-    c = (newWidthA / 2 - newWidthB / 2);
+    c = newWidthA / 2 - newWidthB / 2;
   }
 
-  const value = (newDepth) / c;
+  const value = newDepth / c;
   const angle = Math.atan(value);
 
   let edge = Math.sqrt(Math.pow(c, 2) + Math.pow(newDepth, 2));
@@ -190,39 +235,57 @@ function makeObjectMaxLOD(newWidthA: number, newWidthB: number, newHeight: numbe
   mesh6.rotation.x += Math.PI / 2;
 
   if (newWidthA < newWidthB) {
-    mesh6.position.set(-(newWidthB / 2 - newWidthA / 2) / 2, newHeight / 5, newDepth / 2);
+    mesh6.position.set(
+      -(newWidthB / 2 - newWidthA / 2) / 2,
+      newHeight / 5,
+      newDepth / 2
+    );
     mesh6.rotation.z -= angle;
   } else if (newWidthA > newWidthB) {
-    mesh6.position.set((newWidthA - (newWidthA / 2 + newWidthB / 2)) / 2, newHeight / 5, newDepth / 2);
+    mesh6.position.set(
+      (newWidthA - (newWidthA / 2 + newWidthB / 2)) / 2,
+      newHeight / 5,
+      newDepth / 2
+    );
     mesh6.rotation.z += angle;
   } else if (newWidthA === newWidthB) {
     mesh6.position.set(0, newHeight / 5, newDepth / 2);
     mesh6.rotation.z += Math.PI / 2;
   }
 
-
   const mesh7 = mesh6.clone();
   if (newWidthA < newWidthB) {
-    mesh7.position.set(newWidthB - 1.5 * (newWidthB / 2 - newWidthA / 2), newHeight / 5, newDepth / 2);
+    mesh7.position.set(
+      newWidthB - 1.5 * (newWidthB / 2 - newWidthA / 2),
+      newHeight / 5,
+      newDepth / 2
+    );
     mesh7.rotation.z = -Math.PI + angle;
   } else if (newWidthA > newWidthB) {
-    mesh7.position.set(newWidthA - (newWidthA / 2 - newWidthB / 2) / 2, newHeight / 5, newDepth / 2);
+    mesh7.position.set(
+      newWidthA - (newWidthA / 2 - newWidthB / 2) / 2,
+      newHeight / 5,
+      newDepth / 2
+    );
     mesh7.rotation.z = -Math.PI - angle;
   } else if (newWidthA === newWidthB) {
     mesh7.position.set(newWidthB, newHeight / 5, newDepth / 2);
   }
 
-  let index: number;
-  let indexMonitor: number;
-  let lastPosition: number;
-  let lastPositionMonitor: number;
-  let incrPosition: number;
+  let index = 0;
+  let indexMonitor = 0;
+  let lastPosition = 0;
+  let lastPositionMonitor = 0;
+  let incrPosition = 0;
 
   if (newWidthA < newWidthB) {
     index = 0;
     indexMonitor = newWidthB / 2 - newWidthA / 2;
     lastPosition = newWidthB - 2 * (newWidthB / 2 - newWidthA / 2);
-    lastPositionMonitor = newWidthB - 2 * (newWidthB / 2 - newWidthA / 2) - (newWidthB / 2 - newWidthA / 2);
+    lastPositionMonitor =
+      newWidthB -
+      2 * (newWidthB / 2 - newWidthA / 2) -
+      (newWidthB / 2 - newWidthA / 2);
     incrPosition = newWidthB / 2 - newWidthA / 2;
   } else if (newWidthA > newWidthB) {
     index = newWidthA / 2 - newWidthB / 2;
@@ -239,7 +302,11 @@ function makeObjectMaxLOD(newWidthA: number, newWidthB: number, newHeight: numbe
   }
 
   for (let i = index + incrPosition; i < lastPosition; i += incrPosition) {
-    const geometry8 = new Three.BoxGeometry(newDepth, newDepth / 20, 1.55 * newHeight);
+    const geometry8 = new Three.BoxGeometry(
+      newDepth,
+      newDepth / 20,
+      1.55 * newHeight
+    );
     const mesh8 = new Three.Mesh(geometry8, woodTexture);
     mesh8.rotation.x = Math.PI / 2;
     mesh8.rotation.z = Math.PI / 2;
@@ -257,7 +324,11 @@ function makeObjectMaxLOD(newWidthA: number, newWidthB: number, newHeight: numbe
   desk.add(mesh6);
   desk.add(mesh7);
 
-  for (let i = indexMonitor + incrPosition / 2; i < lastPositionMonitor; i += incrPosition) {
+  for (
+    let i = indexMonitor + incrPosition / 2;
+    i < lastPositionMonitor;
+    i += incrPosition
+  ) {
     const monitor2 = makeMonitor(newDepth);
     monitor2.position.x = i;
     monitor2.position.z += 1.15 * newDepth;
@@ -265,10 +336,15 @@ function makeObjectMaxLOD(newWidthA: number, newWidthB: number, newHeight: numbe
     desk.add(monitor2);
   }
 
-  return desk
+  return desk;
 }
 
-function makeObjectMinLOD(newWidthA: number, newWidthB: number, newHeight: number, newDepth: number) {
+function makeObjectMinLOD(
+  newWidthA: number,
+  newWidthB: number,
+  newHeight: number,
+  newDepth: number
+) {
   const desk = new Three.Mesh();
 
   const rectShape = new Three.Shape();
@@ -314,8 +390,14 @@ function makeObjectMinLOD(newWidthA: number, newWidthB: number, newHeight: numbe
     rectShape2.lineTo(-(newWidthB / 2 - newWidthA / 2), newDepth);
 
     hole.moveTo(newWidthB / 20, newDepth / 20);
-    hole.lineTo(newWidthA / 2 - newWidthB / 2 + newWidthB / 20, newDepth - newDepth / 20);
-    hole.lineTo(newWidthA - (newWidthA / 2 - newWidthB / 2) - newWidthB / 20, newDepth - newDepth / 20);
+    hole.lineTo(
+      newWidthA / 2 - newWidthB / 2 + newWidthB / 20,
+      newDepth - newDepth / 20
+    );
+    hole.lineTo(
+      newWidthA - (newWidthA / 2 - newWidthB / 2) - newWidthB / 20,
+      newDepth - newDepth / 20
+    );
     hole.lineTo(newWidthA - newWidthB / 20, newDepth / 20);
     rectShape2.holes.push(hole);
   } else if (newWidthA > newWidthB) {
@@ -325,9 +407,15 @@ function makeObjectMinLOD(newWidthA: number, newWidthB: number, newHeight: numbe
     rectShape2.lineTo(-(newWidthB / 2 - newWidthA / 2), newDepth);
 
     hole.moveTo(newWidthA / 2 - newWidthB / 2 - newWidthA / 20, newDepth / 20);
-    hole.lineTo(newWidthA - (newWidthA / 2 - newWidthB / 2) + newWidthA / 20, newDepth / 20);
+    hole.lineTo(
+      newWidthA - (newWidthA / 2 - newWidthB / 2) + newWidthA / 20,
+      newDepth / 20
+    );
     hole.lineTo(newWidthB + newWidthA / 20, newDepth - newDepth / 20);
-    hole.lineTo(newWidthA - newWidthB - newWidthA / 20, newDepth - newDepth / 20);
+    hole.lineTo(
+      newWidthA - newWidthB - newWidthA / 20,
+      newDepth - newDepth / 20
+    );
     rectShape2.holes.push(hole);
   } else if (newWidthA === newWidthB) {
     rectShape2.moveTo(0, 0);
@@ -353,22 +441,35 @@ function makeObjectMinLOD(newWidthA: number, newWidthB: number, newHeight: numbe
   mesh3.rotation.x += Math.PI / 1.5;
 
   if (newWidthA < newWidthB) {
-    mesh3.scale.set(.98, 1, 1);
+    mesh3.scale.set(0.98, 1, 1);
     mesh3.position.x += 3;
   }
-  if (newWidthA > newWidthB || newWidthA === newWidthB) mesh3.scale.set(1, 1, 1);
+  if (newWidthA > newWidthB || newWidthA === newWidthB)
+    mesh3.scale.set(1, 1, 1);
 
   const glass = new Three.Shape();
   if (newWidthA < newWidthB) {
     glass.moveTo(newWidthB / 20, newDepth / 20);
-    glass.lineTo(newWidthA / 2 - newWidthB / 2 + newWidthB / 20, newDepth - newDepth / 20);
-    glass.lineTo(newWidthA - (newWidthA / 2 - newWidthB / 2) - newWidthB / 20, newDepth - newDepth / 20);
+    glass.lineTo(
+      newWidthA / 2 - newWidthB / 2 + newWidthB / 20,
+      newDepth - newDepth / 20
+    );
+    glass.lineTo(
+      newWidthA - (newWidthA / 2 - newWidthB / 2) - newWidthB / 20,
+      newDepth - newDepth / 20
+    );
     glass.lineTo(newWidthA - newWidthB / 20, newDepth / 20);
   } else if (newWidthA > newWidthB) {
     glass.moveTo(newWidthA / 2 - newWidthB / 2 - newWidthA / 20, newDepth / 20);
-    glass.lineTo(newWidthA - (newWidthA / 2 - newWidthB / 2) + newWidthA / 20, newDepth / 20);
+    glass.lineTo(
+      newWidthA - (newWidthA / 2 - newWidthB / 2) + newWidthA / 20,
+      newDepth / 20
+    );
     glass.lineTo(newWidthB + newWidthA / 20, newDepth - newDepth / 20);
-    glass.lineTo(newWidthA - newWidthB - newWidthA / 20, newDepth - newDepth / 20);
+    glass.lineTo(
+      newWidthA - newWidthB - newWidthA / 20,
+      newDepth - newDepth / 20
+    );
   } else if (newWidthA === newWidthB) {
     glass.moveTo(newWidthA / 20, newDepth / 20);
     glass.lineTo(newWidthA - newWidthA / 20, newDepth / 20);
@@ -377,25 +478,33 @@ function makeObjectMinLOD(newWidthA: number, newWidthB: number, newHeight: numbe
   }
 
   const geometry4 = new Three.ExtrudeGeometry(glass, extrudeSettings);
-  const glassMaterial = new Three.MeshLambertMaterial({ color: 0xc6c6c6, transparent: true, opacity: .5 });
+  const glassMaterial = new Three.MeshLambertMaterial({
+    color: 0xc6c6c6,
+    transparent: true,
+    opacity: 0.5
+  });
   const mesh4 = new Three.Mesh(geometry4, glassMaterial);
   mesh4.position.y += newHeight;
   mesh4.rotation.x += Math.PI / 2;
 
-  const geometry5 = new Three.BoxGeometry(newWidthA, newDepth / 20, 1.6 * newHeight);
+  const geometry5 = new Three.BoxGeometry(
+    newWidthA,
+    newDepth / 20,
+    1.6 * newHeight
+  );
   const mesh5 = new Three.Mesh(geometry5, woodTexture);
   mesh5.rotation.x += Math.PI / 2;
   mesh5.position.set(newWidthA / 2, newHeight / 5, 0);
 
-  let c: number;
+  let c = 0;
 
   if (newWidthA < newWidthB) {
-    c = (newWidthB / 2 - newWidthA / 2);
+    c = newWidthB / 2 - newWidthA / 2;
   } else if (newWidthA > newWidthB) {
-    c = (newWidthA / 2 - newWidthB / 2);
+    c = newWidthA / 2 - newWidthB / 2;
   }
 
-  const value = (newDepth) / c;
+  const value = newDepth / c;
   const angle = Math.atan(value);
 
   let edge = Math.sqrt(Math.pow(c, 2) + Math.pow(newDepth, 2));
@@ -407,10 +516,18 @@ function makeObjectMinLOD(newWidthA: number, newWidthB: number, newHeight: numbe
   mesh6.rotation.x += Math.PI / 2;
 
   if (newWidthA < newWidthB) {
-    mesh6.position.set(-(newWidthB / 2 - newWidthA / 2) / 2, newHeight / 5, newDepth / 2);
+    mesh6.position.set(
+      -(newWidthB / 2 - newWidthA / 2) / 2,
+      newHeight / 5,
+      newDepth / 2
+    );
     mesh6.rotation.z -= angle;
   } else if (newWidthA > newWidthB) {
-    mesh6.position.set((newWidthA - (newWidthA / 2 + newWidthB / 2)) / 2, newHeight / 5, newDepth / 2);
+    mesh6.position.set(
+      (newWidthA - (newWidthA / 2 + newWidthB / 2)) / 2,
+      newHeight / 5,
+      newDepth / 2
+    );
     mesh6.rotation.z += angle;
   } else if (newWidthA === newWidthB) {
     mesh6.position.set(0, newHeight / 5, newDepth / 2);
@@ -419,14 +536,20 @@ function makeObjectMinLOD(newWidthA: number, newWidthB: number, newHeight: numbe
 
   const mesh7 = mesh6.clone();
   if (newWidthA < newWidthB) {
-    mesh7.position.set(newWidthB - 1.5 * (newWidthB / 2 - newWidthA / 2), newHeight / 5, newDepth / 2);
+    mesh7.position.set(
+      newWidthB - 1.5 * (newWidthB / 2 - newWidthA / 2),
+      newHeight / 5,
+      newDepth / 2
+    );
     mesh7.rotation.z = -Math.PI + angle;
-  }
-  else if (newWidthA > newWidthB) {
-    mesh7.position.set(newWidthA - (newWidthA / 2 - newWidthB / 2) / 2, newHeight / 5, newDepth / 2);
+  } else if (newWidthA > newWidthB) {
+    mesh7.position.set(
+      newWidthA - (newWidthA / 2 - newWidthB / 2) / 2,
+      newHeight / 5,
+      newDepth / 2
+    );
     mesh7.rotation.z = -Math.PI - angle;
-  }
-  else if (newWidthA === newWidthB) {
+  } else if (newWidthA === newWidthB) {
     mesh7.position.set(newWidthB, newHeight / 5, newDepth / 2);
   }
 
@@ -438,52 +561,52 @@ function makeObjectMinLOD(newWidthA: number, newWidthB: number, newHeight: numbe
   desk.add(mesh6);
   desk.add(mesh7);
 
-  return desk
+  return desk;
 }
 
 export default defineCatalogElement({
-  name: "desk",
-  prototype: "items",
+  name: 'desk',
+  prototype: 'items',
 
   info: {
     tag: ['furnishings', 'wood'],
-    title: "desk",
-    description: "desk",
+    title: 'desk',
+    description: 'desk',
     image: require('./desk.png')
   },
 
   properties: {
     widthA: {
-      label: "larghezza lato A",
-      type: "length-measure",
+      label: 'larghezza lato A',
+      type: 'length-measure',
       defaultValue: {
         length: 400
       }
     },
     widthB: {
-      label: "larghezza lato B",
-      type: "length-measure",
+      label: 'larghezza lato B',
+      type: 'length-measure',
       defaultValue: {
         length: 400
       }
     },
     depth: {
-      label: "depth",
-      type: "length-measure",
+      label: 'depth',
+      type: 'length-measure',
       defaultValue: {
         length: 90
       }
     },
     height: {
-      label: "height",
-      type: "length-measure",
+      label: 'height',
+      type: 'length-measure',
       defaultValue: {
         length: 100
       }
     },
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 0
       }
@@ -497,22 +620,34 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-newWidthA / 2},${-newDepth / 2})`}>
-        <path key="1" d={`M ${newWidthA / 2 - newWidthB / 2} 0 l ${-newWidthA / 2 + newWidthB / 2} ${newDepth} l ${newWidthA} 0 l ${-newWidthA / 2 + newWidthB / 2}${-newDepth} l ${-newWidthB} 0`} stroke="red"
+        <path
+          key="1"
+          d={`M ${newWidthA / 2 - newWidthB / 2} 0 l ${-newWidthA / 2 + newWidthB / 2} ${newDepth} l ${newWidthA} 0 l ${-newWidthA / 2 + newWidthB / 2}${-newDepth} l ${-newWidthB} 0`}
+          stroke="red"
           transform={`translate(0, ${newDepth}) scale(1,-1)`}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#84e1ce" }} />
-        <text key="5" x="0" y="0"
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#84e1ce'
+          }}
+        />
+        <text
+          key="5"
+          x="0"
+          y="0"
           transform={`translate(${newWidthA / 2}, ${newDepth / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -525,7 +660,9 @@ export default defineCatalogElement({
     /********** lod max **********/
 
     const scrivaniaMaxLOD = new Three.Object3D();
-    scrivaniaMaxLOD.add(makeObjectMaxLOD(newWidthA, newWidthB, newHeight, newDepth).clone());
+    scrivaniaMaxLOD.add(
+      makeObjectMaxLOD(newWidthA, newWidthB, newHeight, newDepth).clone()
+    );
 
     const aa = new Three.Box3().setFromObject(scrivaniaMaxLOD);
 
@@ -536,42 +673,65 @@ export default defineCatalogElement({
     scrivaniaMaxLOD.position.y += newHeight / 2 + newAltitude;
     scrivaniaMaxLOD.position.z += newDepth / 2;
     if (newWidthA < newWidthB)
-      scrivaniaMaxLOD.position.x += newWidthB / 2 - (newWidthB / 2 - newWidthA / 2);
-    if (newWidthA > newWidthB)
-      scrivaniaMaxLOD.position.x += newWidthA / 2;
-    if (newWidthA === newWidthB)
-      scrivaniaMaxLOD.position.x += newWidthB / 2;
+      scrivaniaMaxLOD.position.x +=
+        newWidthB / 2 - (newWidthB / 2 - newWidthA / 2);
+    if (newWidthA > newWidthB) scrivaniaMaxLOD.position.x += newWidthA / 2;
+    if (newWidthA === newWidthB) scrivaniaMaxLOD.position.x += newWidthB / 2;
 
     scrivaniaMaxLOD.rotation.y += Math.PI;
     if (newWidthA < newWidthB)
-      scrivaniaMaxLOD.scale.set(newWidthB / deltaX, newDepth / deltaY, newHeight / deltaZ);
+      scrivaniaMaxLOD.scale.set(
+        newWidthB / deltaX,
+        newDepth / deltaY,
+        newHeight / deltaZ
+      );
     if (newWidthA > newWidthB)
-      scrivaniaMaxLOD.scale.set(newWidthA / deltaX, newDepth / deltaY, newHeight / deltaZ);
+      scrivaniaMaxLOD.scale.set(
+        newWidthA / deltaX,
+        newDepth / deltaY,
+        newHeight / deltaZ
+      );
     if (newWidthA === newWidthB)
-      scrivaniaMaxLOD.scale.set(newWidthA / deltaX, newDepth / deltaY, newHeight / deltaZ);
+      scrivaniaMaxLOD.scale.set(
+        newWidthA / deltaX,
+        newDepth / deltaY,
+        newHeight / deltaZ
+      );
 
     /********** lod min **********/
 
     const scrivaniaMinLOD = new Three.Object3D();
-    scrivaniaMinLOD.add(makeObjectMinLOD(newWidthA, newWidthB, newHeight, newDepth).clone());
+    scrivaniaMinLOD.add(
+      makeObjectMinLOD(newWidthA, newWidthB, newHeight, newDepth).clone()
+    );
 
     scrivaniaMinLOD.position.y += newHeight / 2 + newAltitude;
     scrivaniaMinLOD.position.z += newDepth / 2;
     if (newWidthA < newWidthB)
-      scrivaniaMinLOD.position.x += newWidthB / 2 - (newWidthB / 2 - newWidthA / 2);
-    if (newWidthA > newWidthB)
-      scrivaniaMinLOD.position.x += newWidthA / 2;
-    if (newWidthA === newWidthB)
-      scrivaniaMinLOD.position.x += newWidthB / 2;
+      scrivaniaMinLOD.position.x +=
+        newWidthB / 2 - (newWidthB / 2 - newWidthA / 2);
+    if (newWidthA > newWidthB) scrivaniaMinLOD.position.x += newWidthA / 2;
+    if (newWidthA === newWidthB) scrivaniaMinLOD.position.x += newWidthB / 2;
 
     scrivaniaMinLOD.rotation.y += Math.PI;
     if (newWidthA < newWidthB)
-      scrivaniaMinLOD.scale.set(newWidthB / deltaX, newDepth / deltaY, newHeight / deltaZ);
+      scrivaniaMinLOD.scale.set(
+        newWidthB / deltaX,
+        newDepth / deltaY,
+        newHeight / deltaZ
+      );
     if (newWidthA > newWidthB)
-      scrivaniaMinLOD.scale.set(newWidthA / deltaX, newDepth / deltaY, newHeight / deltaZ);
+      scrivaniaMinLOD.scale.set(
+        newWidthA / deltaX,
+        newDepth / deltaY,
+        newHeight / deltaZ
+      );
     if (newWidthA === newWidthB)
-      scrivaniaMinLOD.scale.set(newWidthA / deltaX, newDepth / deltaY, newHeight / deltaZ);
-
+      scrivaniaMinLOD.scale.set(
+        newWidthA / deltaX,
+        newDepth / deltaY,
+        newHeight / deltaZ
+      );
 
     /*** add all Level of Detail ***/
 

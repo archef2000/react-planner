@@ -1,16 +1,17 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 100;
 const DEPTH = 80;
 const HEIGHT = 100;
 
 const black = new Three.MeshLambertMaterial({ color: 0x000000 });
-const grey = new Three.MeshLambertMaterial({ color: 0xC0C0C0 });
-const red = new Three.MeshLambertMaterial({ color: 0xCC0000 });
+const grey = new Three.MeshLambertMaterial({ color: 0xc0c0c0 });
+const red = new Three.MeshLambertMaterial({ color: 0xcc0000 });
 const blue = new Three.MeshLambertMaterial({ color: 0x000066 });
-const yellow = new Three.MeshLambertMaterial({ color: 0xF7DA00 });
+const yellow = new Three.MeshLambertMaterial({ color: 0xf7da00 });
 const green = new Three.MeshLambertMaterial({ color: 0x006633 });
 
 const objectMaxLOD = makeObjectMaxLOD();
@@ -18,27 +19,45 @@ const objectMinLOD = makeObjectMinLOD();
 
 function makeObjectMaxLOD() {
   //base
-  const cleaning_cart = new Three.Mesh(new Three.BoxGeometry(1, 0.75, 0.05), grey);
+  const cleaning_cart = new Three.Mesh(
+    new Three.BoxGeometry(1, 0.75, 0.05),
+    grey
+  );
 
   for (let rx = -0.4; rx <= 0.45; rx += 0.85) {
     for (let rz = -0.3; rz <= 0.3; rz += 0.6) {
-      const tire = new Three.Mesh(new Three.CylinderGeometry(0.08, 0.08, 0.05, 32), black);
+      const tire = new Three.Mesh(
+        new Three.CylinderGeometry(0.08, 0.08, 0.05, 32),
+        black
+      );
       tire.position.set(rx, rz, 0.15);
       cleaning_cart.add(tire);
 
-      const bearing = new Three.Mesh(new Three.CylinderGeometry(0.06, 0.06, 0.06, 32), grey);
+      const bearing = new Three.Mesh(
+        new Three.CylinderGeometry(0.06, 0.06, 0.06, 32),
+        grey
+      );
       tire.add(bearing);
 
-      const nut = new Three.Mesh(new Three.CylinderGeometry(0.01, 0.01, 0.08, 6), black);
+      const nut = new Three.Mesh(
+        new Three.CylinderGeometry(0.01, 0.01, 0.08, 6),
+        black
+      );
       nut.position.set(0, 0, 0);
       tire.add(nut);
 
-      const coverUp = new Three.Mesh(new Three.CylinderGeometry(0.06, 0.06, 0.01, 32), grey);
+      const coverUp = new Three.Mesh(
+        new Three.CylinderGeometry(0.06, 0.06, 0.01, 32),
+        grey
+      );
       coverUp.rotation.x = 0.5 * Math.PI;
       coverUp.position.set(-0.03, 0, -0.12);
       tire.add(coverUp);
 
-      const coverDown = new Three.Mesh(new Three.CylinderGeometry(0.03725, 0.03725, 0.03, 32), black);
+      const coverDown = new Three.Mesh(
+        new Three.CylinderGeometry(0.03725, 0.03725, 0.03, 32),
+        black
+      );
       coverDown.rotation.x = 0.5 * Math.PI;
       coverDown.position.set(-0.03, 0, -0.1);
       tire.add(coverDown);
@@ -63,7 +82,10 @@ function makeObjectMaxLOD() {
       p2_right.position.set(0, 0.035, -0.04);
       tire.add(p2_right);
 
-      const p3 = new Three.Mesh(new Three.BoxGeometry(0.095, 0.075, 0.01), grey);
+      const p3 = new Three.Mesh(
+        new Three.BoxGeometry(0.095, 0.075, 0.01),
+        grey
+      );
       p3.position.set(-0.02, 0, -0.09);
       tire.add(p3);
     }
@@ -115,7 +137,7 @@ function makeObjectMaxLOD() {
     cleaning_cart.add(drawerBorder_2);
 
     //long side
-    const longSideGeometry = new Three.BoxGeometry(0.02, 0.20, 0.75);
+    const longSideGeometry = new Three.BoxGeometry(0.02, 0.2, 0.75);
     const longSide_1 = new Three.Mesh(longSideGeometry, blue);
     longSide_1.position.set(0.405, 0, cz + 0.1);
     longSide_1.rotation.x = 0.5 * Math.PI;
@@ -139,7 +161,10 @@ function makeObjectMaxLOD() {
     cleaning_cart.add(shortSide_2);
 
     //bottom side
-    const bottomSide = new Three.Mesh(new Three.BoxGeometry(0.355, 0.75, 0.015), blue);
+    const bottomSide = new Three.Mesh(
+      new Three.BoxGeometry(0.355, 0.75, 0.015),
+      blue
+    );
     bottomSide.position.set(0.2375, 0, cz + 0.205);
     cleaning_cart.add(bottomSide);
   }
@@ -162,12 +187,18 @@ function makeObjectMaxLOD() {
   bucket_4.position.set(-0.25, 0.35, -0.05);
   cleaning_cart.add(bucket_4);
 
-  const bucket_5 = new Three.Mesh(new Three.BoxGeometry(0.05, 0.65, 0.05), grey);
+  const bucket_5 = new Three.Mesh(
+    new Three.BoxGeometry(0.05, 0.65, 0.05),
+    grey
+  );
   bucket_5.position.set(-0.475, 0, -0.05);
   cleaning_cart.add(bucket_5);
 
   //waste basket top support
-  const wasteSupport_1 = new Three.Mesh(new Three.BoxGeometry(0.5, 0.05, 0.05), grey);
+  const wasteSupport_1 = new Three.Mesh(
+    new Three.BoxGeometry(0.5, 0.05, 0.05),
+    grey
+  );
   wasteSupport_1.position.set(0.7, -0.35, -0.05);
   cleaning_cart.add(wasteSupport_1);
 
@@ -175,12 +206,18 @@ function makeObjectMaxLOD() {
   wasteSupport_2.position.set(0.7, 0.35, -0.05);
   cleaning_cart.add(wasteSupport_2);
 
-  const wasteSupport_3 = new Three.Mesh(new Three.BoxGeometry(0.05, 0.65, 0.05), grey);
+  const wasteSupport_3 = new Three.Mesh(
+    new Three.BoxGeometry(0.05, 0.65, 0.05),
+    grey
+  );
   wasteSupport_3.position.set(0.925, 0, -0.05);
   cleaning_cart.add(wasteSupport_3);
 
   //waste basket support down
-  const wasteSupportDown_1 = new Three.Mesh(new Three.BoxGeometry(0.5, 0.05, 0.05), grey);
+  const wasteSupportDown_1 = new Three.Mesh(
+    new Three.BoxGeometry(0.5, 0.05, 0.05),
+    grey
+  );
   wasteSupportDown_1.position.set(0.7, -0.35, -0.85);
   cleaning_cart.add(wasteSupportDown_1);
 
@@ -188,12 +225,18 @@ function makeObjectMaxLOD() {
   wasteSupportDown_2.position.set(0.7, 0.35, -0.85);
   cleaning_cart.add(wasteSupportDown_2);
 
-  const wasteSupportDown_3 = new Three.Mesh(new Three.BoxGeometry(0.05, 0.65, 0.05), grey);
+  const wasteSupportDown_3 = new Three.Mesh(
+    new Three.BoxGeometry(0.05, 0.65, 0.05),
+    grey
+  );
   wasteSupportDown_3.position.set(0.925, 0, -0.85);
   cleaning_cart.add(wasteSupportDown_3);
 
   //waste cover
-  const wasteCover = new Three.Mesh(new Three.BoxGeometry(0.45, 0.775, 0.05), blue);
+  const wasteCover = new Three.Mesh(
+    new Three.BoxGeometry(0.45, 0.775, 0.05),
+    blue
+  );
   wasteCover.position.set(0.745, 0, -0.9);
   cleaning_cart.add(wasteCover);
 
@@ -217,29 +260,44 @@ function makeObjectMaxLOD() {
 
   //bucket on the top
   for (let sty = -0.3; sty <= 0.3; sty += 0.6) {
-    sty === -0.3 ? color1 = red : color1 = blue;
-    sty === -0.3 ? delta1 = -1 : delta1 = 1;
+    sty === -0.3 ? (color1 = red) : (color1 = blue);
+    sty === -0.3 ? (delta1 = -1) : (delta1 = 1);
 
-    const bucketTop_1 = new Three.Mesh(new Three.BoxGeometry(0.2, 0.3, 0.05), color1);
+    const bucketTop_1 = new Three.Mesh(
+      new Three.BoxGeometry(0.2, 0.3, 0.05),
+      color1
+    );
     bucketTop_1.position.set(0.13, sty - delta1 * 0.14, -0.85);
     cleaning_cart.add(bucketTop_1);
 
-    const bucketTop_2 = new Three.Mesh(new Three.BoxGeometry(0.2, 0.15, 0.02), color1);
+    const bucketTop_2 = new Three.Mesh(
+      new Three.BoxGeometry(0.2, 0.15, 0.02),
+      color1
+    );
     bucketTop_2.position.set(0.13, sty - delta1 * 0.29, -0.9);
     bucketTop_2.rotation.x = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop_2);
 
-    const bucketTop_3 = new Three.Mesh(new Three.BoxGeometry(0.2, 0.15, 0.02), color1);
+    const bucketTop_3 = new Three.Mesh(
+      new Three.BoxGeometry(0.2, 0.15, 0.02),
+      color1
+    );
     bucketTop_3.position.set(0.13, sty, -0.9);
     bucketTop_3.rotation.x = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop_3);
 
-    const bucketTop_4 = new Three.Mesh(new Three.BoxGeometry(0.15, 0.3, 0.02), color1);
+    const bucketTop_4 = new Three.Mesh(
+      new Three.BoxGeometry(0.15, 0.3, 0.02),
+      color1
+    );
     bucketTop_4.position.set(0.04, sty - delta1 * 0.14, -0.9);
     bucketTop_4.rotation.y = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop_4);
 
-    const bucketTop_5 = new Three.Mesh(new Three.BoxGeometry(0.15, 0.3, 0.02), color1);
+    const bucketTop_5 = new Three.Mesh(
+      new Three.BoxGeometry(0.15, 0.3, 0.02),
+      color1
+    );
     bucketTop_5.position.set(0.22, sty - delta1 * 0.14, -0.9);
     bucketTop_5.rotation.y = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop_5);
@@ -250,29 +308,44 @@ function makeObjectMaxLOD() {
 
   //bucket on the top
   for (let sty = -0.3; sty <= 0.3; sty += 0.6) {
-    sty === -0.3 ? color2 = yellow : color2 = green;
-    sty === -0.3 ? delta2 = -1 : delta2 = 1;
+    sty === -0.3 ? (color2 = yellow) : (color2 = green);
+    sty === -0.3 ? (delta2 = -1) : (delta2 = 1);
 
-    const bucketTop2_p1 = new Three.Mesh(new Three.BoxGeometry(0.2, 0.3, 0.05), color2);
+    const bucketTop2_p1 = new Three.Mesh(
+      new Three.BoxGeometry(0.2, 0.3, 0.05),
+      color2
+    );
     bucketTop2_p1.position.set(0.35, sty - delta2 * 0.14, -0.85);
     cleaning_cart.add(bucketTop2_p1);
 
-    const bucketTop2_p2 = new Three.Mesh(new Three.BoxGeometry(0.2, 0.15, 0.02), color2);
+    const bucketTop2_p2 = new Three.Mesh(
+      new Three.BoxGeometry(0.2, 0.15, 0.02),
+      color2
+    );
     bucketTop2_p2.position.set(0.35, sty - delta2 * 0.29, -0.9);
     bucketTop2_p2.rotation.x = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop2_p2);
 
-    const bucketTop2_p3 = new Three.Mesh(new Three.BoxGeometry(0.2, 0.15, 0.02), color2);
+    const bucketTop2_p3 = new Three.Mesh(
+      new Three.BoxGeometry(0.2, 0.15, 0.02),
+      color2
+    );
     bucketTop2_p3.position.set(0.35, sty, -0.9);
     bucketTop2_p3.rotation.x = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop2_p3);
 
-    const bucketTop2_p4 = new Three.Mesh(new Three.BoxGeometry(0.15, 0.3, 0.02), color2);
+    const bucketTop2_p4 = new Three.Mesh(
+      new Three.BoxGeometry(0.15, 0.3, 0.02),
+      color2
+    );
     bucketTop2_p4.position.set(0.26, sty - delta2 * 0.14, -0.9);
     bucketTop2_p4.rotation.y = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop2_p4);
 
-    const bucketTop2_p5 = new Three.Mesh(new Three.BoxGeometry(0.15, 0.3, 0.02), color2);
+    const bucketTop2_p5 = new Three.Mesh(
+      new Three.BoxGeometry(0.15, 0.3, 0.02),
+      color2
+    );
     bucketTop2_p5.position.set(0.44, sty - delta2 * 0.14, -0.9);
     bucketTop2_p5.rotation.y = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop2_p5);
@@ -283,57 +356,87 @@ function makeObjectMaxLOD() {
 
   //bucket on the top
   for (let sdy = -0.3; sdy <= 0.3; sdy += 0.6) {
-    sdy === -0.3 ? color = red : color = blue;
-    sdy === -0.3 ? delta = -1 : delta = 1;
+    sdy === -0.3 ? (color = red) : (color = blue);
+    sdy === -0.3 ? (delta = -1) : (delta = 1);
 
-    const bucketTop3_p1 = new Three.Mesh(new Three.BoxGeometry(0.4, 0.3, 0.05), color);
+    const bucketTop3_p1 = new Three.Mesh(
+      new Three.BoxGeometry(0.4, 0.3, 0.05),
+      color
+    );
     bucketTop3_p1.position.set(-0.22, sdy - delta * 0.14, -0.05);
     cleaning_cart.add(bucketTop3_p1);
 
-    const bucketTop3_p2 = new Three.Mesh(new Three.BoxGeometry(0.4, 0.25, 0.02), color);
+    const bucketTop3_p2 = new Three.Mesh(
+      new Three.BoxGeometry(0.4, 0.25, 0.02),
+      color
+    );
     bucketTop3_p2.position.set(-0.22, sdy - delta * 0.28, -0.2);
     bucketTop3_p2.rotation.x = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop3_p2);
 
-    const bucketTop3_p3 = new Three.Mesh(new Three.BoxGeometry(0.4, 0.25, 0.02), color);
+    const bucketTop3_p3 = new Three.Mesh(
+      new Three.BoxGeometry(0.4, 0.25, 0.02),
+      color
+    );
     bucketTop3_p3.position.set(-0.22, sdy, -0.2);
     bucketTop3_p3.rotation.x = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop3_p3);
 
-    const bucketTop3_p4 = new Three.Mesh(new Three.BoxGeometry(0.25, 0.3, 0.02), color);
+    const bucketTop3_p4 = new Three.Mesh(
+      new Three.BoxGeometry(0.25, 0.3, 0.02),
+      color
+    );
     bucketTop3_p4.position.set(-0.41, sdy - delta * 0.14, -0.2);
     bucketTop3_p4.rotation.y = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop3_p4);
 
-    const bucketTop3_p5 = new Three.Mesh(new Three.BoxGeometry(0.25, 0.3, 0.02), color);
+    const bucketTop3_p5 = new Three.Mesh(
+      new Three.BoxGeometry(0.25, 0.3, 0.02),
+      color
+    );
     bucketTop3_p5.position.set(-0.03, sdy - delta * 0.14, -0.2);
     bucketTop3_p5.rotation.y = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop3_p5);
   }
 
-  for (let scy = -0.45; scy <= 0.55; scy += 0.90) {
+  for (let scy = -0.45; scy <= 0.55; scy += 0.9) {
     //broom
-    const broom = new Three.Mesh(new Three.CylinderGeometry(0.02, 0.02, 0.06, 32), blue);
+    const broom = new Three.Mesh(
+      new Three.CylinderGeometry(0.02, 0.02, 0.06, 32),
+      blue
+    );
     broom.rotation.x = 0.5 * Math.PI;
     broom.position.set(0.48, scy, -1.3);
     cleaning_cart.add(broom);
 
-    const broom_handle = new Three.Mesh(new Three.CylinderGeometry(0.02, 0.02, 1.3, 32), grey);
+    const broom_handle = new Three.Mesh(
+      new Three.CylinderGeometry(0.02, 0.02, 1.3, 32),
+      grey
+    );
     broom_handle.position.set(0, 0.68, 0);
     broom.add(broom_handle);
 
-    const broom_p2 = new Three.Mesh(new Three.CylinderGeometry(0.025, 0.025, 0.06, 32), blue);
+    const broom_p2 = new Three.Mesh(
+      new Three.CylinderGeometry(0.025, 0.025, 0.06, 32),
+      blue
+    );
     broom_p2.rotation.y = 0.5 * Math.PI;
     broom_p2.position.set(0, 1.32, 0);
     broom.add(broom_p2);
 
-    const broom_p3 = new Three.Mesh(new Three.BoxGeometry(0.02, 0.15, 0.5), blue);
+    const broom_p3 = new Three.Mesh(
+      new Three.BoxGeometry(0.02, 0.15, 0.5),
+      blue
+    );
     broom_p3.position.set(0, 1.34, 0);
     broom_p3.rotation.z = 0.5 * Math.PI;
     broom_p3.rotation.y = 0.5 * Math.PI;
     broom.add(broom_p3);
 
-    const broom_p4 = new Three.Mesh(new Three.BoxGeometry(0.01, 0.2, 0.55), grey);
+    const broom_p4 = new Three.Mesh(
+      new Three.BoxGeometry(0.01, 0.2, 0.55),
+      grey
+    );
     broom_p4.position.set(0, 1.35, 0);
     broom_p4.rotation.z = 0.5 * Math.PI;
     broom_p4.rotation.y = 0.5 * Math.PI;
@@ -341,50 +444,80 @@ function makeObjectMaxLOD() {
   }
 
   //broom hook
-  const hook_p1 = new Three.Mesh(new Three.CylinderGeometry(0.01, 0.01, 0.05, 32), blue);
+  const hook_p1 = new Three.Mesh(
+    new Three.CylinderGeometry(0.01, 0.01, 0.05, 32),
+    blue
+  );
   hook_p1.position.set(0.48, -0.39, -0.85);
   cleaning_cart.add(hook_p1);
 
-  const hook_p2 = new Three.Mesh(new Three.CylinderGeometry(0.025, 0.025, 0.03, 32), blue);
+  const hook_p2 = new Three.Mesh(
+    new Three.CylinderGeometry(0.025, 0.025, 0.03, 32),
+    blue
+  );
   hook_p2.position.set(0.48, -0.44, -0.85);
   hook_p2.rotation.x = 0.5 * Math.PI;
   cleaning_cart.add(hook_p2);
 
-  const hook_p3 = new Three.Mesh(new Three.CylinderGeometry(0.01, 0.01, 0.05, 32), blue);
+  const hook_p3 = new Three.Mesh(
+    new Three.CylinderGeometry(0.01, 0.01, 0.05, 32),
+    blue
+  );
   hook_p3.position.set(0.48, 0.39, -0.85);
   cleaning_cart.add(hook_p3);
 
-  const hook_p4 = new Three.Mesh(new Three.CylinderGeometry(0.025, 0.025, 0.03, 32), blue);
+  const hook_p4 = new Three.Mesh(
+    new Three.CylinderGeometry(0.025, 0.025, 0.03, 32),
+    blue
+  );
   hook_p4.position.set(0.48, 0.44, -0.85);
   hook_p4.rotation.x = 0.5 * Math.PI;
   cleaning_cart.add(hook_p4);
 
-  return cleaning_cart
+  return cleaning_cart;
 }
 
 function makeObjectMinLOD() {
   //base
-  const cleaning_cart = new Three.Mesh(new Three.BoxGeometry(1, 0.75, 0.05), grey);
+  const cleaning_cart = new Three.Mesh(
+    new Three.BoxGeometry(1, 0.75, 0.05),
+    grey
+  );
 
   for (let rx = -0.4; rx <= 0.45; rx += 0.85) {
     for (let rz = -0.3; rz <= 0.3; rz += 0.6) {
-      const tire = new Three.Mesh(new Three.CylinderGeometry(0.08, 0.08, 0.05, 32), black);
+      const tire = new Three.Mesh(
+        new Three.CylinderGeometry(0.08, 0.08, 0.05, 32),
+        black
+      );
       tire.position.set(rx, rz, 0.15);
       cleaning_cart.add(tire);
 
-      const bearing = new Three.Mesh(new Three.CylinderGeometry(0.06, 0.06, 0.06, 32), grey);
+      const bearing = new Three.Mesh(
+        new Three.CylinderGeometry(0.06, 0.06, 0.06, 32),
+        grey
+      );
       tire.add(bearing);
 
-      const nut = new Three.Mesh(new Three.CylinderGeometry(0.01, 0.01, 0.08, 6), black);
+      const nut = new Three.Mesh(
+        new Three.CylinderGeometry(0.01, 0.01, 0.08, 6),
+        black
+      );
       nut.position.set(0, 0, 0);
       tire.add(nut);
 
-      const coverUp = new Three.Mesh(new Three.CylinderGeometry(0.06, 0.06, 0.01, 32), grey);
+      const coverUp = new Three.Mesh(
+        new Three.CylinderGeometry(0.06, 0.06, 0.01, 32),
+        grey
+      );
       coverUp.rotation.x = 0.5 * Math.PI;
       coverUp.position.set(-0.03, 0, -0.12);
       tire.add(coverUp);
 
-      const coverDown = new Three.Mesh(new Three.CylinderGeometry(0.03725, 0.03725, 0.03, 32), black);
+      const coverDown = new Three.Mesh(
+        new Three.CylinderGeometry(0.03725, 0.03725, 0.03, 32),
+        black
+      );
       coverDown.rotation.x = 0.5 * Math.PI;
       coverDown.position.set(-0.03, 0, -0.1);
       tire.add(coverDown);
@@ -409,7 +542,10 @@ function makeObjectMinLOD() {
       p2_right.position.set(0, 0.035, -0.04);
       tire.add(p2_right);
 
-      const p3 = new Three.Mesh(new Three.BoxGeometry(0.095, 0.075, 0.01), grey);
+      const p3 = new Three.Mesh(
+        new Three.BoxGeometry(0.095, 0.075, 0.01),
+        grey
+      );
       p3.position.set(-0.02, 0, -0.09);
       tire.add(p3);
     }
@@ -461,7 +597,7 @@ function makeObjectMinLOD() {
     cleaning_cart.add(drawerBorder_2);
 
     //long side
-    const longSideGeometry = new Three.BoxGeometry(0.02, 0.20, 0.75);
+    const longSideGeometry = new Three.BoxGeometry(0.02, 0.2, 0.75);
     const longSide_1 = new Three.Mesh(longSideGeometry, blue);
     longSide_1.position.set(0.405, 0, cz + 0.1);
     longSide_1.rotation.x = 0.5 * Math.PI;
@@ -485,7 +621,10 @@ function makeObjectMinLOD() {
     cleaning_cart.add(shortSide_2);
 
     //bottom side
-    const bottomSide = new Three.Mesh(new Three.BoxGeometry(0.355, 0.75, 0.015), blue);
+    const bottomSide = new Three.Mesh(
+      new Three.BoxGeometry(0.355, 0.75, 0.015),
+      blue
+    );
     bottomSide.position.set(0.2375, 0, cz + 0.205);
     cleaning_cart.add(bottomSide);
   }
@@ -508,12 +647,18 @@ function makeObjectMinLOD() {
   bucket_4.position.set(-0.25, 0.35, -0.05);
   cleaning_cart.add(bucket_4);
 
-  const bucket_5 = new Three.Mesh(new Three.BoxGeometry(0.05, 0.65, 0.05), grey);
+  const bucket_5 = new Three.Mesh(
+    new Three.BoxGeometry(0.05, 0.65, 0.05),
+    grey
+  );
   bucket_5.position.set(-0.475, 0, -0.05);
   cleaning_cart.add(bucket_5);
 
   //waste basket top support
-  const wasteSupport_1 = new Three.Mesh(new Three.BoxGeometry(0.5, 0.05, 0.05), grey);
+  const wasteSupport_1 = new Three.Mesh(
+    new Three.BoxGeometry(0.5, 0.05, 0.05),
+    grey
+  );
   wasteSupport_1.position.set(0.7, -0.35, -0.05);
   cleaning_cart.add(wasteSupport_1);
 
@@ -521,12 +666,18 @@ function makeObjectMinLOD() {
   wasteSupport_2.position.set(0.7, 0.35, -0.05);
   cleaning_cart.add(wasteSupport_2);
 
-  const wasteSupport_3 = new Three.Mesh(new Three.BoxGeometry(0.05, 0.65, 0.05), grey);
+  const wasteSupport_3 = new Three.Mesh(
+    new Three.BoxGeometry(0.05, 0.65, 0.05),
+    grey
+  );
   wasteSupport_3.position.set(0.925, 0, -0.05);
   cleaning_cart.add(wasteSupport_3);
 
   //waste basket support down
-  const wasteSupportDown_1 = new Three.Mesh(new Three.BoxGeometry(0.5, 0.05, 0.05), grey);
+  const wasteSupportDown_1 = new Three.Mesh(
+    new Three.BoxGeometry(0.5, 0.05, 0.05),
+    grey
+  );
   wasteSupportDown_1.position.set(0.7, -0.35, -0.85);
   cleaning_cart.add(wasteSupportDown_1);
 
@@ -534,12 +685,18 @@ function makeObjectMinLOD() {
   wasteSupportDown_2.position.set(0.7, 0.35, -0.85);
   cleaning_cart.add(wasteSupportDown_2);
 
-  const wasteSupportDown_3 = new Three.Mesh(new Three.BoxGeometry(0.05, 0.65, 0.05), grey);
+  const wasteSupportDown_3 = new Three.Mesh(
+    new Three.BoxGeometry(0.05, 0.65, 0.05),
+    grey
+  );
   wasteSupportDown_3.position.set(0.925, 0, -0.85);
   cleaning_cart.add(wasteSupportDown_3);
 
   //waste cover
-  const wasteCover = new Three.Mesh(new Three.BoxGeometry(0.45, 0.775, 0.05), blue);
+  const wasteCover = new Three.Mesh(
+    new Three.BoxGeometry(0.45, 0.775, 0.05),
+    blue
+  );
   wasteCover.position.set(0.745, 0, -0.9);
   cleaning_cart.add(wasteCover);
 
@@ -563,29 +720,44 @@ function makeObjectMinLOD() {
 
   //bucket on the top
   for (let sty = -0.3; sty <= 0.3; sty += 0.6) {
-    sty === -0.3 ? color1 = red : color1 = blue;
-    sty === -0.3 ? delta1 = -1 : delta1 = 1;
+    sty === -0.3 ? (color1 = red) : (color1 = blue);
+    sty === -0.3 ? (delta1 = -1) : (delta1 = 1);
 
-    const bucketTop_1 = new Three.Mesh(new Three.BoxGeometry(0.2, 0.3, 0.05), color1);
+    const bucketTop_1 = new Three.Mesh(
+      new Three.BoxGeometry(0.2, 0.3, 0.05),
+      color1
+    );
     bucketTop_1.position.set(0.13, sty - delta1 * 0.14, -0.85);
     cleaning_cart.add(bucketTop_1);
 
-    const bucketTop_2 = new Three.Mesh(new Three.BoxGeometry(0.2, 0.15, 0.02), color1);
+    const bucketTop_2 = new Three.Mesh(
+      new Three.BoxGeometry(0.2, 0.15, 0.02),
+      color1
+    );
     bucketTop_2.position.set(0.13, sty - delta1 * 0.29, -0.9);
     bucketTop_2.rotation.x = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop_2);
 
-    const bucketTop_3 = new Three.Mesh(new Three.BoxGeometry(0.2, 0.15, 0.02), color1);
+    const bucketTop_3 = new Three.Mesh(
+      new Three.BoxGeometry(0.2, 0.15, 0.02),
+      color1
+    );
     bucketTop_3.position.set(0.13, sty, -0.9);
     bucketTop_3.rotation.x = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop_3);
 
-    const bucketTop_4 = new Three.Mesh(new Three.BoxGeometry(0.15, 0.3, 0.02), color1);
+    const bucketTop_4 = new Three.Mesh(
+      new Three.BoxGeometry(0.15, 0.3, 0.02),
+      color1
+    );
     bucketTop_4.position.set(0.04, sty - delta1 * 0.14, -0.9);
     bucketTop_4.rotation.y = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop_4);
 
-    const bucketTop_5 = new Three.Mesh(new Three.BoxGeometry(0.15, 0.3, 0.02), color1);
+    const bucketTop_5 = new Three.Mesh(
+      new Three.BoxGeometry(0.15, 0.3, 0.02),
+      color1
+    );
     bucketTop_5.position.set(0.22, sty - delta1 * 0.14, -0.9);
     bucketTop_5.rotation.y = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop_5);
@@ -596,29 +768,44 @@ function makeObjectMinLOD() {
 
   //bucket on the top
   for (let sty = -0.3; sty <= 0.3; sty += 0.6) {
-    sty === -0.3 ? color2 = yellow : color2 = green;
-    sty === -0.3 ? delta2 = -1 : delta2 = 1;
+    sty === -0.3 ? (color2 = yellow) : (color2 = green);
+    sty === -0.3 ? (delta2 = -1) : (delta2 = 1);
 
-    const bucketTop2_p1 = new Three.Mesh(new Three.BoxGeometry(0.2, 0.3, 0.05), color2);
+    const bucketTop2_p1 = new Three.Mesh(
+      new Three.BoxGeometry(0.2, 0.3, 0.05),
+      color2
+    );
     bucketTop2_p1.position.set(0.35, sty - delta2 * 0.14, -0.85);
     cleaning_cart.add(bucketTop2_p1);
 
-    const bucketTop2_p2 = new Three.Mesh(new Three.BoxGeometry(0.2, 0.15, 0.02), color2);
+    const bucketTop2_p2 = new Three.Mesh(
+      new Three.BoxGeometry(0.2, 0.15, 0.02),
+      color2
+    );
     bucketTop2_p2.position.set(0.35, sty - delta2 * 0.29, -0.9);
     bucketTop2_p2.rotation.x = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop2_p2);
 
-    const bucketTop2_p3 = new Three.Mesh(new Three.BoxGeometry(0.2, 0.15, 0.02), color2);
+    const bucketTop2_p3 = new Three.Mesh(
+      new Three.BoxGeometry(0.2, 0.15, 0.02),
+      color2
+    );
     bucketTop2_p3.position.set(0.35, sty, -0.9);
     bucketTop2_p3.rotation.x = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop2_p3);
 
-    const bucketTop2_p4 = new Three.Mesh(new Three.BoxGeometry(0.15, 0.3, 0.02), color2);
+    const bucketTop2_p4 = new Three.Mesh(
+      new Three.BoxGeometry(0.15, 0.3, 0.02),
+      color2
+    );
     bucketTop2_p4.position.set(0.26, sty - delta2 * 0.14, -0.9);
     bucketTop2_p4.rotation.y = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop2_p4);
 
-    const bucketTop2_p5 = new Three.Mesh(new Three.BoxGeometry(0.15, 0.3, 0.02), color2);
+    const bucketTop2_p5 = new Three.Mesh(
+      new Three.BoxGeometry(0.15, 0.3, 0.02),
+      color2
+    );
     bucketTop2_p5.position.set(0.44, sty - delta2 * 0.14, -0.9);
     bucketTop2_p5.rotation.y = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop2_p5);
@@ -629,84 +816,125 @@ function makeObjectMinLOD() {
 
   //bucket on the top
   for (let sdy = -0.3; sdy <= 0.3; sdy += 0.6) {
-    sdy === -0.3 ? color = red : color = blue;
-    sdy === -0.3 ? delta = -1 : delta = 1;
+    sdy === -0.3 ? (color = red) : (color = blue);
+    sdy === -0.3 ? (delta = -1) : (delta = 1);
 
-    const bucketTop3_p1 = new Three.Mesh(new Three.BoxGeometry(0.4, 0.3, 0.05), color);
+    const bucketTop3_p1 = new Three.Mesh(
+      new Three.BoxGeometry(0.4, 0.3, 0.05),
+      color
+    );
     bucketTop3_p1.position.set(-0.22, sdy - delta * 0.14, -0.05);
     cleaning_cart.add(bucketTop3_p1);
 
-    const bucketTop3_p2 = new Three.Mesh(new Three.BoxGeometry(0.4, 0.25, 0.02), color);
+    const bucketTop3_p2 = new Three.Mesh(
+      new Three.BoxGeometry(0.4, 0.25, 0.02),
+      color
+    );
     bucketTop3_p2.position.set(-0.22, sdy - delta * 0.28, -0.2);
     bucketTop3_p2.rotation.x = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop3_p2);
 
-    const bucketTop3_p3 = new Three.Mesh(new Three.BoxGeometry(0.4, 0.25, 0.02), color);
+    const bucketTop3_p3 = new Three.Mesh(
+      new Three.BoxGeometry(0.4, 0.25, 0.02),
+      color
+    );
     bucketTop3_p3.position.set(-0.22, sdy, -0.2);
     bucketTop3_p3.rotation.x = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop3_p3);
 
-    const bucketTop3_p4 = new Three.Mesh(new Three.BoxGeometry(0.25, 0.3, 0.02), color);
+    const bucketTop3_p4 = new Three.Mesh(
+      new Three.BoxGeometry(0.25, 0.3, 0.02),
+      color
+    );
     bucketTop3_p4.position.set(-0.41, sdy - delta * 0.14, -0.2);
     bucketTop3_p4.rotation.y = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop3_p4);
 
-    const bucketTop3_p5 = new Three.Mesh(new Three.BoxGeometry(0.25, 0.3, 0.02), color);
+    const bucketTop3_p5 = new Three.Mesh(
+      new Three.BoxGeometry(0.25, 0.3, 0.02),
+      color
+    );
     bucketTop3_p5.position.set(-0.03, sdy - delta * 0.14, -0.2);
     bucketTop3_p5.rotation.y = 0.5 * Math.PI;
     cleaning_cart.add(bucketTop3_p5);
   }
 
-  for (let scy = -0.45; scy <= 0.55; scy += 0.90) {
+  for (let scy = -0.45; scy <= 0.55; scy += 0.9) {
     //broom
-    const broom = new Three.Mesh(new Three.CylinderGeometry(0.02, 0.02, 0.06, 32), blue);
+    const broom = new Three.Mesh(
+      new Three.CylinderGeometry(0.02, 0.02, 0.06, 32),
+      blue
+    );
     broom.rotation.x = 0.5 * Math.PI;
     broom.position.set(0.48, scy, -1.3);
     cleaning_cart.add(broom);
 
-    const broom_handle = new Three.Mesh(new Three.CylinderGeometry(0.02, 0.02, 1.3, 32), grey);
+    const broom_handle = new Three.Mesh(
+      new Three.CylinderGeometry(0.02, 0.02, 1.3, 32),
+      grey
+    );
     broom_handle.position.set(0, 0.68, 0);
     broom.add(broom_handle);
 
-    const broom_p2 = new Three.Mesh(new Three.CylinderGeometry(0.025, 0.025, 0.06, 32), blue);
+    const broom_p2 = new Three.Mesh(
+      new Three.CylinderGeometry(0.025, 0.025, 0.06, 32),
+      blue
+    );
     broom_p2.rotation.y = 0.5 * Math.PI;
     broom_p2.position.set(0, 1.32, 0);
     broom.add(broom_p2);
 
-    const broom_p3 = new Three.Mesh(new Three.BoxGeometry(0.02, 0.15, 0.5), blue);
+    const broom_p3 = new Three.Mesh(
+      new Three.BoxGeometry(0.02, 0.15, 0.5),
+      blue
+    );
     broom_p3.position.set(0, 1.34, 0);
     broom_p3.rotation.z = 0.5 * Math.PI;
     broom_p3.rotation.y = 0.5 * Math.PI;
     broom.add(broom_p3);
 
-    const broom_p4 = new Three.Mesh(new Three.BoxGeometry(0.01, 0.2, 0.55), grey);
+    const broom_p4 = new Three.Mesh(
+      new Three.BoxGeometry(0.01, 0.2, 0.55),
+      grey
+    );
     broom_p4.position.set(0, 1.35, 0);
     broom_p4.rotation.z = 0.5 * Math.PI;
     broom_p4.rotation.y = 0.5 * Math.PI;
     broom.add(broom_p4);
   }
 
-
   //broom hook
-  const hook_p1 = new Three.Mesh(new Three.CylinderGeometry(0.01, 0.01, 0.05, 32), blue);
+  const hook_p1 = new Three.Mesh(
+    new Three.CylinderGeometry(0.01, 0.01, 0.05, 32),
+    blue
+  );
   hook_p1.position.set(0.48, -0.39, -0.85);
   cleaning_cart.add(hook_p1);
 
-  const hook_p2 = new Three.Mesh(new Three.CylinderGeometry(0.025, 0.025, 0.03, 32), blue);
+  const hook_p2 = new Three.Mesh(
+    new Three.CylinderGeometry(0.025, 0.025, 0.03, 32),
+    blue
+  );
   hook_p2.position.set(0.48, -0.44, -0.85);
   hook_p2.rotation.x = 0.5 * Math.PI;
   cleaning_cart.add(hook_p2);
 
-  const hook_p3 = new Three.Mesh(new Three.CylinderGeometry(0.01, 0.01, 0.05, 32), blue);
+  const hook_p3 = new Three.Mesh(
+    new Three.CylinderGeometry(0.01, 0.01, 0.05, 32),
+    blue
+  );
   hook_p3.position.set(0.48, 0.39, -0.85);
   cleaning_cart.add(hook_p3);
 
-  const hook_p4 = new Three.Mesh(new Three.CylinderGeometry(0.025, 0.025, 0.03, 32), blue);
+  const hook_p4 = new Three.Mesh(
+    new Three.CylinderGeometry(0.025, 0.025, 0.03, 32),
+    blue
+  );
   hook_p4.position.set(0.48, 0.44, -0.85);
   hook_p4.rotation.x = 0.5 * Math.PI;
   cleaning_cart.add(hook_p4);
 
-  return cleaning_cart
+  return cleaning_cart;
 }
 
 export default defineCatalogElement({
@@ -734,21 +962,35 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key='1' x='0' y='0' width={WIDTH} height={DEPTH}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: '2px', fill: '#84e1ce' }} />
-        <text key='2' x='0' y='0'
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#84e1ce'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: 'middle', fontSize: '11px' }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -767,7 +1009,11 @@ export default defineCatalogElement({
 
     cleaning_cartMaxLOD.rotation.x = 0.5 * Math.PI;
     cleaning_cartMaxLOD.position.y += HEIGHT / 5 + newAltitude;
-    cleaning_cartMaxLOD.scale.set(WIDTH / deltaX, DEPTH / deltaZ, HEIGHT / deltaY);
+    cleaning_cartMaxLOD.scale.set(
+      WIDTH / deltaX,
+      DEPTH / deltaZ,
+      HEIGHT / deltaY
+    );
 
     /************ lod min ****************/
 
@@ -775,7 +1021,11 @@ export default defineCatalogElement({
     cleaning_cartMinLOD.add(objectMinLOD.clone());
     cleaning_cartMinLOD.rotation.x = 0.5 * Math.PI;
     cleaning_cartMinLOD.position.y += HEIGHT / 5 + newAltitude;
-    cleaning_cartMinLOD.scale.set(WIDTH / deltaX, DEPTH / deltaZ, HEIGHT / deltaY);
+    cleaning_cartMinLOD.scale.set(
+      WIDTH / deltaX,
+      DEPTH / deltaZ,
+      HEIGHT / deltaY
+    );
 
     /**** all level of detail ***/
 

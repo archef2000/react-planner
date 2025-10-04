@@ -1,6 +1,7 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 30;
 const DEPTH = 40;
@@ -8,6 +9,7 @@ const HEIGHT = 70;
 
 const textureLoader = new Three.TextureLoader();
 const Image = textureLoader.load(require('./bronze-texture.jpg'));
+
 const material = new Three.MeshLambertMaterial({ map: Image });
 
 const objectMaxLOD = makeObjectMaxLOD();
@@ -20,8 +22,8 @@ function makeObjectMaxLOD() {
 
   const x = 0;
   const y = 0;
-  const width = .45;
-  const height = .7;
+  const width = 0.45;
+  const height = 0.7;
 
   roundedRectShape.moveTo(x, y);
   roundedRectShape.lineTo(x + width, y);
@@ -30,49 +32,52 @@ function makeObjectMaxLOD() {
 
   const holePath = new Three.Path();
   holePath.moveTo(width / 2, height / 2);
-  holePath.absellipse(.225, .15, .100, .025, .025, Math.PI * 2, false);
+  holePath.absellipse(0.225, 0.15, 0.1, 0.025, 0.025, Math.PI * 2, false);
   roundedRectShape.holes.push(holePath);
 
   const extrudeSettings = {
     steps: 2,
-    depth: .05,
+    depth: 0.05,
     bevelEnabled: false,
     bevelThickness: 1,
     bevelSize: 1,
     bevelSegments: 1
   };
 
-  const SideGeometry = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
+  const SideGeometry = new Three.ExtrudeGeometry(
+    roundedRectShape,
+    extrudeSettings
+  );
   const Side1 = new Three.Mesh(SideGeometry, material);
 
-  Side1.position.set(.05, 1.2, 0);
+  Side1.position.set(0.05, 1.2, 0);
   Side1.rotation.z += Math.PI;
   umbrellaStand.add(Side1);
 
   const Side2 = new Three.Mesh(SideGeometry, material);
-  Side2.position.set(.05, 1.2, -.4);
+  Side2.position.set(0.05, 1.2, -0.4);
   Side2.rotation.z += Math.PI;
   umbrellaStand.add(Side2);
 
   const Side3 = new Three.Mesh(SideGeometry, material);
-  Side3.position.set(.05, 1.2, -.4);
+  Side3.position.set(0.05, 1.2, -0.4);
   Side3.rotation.z += Math.PI;
   Side3.rotation.y += Math.PI / 2;
   umbrellaStand.add(Side3);
 
   const Side4 = new Three.Mesh(SideGeometry, material);
-  Side4.position.set(-.45, 1.2, -.4);
+  Side4.position.set(-0.45, 1.2, -0.4);
   Side4.rotation.z += Math.PI;
   Side4.rotation.y += Math.PI / 2;
   umbrellaStand.add(Side4);
 
-  const geometryBox = new Three.BoxGeometry(.55, .45, .05);
+  const geometryBox = new Three.BoxGeometry(0.55, 0.45, 0.05);
   const downPlane = new Three.Mesh(geometryBox, material);
   downPlane.rotation.x += Math.PI / 2;
-  downPlane.position.set(-.175, .475, -.175);
+  downPlane.position.set(-0.175, 0.475, -0.175);
   umbrellaStand.add(downPlane);
 
-  return umbrellaStand
+  return umbrellaStand;
 }
 
 function makeObjectMinLOD() {
@@ -82,8 +87,8 @@ function makeObjectMinLOD() {
 
   const x = 0;
   const y = 0;
-  const width = .45;
-  const height = .7;
+  const width = 0.45;
+  const height = 0.7;
 
   roundedRectShape.moveTo(x, y);
   roundedRectShape.lineTo(x + width, y);
@@ -92,60 +97,63 @@ function makeObjectMinLOD() {
 
   const extrudeSettings = {
     steps: 2,
-    depth: .05,
+    depth: 0.05,
     bevelEnabled: false,
     bevelThickness: 1,
     bevelSize: 1,
     bevelSegments: 1
   };
 
-  const SideGeometry = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
+  const SideGeometry = new Three.ExtrudeGeometry(
+    roundedRectShape,
+    extrudeSettings
+  );
   const Side1 = new Three.Mesh(SideGeometry, material);
 
-  Side1.position.set(.05, 1.2, 0);
+  Side1.position.set(0.05, 1.2, 0);
   Side1.rotation.z += Math.PI;
   umbrellaStand.add(Side1);
 
   const Side2 = new Three.Mesh(SideGeometry, material);
-  Side2.position.set(.05, 1.2, -.4);
+  Side2.position.set(0.05, 1.2, -0.4);
   Side2.rotation.z += Math.PI;
   umbrellaStand.add(Side2);
 
   const Side3 = new Three.Mesh(SideGeometry, material);
-  Side3.position.set(.05, 1.2, -.4);
+  Side3.position.set(0.05, 1.2, -0.4);
   Side3.rotation.z += Math.PI;
   Side3.rotation.y += Math.PI / 2;
   umbrellaStand.add(Side3);
 
   const Side4 = new Three.Mesh(SideGeometry, material);
-  Side4.position.set(-.45, 1.2, -.4);
+  Side4.position.set(-0.45, 1.2, -0.4);
   Side4.rotation.z += Math.PI;
   Side4.rotation.y += Math.PI / 2;
   umbrellaStand.add(Side4);
 
-  const geometryBox = new Three.BoxGeometry(.55, .45, .05);
+  const geometryBox = new Three.BoxGeometry(0.55, 0.45, 0.05);
   const downPlane = new Three.Mesh(geometryBox, material);
   downPlane.rotation.x += Math.PI / 2;
-  downPlane.position.set(-.175, .475, -.175);
+  downPlane.position.set(-0.175, 0.475, -0.175);
   umbrellaStand.add(downPlane);
 
-  return umbrellaStand
+  return umbrellaStand;
 }
 
 export default defineCatalogElement({
-  name: "umbrella-stand",
-  prototype: "items",
+  name: 'umbrella-stand',
+  prototype: 'items',
 
   info: {
     tag: ['furnishings', 'metal'],
-    title: "umbrella stand",
-    description: "umbrella stand",
+    title: 'umbrella stand',
+    description: 'umbrella stand',
     image: require('./umbrellaStand.png')
   },
   properties: {
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 0
       }
@@ -156,21 +164,35 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key="1" x="0" y="0" width={WIDTH} height={DEPTH}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#84e1ce" }} />
-        <text key="2" x="0" y="0"
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#84e1ce'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -190,7 +212,11 @@ export default defineCatalogElement({
     umbrellaStandMaxLOD.position.z += DEPTH / 4;
     umbrellaStandMaxLOD.position.y += -HEIGHT / 1.6 + newAltitude;
     umbrellaStandMaxLOD.rotation.y += -Math.PI / 2;
-    umbrellaStandMaxLOD.scale.set(WIDTH / deltaZ, HEIGHT / deltaY, DEPTH / deltaX);
+    umbrellaStandMaxLOD.scale.set(
+      WIDTH / deltaZ,
+      HEIGHT / deltaY,
+      DEPTH / deltaX
+    );
 
     /**************** lod min *******************/
 
@@ -200,7 +226,11 @@ export default defineCatalogElement({
     umbrellaStandMinLOD.position.z += DEPTH / 4;
     umbrellaStandMinLOD.position.y += -HEIGHT / 1.6 + newAltitude;
     umbrellaStandMinLOD.rotation.y += -Math.PI / 2;
-    umbrellaStandMinLOD.scale.set(WIDTH / deltaZ, HEIGHT / deltaY, DEPTH / deltaX);
+    umbrellaStandMinLOD.scale.set(
+      WIDTH / deltaZ,
+      HEIGHT / deltaY,
+      DEPTH / deltaX
+    );
 
     /**** all level of detail ***/
 

@@ -1,10 +1,11 @@
 import * as Three from 'three';
 
-function disposeGeometry(geometry) {
+function disposeGeometry(geometry: Three.BufferGeometry) {
   geometry.dispose();
 }
 
-function disposeTexture(texture) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function disposeTexture(texture?: Three.Texture) {
   if (!texture) {
     return;
   }
@@ -12,24 +13,29 @@ function disposeTexture(texture) {
 }
 
 function disposeMultimaterial(materials: Three.Material | Three.Material[]) {
-  if (!(Array.isArray(materials))) {
+  if (!Array.isArray(materials)) {
     return;
   }
-  materials.forEach(material => {
+  materials.forEach((material) => {
     disposeMaterial(material);
   });
-
 }
 
-function disposeMaterial(material: Three.Material | Three.Material[]) {
+function disposeMaterial(material: Three.Material) {
   if (Array.isArray(material)) {
     return;
   }
   material.dispose();
 }
 
-function disposeMesh(mesh) {
-  if (!(mesh instanceof Three.Mesh || mesh instanceof Three.BoxHelper || mesh instanceof Three.LineSegments)) {
+function disposeMesh(mesh: Three.Object3D<Three.Object3DEventMap>) {
+  if (
+    !(
+      mesh instanceof Three.Mesh ||
+      mesh instanceof Three.BoxHelper ||
+      mesh instanceof Three.LineSegments
+    )
+  ) {
     return;
   }
   disposeGeometry(mesh.geometry);
@@ -40,16 +46,15 @@ function disposeMesh(mesh) {
   mesh.material = null;
 }
 
-export function disposeScene(scene3D) {
-  scene3D.traverse(child => {
+export function disposeScene(scene3D: Three.Scene) {
+  scene3D.traverse((child) => {
     disposeMesh(child);
-    child = null;
   });
 }
 
-export function disposeObject(object) {
-  object.traverse(child => {
+export function disposeObject(object: Three.Object3D<Three.Object3DEventMap>) {
+  object.traverse((child) => {
     disposeMesh(child);
-    child = null;
   });
+  object.clear();
 }

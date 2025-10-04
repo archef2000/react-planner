@@ -1,6 +1,7 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 100;
 const DEPTH = 140;
@@ -8,7 +9,7 @@ const HEIGHT = 100;
 
 const brown = new Three.MeshLambertMaterial({ color: 0xac6c25 });
 const black = new Three.MeshLambertMaterial({ color: 0x000000 });
-const grey = new Three.MeshLambertMaterial({ color: 0xC0C0C0 });
+const grey = new Three.MeshLambertMaterial({ color: 0xc0c0c0 });
 
 const objectMaxLOD = makeObjectMaxLOD();
 const objectMinLOD = makeObjectMinLOD();
@@ -26,7 +27,10 @@ function makeObjectMaxLOD() {
   //plane nuts
   for (let dx = -0.25; dx <= 0.25; dx += 0.5) {
     for (let dz = -0.25; dz <= 0.25; dz += 0.5) {
-      const nut = new Three.Mesh(new Three.CylinderGeometry(0.1, 0.1, 0.8, 6), black);
+      const nut = new Three.Mesh(
+        new Three.CylinderGeometry(0.1, 0.1, 0.8, 6),
+        black
+      );
       nut.position.set(dx, 1.4, dz);
       canteen_table.add(nut);
     }
@@ -69,7 +73,10 @@ function makeObjectMaxLOD() {
       canteen_table.add(legBase);
 
       // base nuts
-      const baseNut1 = new Three.Mesh(new Three.CylinderGeometry(0.1, 0.1, 0.3, 6), black);
+      const baseNut1 = new Three.Mesh(
+        new Three.CylinderGeometry(0.1, 0.1, 0.3, 6),
+        black
+      );
       baseNut1.position.set(fx, -3.5, fz - 1);
       baseNut1.position.set(fx, -3.5, fz + 2);
       canteen_table.add(baseNut1);
@@ -79,7 +86,10 @@ function makeObjectMaxLOD() {
         baseNut1.position.set(fx, -3.5, fz - 2);
       }
 
-      const baseNut2 = new Three.Mesh(new Three.CylinderGeometry(0.1, 0.1, 0.3, 6), black);
+      const baseNut2 = new Three.Mesh(
+        new Three.CylinderGeometry(0.1, 0.1, 0.3, 6),
+        black
+      );
       baseNut2.position.set(fx, -3.5, fz);
       canteen_table.add(baseNut2);
     }
@@ -88,7 +98,10 @@ function makeObjectMaxLOD() {
   // chair back
   for (let fsx = -3; fsx <= 3; fsx += 6) {
     for (let fsz = -9.24; fsz <= 9.24; fsz += 18.48) {
-      const chairBack = new Three.Mesh(new Three.BoxGeometry(4, 0.5, 2.5), brown);
+      const chairBack = new Three.Mesh(
+        new Three.BoxGeometry(4, 0.5, 2.5),
+        brown
+      );
       chairBack.rotation.x = 0.5 * Math.PI;
       chairBack.position.set(fsx, 2.5, fsz);
       canteen_table.add(chairBack);
@@ -98,23 +111,35 @@ function makeObjectMaxLOD() {
   for (let fbx = -4.5; fbx <= 4.5; fbx += 9) {
     for (let fbz = -9.45; fbz <= 9.45; fbz += 18.9) {
       // chair support bar
-      const support1 = new Three.Mesh(new Three.BoxGeometry(0.25, 0.125, 4), grey);
+      const support1 = new Three.Mesh(
+        new Three.BoxGeometry(0.25, 0.125, 4),
+        grey
+      );
       support1.rotation.x = 0.5 * Math.PI;
       support1.position.set(fbx, 1.6, fbz);
       canteen_table.add(support1);
 
-      const support2 = new Three.Mesh(new Three.BoxGeometry(0.25, 0.125, 4), grey);
+      const support2 = new Three.Mesh(
+        new Three.BoxGeometry(0.25, 0.125, 4),
+        grey
+      );
       support2.rotation.x = 0.5 * Math.PI;
       support2.position.set(fbx - 3, 1.6, fbz);
       canteen_table.add(support2);
 
       //nut back chair
-      const nutBack1 = new Three.Mesh(new Three.CylinderGeometry(0.1, 0.1, 0.6, 6), black);
+      const nutBack1 = new Three.Mesh(
+        new Three.CylinderGeometry(0.1, 0.1, 0.6, 6),
+        black
+      );
       nutBack1.rotation.x = 0.5 * Math.PI;
       nutBack1.position.set(fbx, 2.5, fbz - 0.2);
       canteen_table.add(nutBack1);
 
-      const nutBack2 = new Three.Mesh(new Three.CylinderGeometry(0.1, 0.1, 0.6, 6), black);
+      const nutBack2 = new Three.Mesh(
+        new Three.CylinderGeometry(0.1, 0.1, 0.6, 6),
+        black
+      );
       nutBack2.rotation.x = 0.5 * Math.PI;
       nutBack2.position.set(fbx - 3, 2.5, fbz - 0.2);
       canteen_table.add(nutBack2);
@@ -149,20 +174,32 @@ function makeObjectMaxLOD() {
   for (let fbsx = -4.5; fbsx <= 4.5; fbsx += 9) {
     for (let fbsz = -9; fbsz <= 9; fbsz += 18) {
       // seat support
-      const seatSupport1 = new Three.Mesh(new Three.BoxGeometry(0.25, 0.125, 1), grey);
+      const seatSupport1 = new Three.Mesh(
+        new Three.BoxGeometry(0.25, 0.125, 1),
+        grey
+      );
       seatSupport1.position.set(fbsx, -0.35, fbsz);
       canteen_table.add(seatSupport1);
 
-      const seatSupport2 = new Three.Mesh(new Three.BoxGeometry(0.25, 0.125, 1), grey);
+      const seatSupport2 = new Three.Mesh(
+        new Three.BoxGeometry(0.25, 0.125, 1),
+        grey
+      );
       seatSupport2.position.set(fbsx - 3, -0.35, fbsz);
       canteen_table.add(seatSupport2);
 
       // seat nuts
-      const seatNut1 = new Three.Mesh(new Three.CylinderGeometry(0.1, 0.1, 0.8, 6), black);
+      const seatNut1 = new Three.Mesh(
+        new Three.CylinderGeometry(0.1, 0.1, 0.8, 6),
+        black
+      );
       seatNut1.position.set(fbsx, -0.35, fbsz - 2);
       canteen_table.add(seatNut1);
 
-      const seatNut2 = new Three.Mesh(new Three.CylinderGeometry(0.1, 0.1, 0.8, 6), black);
+      const seatNut2 = new Three.Mesh(
+        new Three.CylinderGeometry(0.1, 0.1, 0.8, 6),
+        black
+      );
       seatNut2.position.set(fbsx - 3, -0.35, fbsz - 2);
       canteen_table.add(seatNut2);
 
@@ -182,7 +219,7 @@ function makeObjectMaxLOD() {
       }
     }
   }
-  return canteen_table
+  return canteen_table;
 }
 
 function makeObjectMinLOD() {
@@ -240,7 +277,10 @@ function makeObjectMinLOD() {
   // chair back
   for (let fsx = -3; fsx <= 3; fsx += 6) {
     for (let fsz = -9.24; fsz <= 9.24; fsz += 18.48) {
-      const chairBack = new Three.Mesh(new Three.BoxGeometry(4, 0.5, 2.5), brown);
+      const chairBack = new Three.Mesh(
+        new Three.BoxGeometry(4, 0.5, 2.5),
+        brown
+      );
       chairBack.rotation.x = 0.5 * Math.PI;
       chairBack.position.set(fsx, 2.5, fsz);
       canteen_table.add(chairBack);
@@ -250,12 +290,18 @@ function makeObjectMinLOD() {
   for (let fbx = -4.5; fbx <= 4.5; fbx += 9) {
     for (let fbz = -9.45; fbz <= 9.45; fbz += 18.9) {
       // chair support bar
-      const support1 = new Three.Mesh(new Three.BoxGeometry(0.25, 0.125, 4), grey);
+      const support1 = new Three.Mesh(
+        new Three.BoxGeometry(0.25, 0.125, 4),
+        grey
+      );
       support1.rotation.x = 0.5 * Math.PI;
       support1.position.set(fbx, 1.6, fbz);
       canteen_table.add(support1);
 
-      const support2 = new Three.Mesh(new Three.BoxGeometry(0.25, 0.125, 4), grey);
+      const support2 = new Three.Mesh(
+        new Three.BoxGeometry(0.25, 0.125, 4),
+        grey
+      );
       support2.rotation.x = 0.5 * Math.PI;
       support2.position.set(fbx - 3, 1.6, fbz);
       canteen_table.add(support2);
@@ -279,11 +325,17 @@ function makeObjectMinLOD() {
   for (let fbsx = -4.5; fbsx <= 4.5; fbsx += 9) {
     for (let fbsz = -9; fbsz <= 9; fbsz += 18) {
       // seat support
-      const seatSupport1 = new Three.Mesh(new Three.BoxGeometry(0.25, 0.125, 1), grey);
+      const seatSupport1 = new Three.Mesh(
+        new Three.BoxGeometry(0.25, 0.125, 1),
+        grey
+      );
       seatSupport1.position.set(fbsx, -0.35, fbsz);
       canteen_table.add(seatSupport1);
 
-      const seatSupport2 = new Three.Mesh(new Three.BoxGeometry(0.25, 0.125, 1), grey);
+      const seatSupport2 = new Three.Mesh(
+        new Three.BoxGeometry(0.25, 0.125, 1),
+        grey
+      );
       seatSupport2.position.set(fbsx - 3, -0.35, fbsz);
       canteen_table.add(seatSupport2);
 
@@ -292,7 +344,7 @@ function makeObjectMinLOD() {
       }
     }
   }
-  return canteen_table
+  return canteen_table;
 }
 
 export default defineCatalogElement({
@@ -320,21 +372,35 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key='1' x='0' y='0' width={WIDTH} height={DEPTH}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: '2px', fill: '#84e1ce' }} />
-        <text key='2' x='0' y='0'
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#84e1ce'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: 'middle', fontSize: '11px' }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -352,14 +418,22 @@ export default defineCatalogElement({
     const deltaZ = Math.abs(valuePosition.max.z - valuePosition.min.z);
 
     canteen_table_MaxLOD.position.y += HEIGHT / 2 + newAltitude;
-    canteen_table_MaxLOD.scale.set(WIDTH / deltaX, HEIGHT / deltaY, DEPTH / deltaZ);
+    canteen_table_MaxLOD.scale.set(
+      WIDTH / deltaX,
+      HEIGHT / deltaY,
+      DEPTH / deltaZ
+    );
 
     /************** lod min *****************/
 
     const canteen_table_MinLOD = new Three.Object3D();
     canteen_table_MinLOD.add(objectMinLOD.clone());
     canteen_table_MinLOD.position.y += HEIGHT / 2 + newAltitude;
-    canteen_table_MinLOD.scale.set(WIDTH / deltaX, HEIGHT / deltaY, DEPTH / deltaZ);
+    canteen_table_MinLOD.scale.set(
+      WIDTH / deltaX,
+      HEIGHT / deltaY,
+      DEPTH / deltaZ
+    );
 
     /**** all level of detail ***/
 

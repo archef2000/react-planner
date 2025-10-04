@@ -12,6 +12,18 @@ interface ContentContainerProps {
   style?: React.CSSProperties;
 }
 
-export default function ContentContainer({ children, width, height, style = {} }: ContentContainerProps) {
-  return <div style={{ width, height, ...STYLE, ...style }} onWheel={event => event.stopPropagation()}>{children}</div>
+export default function ContentContainer({
+  children,
+  width,
+  height,
+  style = {}
+}: ContentContainerProps) {
+  return (
+    <div
+      style={{ width, height, ...STYLE, ...style }}
+      onWheel={(event) => event.stopPropagation()}
+    >
+      {children}
+    </div>
+  );
 }

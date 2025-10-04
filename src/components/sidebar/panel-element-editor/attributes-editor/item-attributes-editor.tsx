@@ -1,8 +1,9 @@
-import React, { Component, useContext } from 'react';
+import React, { useContext } from 'react';
+
+import { State } from '../../../../models';
+import ReactPlannerContext from '../../../../react-planner-context';
 import FormNumberInput from '../../../style/form-number-input';
 import FormTextInput from '../../../style/form-text-input';
-import ReactPlannerContext from '../../../../react-planner-context';
-import { State } from '../../../../models';
 
 const tableStyle = { width: '100%' } as const;
 const firstTdStyle = { width: '6em' } as const;
@@ -16,7 +17,13 @@ interface ItemAttributesEditorProps {
   [key: string]: any;
 }
 
-export default function ItemAttributesEditor({ element, onUpdate, attributeFormData, state, ...rest }: ItemAttributesEditorProps) {
+export default function ItemAttributesEditor({
+  element,
+  onUpdate,
+  attributeFormData,
+  state,
+  ...rest
+}: ItemAttributesEditorProps) {
   const { translator } = useContext(ReactPlannerContext);
   const name = attributeFormData.name || element.name;
   const renderedX = attributeFormData.x || element.x;
@@ -31,7 +38,7 @@ export default function ItemAttributesEditor({ element, onUpdate, attributeFormD
           <td>
             <FormTextInput
               value={name}
-              onChange={event => onUpdate('name', event.target.value)}
+              onChange={(event) => onUpdate('name', event.target.value)}
               style={inputStyle}
             />
           </td>
@@ -41,7 +48,7 @@ export default function ItemAttributesEditor({ element, onUpdate, attributeFormD
           <td>
             <FormNumberInput
               value={renderedX}
-              onChange={event => onUpdate('x', event.target.value)}
+              onChange={(event) => onUpdate('x', event.target.value)}
               style={inputStyle}
               precision={2}
               {...rest}
@@ -53,7 +60,7 @@ export default function ItemAttributesEditor({ element, onUpdate, attributeFormD
           <td>
             <FormNumberInput
               value={renderedY}
-              onChange={event => onUpdate('y', event.target.value)}
+              onChange={(event) => onUpdate('y', event.target.value)}
               style={inputStyle}
               precision={2}
               {...rest}
@@ -65,7 +72,7 @@ export default function ItemAttributesEditor({ element, onUpdate, attributeFormD
           <td>
             <FormNumberInput
               value={renderedR}
-              onChange={event => onUpdate('rotation', event.target.value)}
+              onChange={(event) => onUpdate('rotation', event.target.value)}
               style={inputStyle}
               precision={2}
               {...rest}

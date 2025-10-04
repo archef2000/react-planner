@@ -1,17 +1,18 @@
-import { IDBroker } from '../utils/export';
 import { produce } from 'immer';
+
 import { State } from '../models';
+import { IDBroker } from '../utils/export';
 
 class HorizontalGuide {
   static create(state: State, coordinate: number) {
-    return produce(state, draft => {
+    return produce(state, (draft) => {
       const hGuideID = IDBroker.acquireID();
       draft.scene.guides.horizontal[hGuideID] = coordinate;
     });
   }
 
   static remove(state: State, hGuideID: string) {
-    return produce(state, draft => {
+    return produce(state, (draft) => {
       delete draft.scene.guides.horizontal[hGuideID];
     });
   }
@@ -19,27 +20,22 @@ class HorizontalGuide {
 
 class VerticalGuide {
   static create(state: State, coordinate: number) {
-    return produce(state, draft => {
+    return produce(state, (draft) => {
       const vGuideID = IDBroker.acquireID();
       draft.scene.guides.vertical[vGuideID] = coordinate;
     });
   }
 
   static remove(state: State, vGuideID: string) {
-    return produce(state, draft => {
+    return produce(state, (draft) => {
       delete draft.scene.guides.vertical[vGuideID];
     });
   }
 }
 
-class CircularGuide {
-}
+class CircularGuide { }
 
-export {
-  HorizontalGuide,
-  VerticalGuide,
-  CircularGuide
-};
+export { CircularGuide, HorizontalGuide, VerticalGuide };
 
 export default {
   HorizontalGuide,

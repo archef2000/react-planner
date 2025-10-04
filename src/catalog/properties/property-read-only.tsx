@@ -1,7 +1,9 @@
 import React from 'react';
+
 import { FormLabel } from '../../components/style/export';
-import PropertyStyle from './shared-property-style';
 import { State } from '../../models';
+
+import PropertyStyle from './shared-property-style';
 
 interface PropertyReadOnlyProps {
   value: any;
@@ -12,12 +14,21 @@ interface PropertyReadOnlyProps {
   state: State;
 }
 
-export default function PropertyReadOnly({ value, onUpdate, configs, sourceElement, internalState, state }: PropertyReadOnlyProps) {
+export default function PropertyReadOnly({
+  value,
+  onUpdate,
+  configs,
+  sourceElement,
+  internalState,
+  state
+}: PropertyReadOnlyProps) {
   return (
     <table className="PropertyReadOnly" style={PropertyStyle.tableStyle}>
       <tbody>
         <tr>
-          <td style={PropertyStyle.firstTdStyle}><FormLabel>{configs.label}</FormLabel></td>
+          <td style={PropertyStyle.firstTdStyle}>
+            <FormLabel>{configs.label}</FormLabel>
+          </td>
           <td>
             <div>{value}</div>
           </td>

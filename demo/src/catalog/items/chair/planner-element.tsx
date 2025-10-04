@@ -1,6 +1,7 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 55;
 const DEPTH = 55;
@@ -37,11 +38,11 @@ function makeObjectMaxLOD() {
 
   const leg5 = new Three.Mesh(LegGeometry, LegMaterial);
   leg5.rotation.x += Math.PI / 2;
-  leg5.position.z += 0.5 * 3 / 2;
+  leg5.position.z += (0.5 * 3) / 2;
 
   const leg6 = new Three.Mesh(LegGeometry, LegMaterial);
   leg6.rotation.x += Math.PI / 2;
-  leg6.position.z += 0.5 * 3 / 2;
+  leg6.position.z += (0.5 * 3) / 2;
   leg6.position.x += 0.4;
 
   const WoodMaterial = new Three.MeshLambertMaterial({ color: 0x9b8c75 });
@@ -50,15 +51,20 @@ function makeObjectMaxLOD() {
 
   const x = 0;
   const y = 0;
-  const width = .5;
-  const height = .48;
+  const width = 0.5;
+  const height = 0.48;
   const radius = 0.05;
 
   roundedRectShape.moveTo(x, y + radius);
   roundedRectShape.lineTo(x, y + height - radius);
   roundedRectShape.quadraticCurveTo(x, y + height, x + radius, y + height);
   roundedRectShape.lineTo(x + width - radius, y + height);
-  roundedRectShape.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+  roundedRectShape.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width,
+    y + height - radius
+  );
   roundedRectShape.lineTo(x + width, y + radius);
   roundedRectShape.quadraticCurveTo(x + width, y, x + width - radius, y);
   roundedRectShape.lineTo(x + radius, y);
@@ -73,7 +79,10 @@ function makeObjectMaxLOD() {
     bevelSegments: 1
   };
 
-  const PlaneGeometry = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
+  const PlaneGeometry = new Three.ExtrudeGeometry(
+    roundedRectShape,
+    extrudeSettings
+  );
   const plane = new Three.Mesh(PlaneGeometry, WoodMaterial);
 
   plane.position.x += -0.05;
@@ -84,17 +93,32 @@ function makeObjectMaxLOD() {
 
   const x1 = 0;
   const y1 = 0;
-  const width1 = .45;
-  const height1 = .25;
+  const width1 = 0.45;
+  const height1 = 0.25;
   const radius1 = 0.05;
 
   roundedRectShape2.moveTo(x1, y1 + radius1);
   roundedRectShape2.lineTo(x1, y1 + height1 - radius1);
-  roundedRectShape2.quadraticCurveTo(x1, y1 + height1, x1 + radius1, y1 + height1);
+  roundedRectShape2.quadraticCurveTo(
+    x1,
+    y1 + height1,
+    x1 + radius1,
+    y1 + height1
+  );
   roundedRectShape2.lineTo(x1 + width1 - radius1, y1 + height1);
-  roundedRectShape2.quadraticCurveTo(x1 + width1, y1 + height1, x1 + width1, y1 + height1 - radius1);
+  roundedRectShape2.quadraticCurveTo(
+    x1 + width1,
+    y1 + height1,
+    x1 + width1,
+    y1 + height1 - radius1
+  );
   roundedRectShape2.lineTo(x1 + width1, y1 + radius1);
-  roundedRectShape2.quadraticCurveTo(x1 + width1, y1, x1 + width1 - radius1, y1);
+  roundedRectShape2.quadraticCurveTo(
+    x1 + width1,
+    y1,
+    x1 + width1 - radius1,
+    y1
+  );
   roundedRectShape2.lineTo(x1 + radius1, y1);
   roundedRectShape2.quadraticCurveTo(x1, y1, x1, y1 + radius1);
 
@@ -107,10 +131,13 @@ function makeObjectMaxLOD() {
     bevelSegments: 1
   };
 
-  const backGeometry = new Three.ExtrudeGeometry(roundedRectShape2, extrudeSettings2);
+  const backGeometry = new Three.ExtrudeGeometry(
+    roundedRectShape2,
+    extrudeSettings2
+  );
   const back = new Three.Mesh(backGeometry, WoodMaterial);
   back.rotation.x += Math.PI / 2;
-  back.position.z += 0.5 * 12 / 8;
+  back.position.z += (0.5 * 12) / 8;
   back.position.y += 0.03;
   back.position.x += -0.025;
 
@@ -123,7 +150,7 @@ function makeObjectMaxLOD() {
   chair.add(leg5);
   chair.add(leg6);
 
-  return chair
+  return chair;
 }
 
 function makeObjectMinLOD() {
@@ -154,11 +181,11 @@ function makeObjectMinLOD() {
 
   const leg5 = new Three.Mesh(LegGeometry, LegMaterial);
   leg5.rotation.x += Math.PI / 2;
-  leg5.position.z += 0.5 * 3 / 2;
+  leg5.position.z += (0.5 * 3) / 2;
 
   const leg6 = new Three.Mesh(LegGeometry, LegMaterial);
   leg6.rotation.x += Math.PI / 2;
-  leg6.position.z += 0.5 * 3 / 2;
+  leg6.position.z += (0.5 * 3) / 2;
   leg6.position.x += 0.4;
 
   const WoodMaterial = new Three.MeshLambertMaterial({ color: 0x9b8c75 });
@@ -167,15 +194,20 @@ function makeObjectMinLOD() {
 
   const x = 0;
   const y = 0;
-  const width = .5;
-  const height = .48;
+  const width = 0.5;
+  const height = 0.48;
   const radius = 0.025;
 
   roundedRectShape.moveTo(x, y + radius);
   roundedRectShape.lineTo(x, y + height - radius);
   roundedRectShape.quadraticCurveTo(x, y + height, x + radius, y + height);
   roundedRectShape.lineTo(x + width - radius, y + height);
-  roundedRectShape.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+  roundedRectShape.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width,
+    y + height - radius
+  );
   roundedRectShape.lineTo(x + width, y + radius);
   roundedRectShape.quadraticCurveTo(x + width, y, x + width - radius, y);
   roundedRectShape.lineTo(x + radius, y);
@@ -190,7 +222,10 @@ function makeObjectMinLOD() {
     bevelSegments: 1
   };
 
-  const PlaneGeometry = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
+  const PlaneGeometry = new Three.ExtrudeGeometry(
+    roundedRectShape,
+    extrudeSettings
+  );
   const plane = new Three.Mesh(PlaneGeometry, WoodMaterial);
 
   plane.position.x += -0.05;
@@ -201,17 +236,32 @@ function makeObjectMinLOD() {
 
   const x1 = 0;
   const y1 = 0;
-  const width1 = .45;
-  const height1 = .25;
+  const width1 = 0.45;
+  const height1 = 0.25;
   const radius1 = 0.025;
 
   roundedRectShape2.moveTo(x1, y1 + radius1);
   roundedRectShape2.lineTo(x1, y1 + height1 - radius1);
-  roundedRectShape2.quadraticCurveTo(x1, y1 + height1, x1 + radius1, y1 + height1);
+  roundedRectShape2.quadraticCurveTo(
+    x1,
+    y1 + height1,
+    x1 + radius1,
+    y1 + height1
+  );
   roundedRectShape2.lineTo(x1 + width1 - radius1, y1 + height1);
-  roundedRectShape2.quadraticCurveTo(x1 + width1, y1 + height1, x1 + width1, y1 + height1 - radius1);
+  roundedRectShape2.quadraticCurveTo(
+    x1 + width1,
+    y1 + height1,
+    x1 + width1,
+    y1 + height1 - radius1
+  );
   roundedRectShape2.lineTo(x1 + width1, y1 + radius1);
-  roundedRectShape2.quadraticCurveTo(x1 + width1, y1, x1 + width1 - radius1, y1);
+  roundedRectShape2.quadraticCurveTo(
+    x1 + width1,
+    y1,
+    x1 + width1 - radius1,
+    y1
+  );
   roundedRectShape2.lineTo(x1 + radius1, y1);
   roundedRectShape2.quadraticCurveTo(x1, y1, x1, y1 + radius1);
 
@@ -224,10 +274,13 @@ function makeObjectMinLOD() {
     bevelSegments: 1
   };
 
-  const backGeometry = new Three.ExtrudeGeometry(roundedRectShape2, extrudeSettings2);
+  const backGeometry = new Three.ExtrudeGeometry(
+    roundedRectShape2,
+    extrudeSettings2
+  );
   const back = new Three.Mesh(backGeometry, WoodMaterial);
   back.rotation.x += Math.PI / 2;
-  back.position.z += 0.5 * 12 / 8;
+  back.position.z += (0.5 * 12) / 8;
   back.position.y += 0.03;
   back.position.x += -0.025;
 
@@ -240,24 +293,24 @@ function makeObjectMinLOD() {
   chair.add(leg5);
   chair.add(leg6);
 
-  return chair
+  return chair;
 }
 
 export default defineCatalogElement({
-  name: "sedia",
-  prototype: "items",
+  name: 'sedia',
+  prototype: 'items',
 
   info: {
     tag: ['furnishings', 'wood'],
-    title: "chair",
-    description: "chair",
+    title: 'chair',
+    description: 'chair',
     image: require('./chair.png')
   },
 
   properties: {
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 0
       }
@@ -268,21 +321,35 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key="1" x="0" y="0" width={WIDTH} height={DEPTH}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#84e1ce" }} />
-        <text key="2" x="0" y="0"
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#84e1ce'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -303,7 +370,11 @@ export default defineCatalogElement({
     chair1.position.y += newAltitude;
     chair1.position.x += -WIDTH / 3.5;
     chair1.position.z += DEPTH / 4;
-    chair1.scale.set(1.5 * WIDTH / deltaZ, DEPTH / 1.5 / deltaX, HEIGHT / deltaY);
+    chair1.scale.set(
+      (1.5 * WIDTH) / deltaZ,
+      DEPTH / 1.5 / deltaX,
+      HEIGHT / deltaY
+    );
 
     /************** lod min *********************/
 
@@ -313,8 +384,11 @@ export default defineCatalogElement({
     chair0.position.y += newAltitude;
     chair0.position.x += -WIDTH / 3.5;
     chair0.position.z += DEPTH / 4;
-    chair0.scale.set(1.5 * WIDTH / deltaZ, DEPTH / 1.5 / deltaX, HEIGHT / deltaY);
-
+    chair0.scale.set(
+      (1.5 * WIDTH) / deltaZ,
+      DEPTH / 1.5 / deltaX,
+      HEIGHT / deltaY
+    );
 
     /**** all level of detail ***/
 

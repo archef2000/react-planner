@@ -1,30 +1,34 @@
 import * as Three from 'three';
-import { COLORS } from '../../../shared-style';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
-import { Grid } from '../../../models';
 import { Font } from 'three/examples/jsm/loaders/FontLoader';
 
-export default function (width: number, height: number, grid: Grid, font: Font) {
+import { Grid } from '../../../models';
+import { COLORS } from '../../../shared-style';
+
+export default function (
+  width: number,
+  height: number,
+  grid: Grid,
+  font: Font
+) {
   const step = grid.properties.step;
-  const colors = grid.properties.color ? [grid.properties.color] : grid.properties.colors;
+  const colors = grid.properties.color
+    ? [grid.properties.color]
+    : grid.properties.colors;
 
   const streak = new Three.Object3D();
   streak.name = 'streak';
   let counter = 0;
 
   for (let i = 0; i <= height; i += step) {
-
     const geometry = new Three.BufferGeometry();
-    const positions = new Float32Array([
-      0, 0, -i,
-      width, 0, -i,
-    ]);
+    const positions = new Float32Array([0, 0, -i, width, 0, -i]);
     geometry.setAttribute('position', new Three.BufferAttribute(positions, 3));
     const color = colors[counter % colors.length];
     const material = new Three.LineBasicMaterial({ color });
 
     if (counter % 5 == 0) {
-      const shape = new TextGeometry(('' + (counter * step)), {
+      const shape = new TextGeometry('' + counter * step, {
         size: 16,
         depth: 0.1,
         font

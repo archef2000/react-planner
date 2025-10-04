@@ -1,43 +1,49 @@
+import { ReactNode } from 'react';
+
 import { produce } from 'immer';
+
+import { CatalogJson } from '../catalog/catalog';
 import {
-  NEW_PROJECT,
-  LOAD_PROJECT,
-  SAVE_PROJECT,
-  OPEN_CATALOG,
-  SELECT_TOOL_EDIT,
-  UNSELECT_ALL,
-  SET_PROPERTIES,
-  SET_ITEMS_ATTRIBUTES,
-  SET_LINES_ATTRIBUTES,
-  SET_HOLES_ATTRIBUTES,
-  REMOVE,
-  UNDO,
-  ROLLBACK,
-  OPEN_PROJECT_CONFIGURATOR,
-  SET_PROJECT_PROPERTIES,
-  INIT_CATALOG,
-  UPDATE_MOUSE_COORDS,
-  UPDATE_ZOOM_SCALE,
-  TOGGLE_SNAP,
-  CHANGE_CATALOG_PAGE,
-  GO_BACK_TO_CATALOG_PAGE,
-  THROW_ERROR,
-  THROW_WARNING,
-  COPY_PROPERTIES,
-  PASTE_PROPERTIES,
-  PUSH_LAST_SELECTED_CATALOG_ELEMENT_TO_HISTORY,
-  ALTERATE_STATE,
-  SET_MODE,
+  ADD_CIRCULAR_GUIDE,
   ADD_HORIZONTAL_GUIDE,
   ADD_VERTICAL_GUIDE,
-  ADD_CIRCULAR_GUIDE,
+  ALTERATE_STATE,
+  CHANGE_CATALOG_PAGE,
+  COPY_PROPERTIES,
+  GO_BACK_TO_CATALOG_PAGE,
+  INIT_CATALOG,
+  LOAD_PROJECT,
+  ModeType,
+  NEW_PROJECT,
+  OPEN_CATALOG,
+  OPEN_PROJECT_CONFIGURATOR,
+  PASTE_PROPERTIES,
+  PUSH_LAST_SELECTED_CATALOG_ELEMENT_TO_HISTORY,
+  REMOVE,
+  REMOVE_CIRCULAR_GUIDE,
   REMOVE_HORIZONTAL_GUIDE,
   REMOVE_VERTICAL_GUIDE,
-  REMOVE_CIRCULAR_GUIDE
+  ROLLBACK,
+  SAVE_PROJECT,
+  SELECT_TOOL_EDIT,
+  SET_HOLES_ATTRIBUTES,
+  SET_ITEMS_ATTRIBUTES,
+  SET_LINES_ATTRIBUTES,
+  SET_MODE,
+  SET_PROJECT_PROPERTIES,
+  SET_PROPERTIES,
+  THROW_ERROR,
+  THROW_WARNING,
+  TOGGLE_SNAP,
+  UNDO,
+  UNSELECT_ALL,
+  UPDATE_MOUSE_COORDS,
+  UPDATE_ZOOM_SCALE
 } from '../constants';
-import { SnapMaskType } from '../types';
+import { Hole, Item, Scene } from '../models';
+import { CatalogElement, LineAttributes, SnapMaskType } from '../types';
 
-export function loadProject(sceneJSON) {
+export function loadProject(sceneJSON: Scene) {
   return {
     type: LOAD_PROJECT,
     sceneJSON
@@ -62,7 +68,7 @@ export function openCatalog() {
   };
 }
 
-export function changeCatalogPage(newPage, oldPage) {
+export function changeCatalogPage(newPage: string, oldPage: string) {
   return {
     type: CHANGE_CATALOG_PAGE,
     newPage,
@@ -70,7 +76,7 @@ export function changeCatalogPage(newPage, oldPage) {
   };
 }
 
-export function goBackToCatalogPage(newPage) {
+export function goBackToCatalogPage(newPage: string) {
   return {
     type: GO_BACK_TO_CATALOG_PAGE,
     newPage
@@ -89,7 +95,6 @@ export function unselectAll() {
   };
 }
 
-
 export function setProperties(properties: Record<string, any>) {
   return {
     type: SET_PROPERTIES,
@@ -97,9 +102,9 @@ export function setProperties(properties: Record<string, any>) {
   };
 }
 
-export function setItemsAttributes(itemsAttributes) {
-  itemsAttributes = produce(itemsAttributes, draft => {
-    draft.rotation = parseFloat(draft.rotation);
+export function setItemsAttributes(itemsAttributes: Item) {
+  itemsAttributes = produce(itemsAttributes, (draft) => {
+    draft.rotation = parseFloat(draft.rotation as any);
   });
 
   return {
@@ -108,12 +113,12 @@ export function setItemsAttributes(itemsAttributes) {
   };
 }
 
-export function setLinesAttributes(linesAttributes) {
-  linesAttributes = produce(linesAttributes, draft => {
-    draft.vertexOne.x = parseFloat(draft.vertexOne.x);
-    draft.vertexOne.y = parseFloat(draft.vertexOne.y);
-    draft.vertexTwo.x = parseFloat(draft.vertexTwo.x);
-    draft.vertexTwo.y = parseFloat(draft.vertexTwo.y);
+export function setLinesAttributes(linesAttributes: LineAttributes) {
+  linesAttributes = produce(linesAttributes, (draft) => {
+    draft.vertexOne.x = parseFloat(draft.vertexOne.x as any);
+    draft.vertexOne.y = parseFloat(draft.vertexOne.y as any);
+    draft.vertexTwo.x = parseFloat(draft.vertexTwo.x as any);
+    draft.vertexTwo.y = parseFloat(draft.vertexTwo.y as any);
   });
 
   return {
@@ -122,9 +127,9 @@ export function setLinesAttributes(linesAttributes) {
   };
 }
 
-export function setHolesAttributes(holesAttributes) {
-  holesAttributes = produce(holesAttributes, draft => {
-    draft.offset = parseFloat(draft.offset);
+export function setHolesAttributes(holesAttributes: Hole) {
+  holesAttributes = produce(holesAttributes, (draft) => {
+    draft.offset = parseFloat(draft.offset as any);
   });
 
   return {
@@ -157,14 +162,14 @@ export function openProjectConfigurator() {
   };
 }
 
-export function setProjectProperties(properties) {
+export function setProjectProperties(properties: Partial<Scene>) {
   return {
     type: SET_PROJECT_PROPERTIES,
     properties
   };
 }
 
-export function initCatalog(catalog) {
+export function initCatalog(catalog: CatalogJson) {
   return {
     type: INIT_CATALOG,
     catalog
@@ -175,10 +180,10 @@ export function updateMouseCoord({ x = 0, y = 0 }: { x: number; y: number }) {
   return {
     type: UPDATE_MOUSE_COORDS,
     coords: { x, y }
-  } as const;
+  };
 }
 
-export function updateZoomScale(scale) {
+export function updateZoomScale(scale: number) {
   return {
     type: UPDATE_ZOOM_SCALE,
     scale
@@ -192,21 +197,21 @@ export function toggleSnap(mask: SnapMaskType) {
   };
 }
 
-export function throwError(error) {
+export function throwError(error: ReactNode) {
   return {
     type: THROW_ERROR,
     error
   };
 }
 
-export function throwWarning(warning) {
+export function throwWarning(warning: ReactNode) {
   return {
     type: THROW_WARNING,
     warning
   };
 }
 
-export function copyProperties(properties) {
+export function copyProperties(properties: Record<string, any>) {
   return {
     type: COPY_PROPERTIES,
     properties
@@ -219,7 +224,9 @@ export function pasteProperties() {
   };
 }
 
-export function pushLastSelectedCatalogElementToHistory(element) {
+export function pushLastSelectedCatalogElementToHistory(
+  element: CatalogElement
+) {
   return {
     type: PUSH_LAST_SELECTED_CATALOG_ELEMENT_TO_HISTORY,
     element
@@ -232,28 +239,28 @@ export function setAlterateState() {
   };
 }
 
-export function setMode(mode) {
+export function setMode(mode: ModeType) {
   return {
     type: SET_MODE,
     mode
   };
 }
 
-export function addHorizontalGuide(coordinate) {
+export function addHorizontalGuide(coordinate: number) {
   return {
     type: ADD_HORIZONTAL_GUIDE,
     coordinate
   };
 }
 
-export function addVerticalGuide(coordinate) {
+export function addVerticalGuide(coordinate: number) {
   return {
     type: ADD_VERTICAL_GUIDE,
     coordinate
   };
 }
 
-export function addCircularGuide(x, y, radius) {
+export function addCircularGuide(x: number, y: number, radius: number) {
   return {
     type: ADD_CIRCULAR_GUIDE,
     x,
@@ -261,21 +268,21 @@ export function addCircularGuide(x, y, radius) {
     radius
   };
 }
-export function removeHorizontalGuide(guideID) {
+export function removeHorizontalGuide(guideID: string) {
   return {
     type: REMOVE_HORIZONTAL_GUIDE,
     guideID
   };
 }
 
-export function removeVerticalGuide(guideID) {
+export function removeVerticalGuide(guideID: string) {
   return {
     type: REMOVE_VERTICAL_GUIDE,
     guideID
   };
 }
 
-export function removeCircularGuide(guideID) {
+export function removeCircularGuide(guideID: string) {
   return {
     type: REMOVE_CIRCULAR_GUIDE,
     guideID

@@ -1,8 +1,10 @@
 import React from 'react';
+
+import { defineCatalogElement } from '@archef2000/react-planner';
 import * as Three from 'three';
-import { loadObjWithMaterial } from '../../utils/load-obj';
 import { Group, Object3DEventMap } from 'three';
-import { defineCatalogElement, Models } from '@archef2000/react-planner';
+
+import { loadObjWithMaterial } from '../../utils/load-obj';
 
 let cached3DWindow: Group<Object3DEventMap>;
 
@@ -49,13 +51,22 @@ export default defineCatalogElement({
     flip: {
       label: 'Flip',
       type: 'checkbox',
-      defaultValue: false,
-    },
+      defaultValue: false
+    }
   },
 
   render2D: function (element, layer, scene) {
-    const STYLE_HOLE_BASE = { stroke: '#000', strokeWidth: '3px', fill: '#000' };
-    const STYLE_HOLE_SELECTED = { stroke: '#0096fd', strokeWidth: '3px', fill: '#0096fd', cursor: 'move' };
+    const STYLE_HOLE_BASE = {
+      stroke: '#000',
+      strokeWidth: '3px',
+      fill: '#000'
+    };
+    const STYLE_HOLE_SELECTED = {
+      stroke: '#0096fd',
+      strokeWidth: '3px',
+      fill: '#0096fd',
+      cursor: 'move'
+    };
 
     const epsilon = 3;
 
@@ -65,15 +76,20 @@ export default defineCatalogElement({
     const length = element.properties.width.length;
     return (
       <g transform={`translate(${-length / 2}, 0)`}>
-        <path key='1' d={holePath} style={holeStyle} />
-        <line key='2' x1={holeWidth / 2} y1={-10 - epsilon} x2={holeWidth / 2} y2={10 + epsilon} style={holeStyle} />
+        <path key="1" d={holePath} style={holeStyle} />
+        <line
+          key="2"
+          x1={holeWidth / 2}
+          y1={-10 - epsilon}
+          x2={holeWidth / 2}
+          y2={10 + epsilon}
+          style={holeStyle}
+        />
       </g>
     );
   },
 
   render3D: async function (element, layer, scene) {
-    const width = element.properties.width.length;
-    const height = element.properties.height.length;
     const thickness = element.properties.thickness.length;
     const flip = element.properties.flip;
 
@@ -98,26 +114,28 @@ export default defineCatalogElement({
       const height = element.properties.height.length;
       const thickness = element.properties.thickness.length;
 
-      object.scale.set(width / initialWidth, height / initialHeight,
-        thickness / 2 / initialThickness);
+      object.scale.set(
+        width / initialWidth,
+        height / initialHeight,
+        thickness / 2 / initialThickness
+      );
 
       venetian.add(object);
       venetian.add(createTenda());
 
-      if (flip === true)
-        venetian.rotation.y += Math.PI;
+      if (flip === true) venetian.rotation.y += Math.PI;
 
       return venetian;
     };
 
     if (cached3DWindow) {
-      return onLoadItem(cached3DWindow.clone());;
+      return onLoadItem(cached3DWindow.clone());
     }
 
     const mtl = require('./venetian.mtl');
     const obj = require('./venetian.obj');
     const img = require('./texture.png');
-    const resourcePath = img.substr(0, img.lastIndexOf("/")) + "/";
+    const resourcePath = img.substr(0, img.lastIndexOf('/')) + '/';
 
     const object_4 = await loadObjWithMaterial(mtl, obj, resourcePath);
     cached3DWindow = object_4;
@@ -127,8 +145,12 @@ export default defineCatalogElement({
       const venetian = new Three.Object3D();
 
       //colors
-      const white = new Three.MeshLambertMaterial({ color: 0xffffff, opacity: 0.5, transparent: true });
-      const grey = new Three.MeshLambertMaterial({ color: 0xCCCCCC });
+      const white = new Three.MeshLambertMaterial({
+        color: 0xffffff,
+        opacity: 0.5,
+        transparent: true
+      });
+      const grey = new Three.MeshLambertMaterial({ color: 0xcccccc });
 
       const roundedRectShape = new Three.Shape();
 
@@ -142,7 +164,12 @@ export default defineCatalogElement({
       roundedRectShape.lineTo(x, y + height - radius);
       roundedRectShape.quadraticCurveTo(x, y + height, x + radius, y + height);
       roundedRectShape.lineTo(x + width - radius, y + height);
-      roundedRectShape.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+      roundedRectShape.quadraticCurveTo(
+        x + width,
+        y + height,
+        x + width,
+        y + height - radius
+      );
       roundedRectShape.lineTo(x + width, y + radius);
       roundedRectShape.quadraticCurveTo(x + width, y, x + width - radius, y);
       roundedRectShape.lineTo(x + radius, y);
@@ -150,45 +177,48 @@ export default defineCatalogElement({
 
       const holePath1 = new Three.Path();
       holePath1.moveTo(0.5, 0.6);
-      holePath1.arc(0, .7, .15, 0, Math.PI, false);
-      holePath1.arc(0.15, -.09, .15, Math.PI, 0, false);
+      holePath1.arc(0, 0.7, 0.15, 0, Math.PI, false);
+      holePath1.arc(0.15, -0.09, 0.15, Math.PI, 0, false);
       roundedRectShape.holes.push(holePath1);
 
       const holePath2 = new Three.Path();
       holePath2.moveTo(0.5, 4.6);
-      holePath2.arc(0, .7, .15, 0, Math.PI, false);
-      holePath2.arc(0.15, -.09, .15, Math.PI, 0, false);
+      holePath2.arc(0, 0.7, 0.15, 0, Math.PI, false);
+      holePath2.arc(0.15, -0.09, 0.15, Math.PI, 0, false);
       roundedRectShape.holes.push(holePath2);
 
       const holePath3 = new Three.Path();
       holePath3.moveTo(0.5, 8.6);
-      holePath3.arc(0, .7, .15, 0, Math.PI, false);
-      holePath3.arc(0.15, -.09, .15, Math.PI, 0, false);
+      holePath3.arc(0, 0.7, 0.15, 0, Math.PI, false);
+      holePath3.arc(0.15, -0.09, 0.15, Math.PI, 0, false);
       roundedRectShape.holes.push(holePath3);
 
       const holePath4 = new Three.Path();
       holePath4.moveTo(0.5, 12.6);
-      holePath4.arc(0, .7, .15, 0, Math.PI, false);
-      holePath4.arc(0.15, -.09, .15, Math.PI, 0, false);
+      holePath4.arc(0, 0.7, 0.15, 0, Math.PI, false);
+      holePath4.arc(0.15, -0.09, 0.15, Math.PI, 0, false);
       roundedRectShape.holes.push(holePath4);
 
       const holePath5 = new Three.Path();
       holePath5.moveTo(0.5, 16.6);
-      holePath5.arc(0, .7, .15, 0, Math.PI, false);
-      holePath5.arc(0.15, -.09, .15, Math.PI, 0, false);
+      holePath5.arc(0, 0.7, 0.15, 0, Math.PI, false);
+      holePath5.arc(0.15, -0.09, 0.15, Math.PI, 0, false);
       roundedRectShape.holes.push(holePath5);
 
       const extrudeSettings = {
         steps: 1,
         depth: 0.2,
         bevelEnabled: false,
-        bevelThickness: .4,
-        bevelSize: .4,
+        bevelThickness: 0.4,
+        bevelSize: 0.4,
         bevelSegments: 1
       };
 
-      for (let i = 0; i < 25; i += .7) {
-        const geometry = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
+      for (let i = 0; i < 25; i += 0.7) {
+        const geometry = new Three.ExtrudeGeometry(
+          roundedRectShape,
+          extrudeSettings
+        );
         const mesh = new Three.Mesh(geometry, grey);
         mesh.position.set(0, i, 0.86);
         mesh.rotation.z += Math.PI / 2;
@@ -199,7 +229,7 @@ export default defineCatalogElement({
       for (let j = -1.25; j > -19; j += -4) {
         const geometry1 = new Three.CylinderGeometry(0.105, 0.105, 26, 32);
         const tubo = new Three.Mesh(geometry1, white);
-        tubo.position.set(j, 12.5, .35);
+        tubo.position.set(j, 12.5, 0.35);
         venetian.add(tubo);
       }
 
@@ -213,11 +243,26 @@ export default defineCatalogElement({
 
       roundedRectShape2.moveTo(x1, y1 + radius1);
       roundedRectShape2.lineTo(x1, y1 + height1 - radius1);
-      roundedRectShape2.quadraticCurveTo(x1, y1 + height1, x1 + radius1, y1 + height1);
+      roundedRectShape2.quadraticCurveTo(
+        x1,
+        y1 + height1,
+        x1 + radius1,
+        y1 + height1
+      );
       roundedRectShape2.lineTo(x1 + width1 - radius1, y1 + height1);
-      roundedRectShape2.quadraticCurveTo(x1 + width1, y1 + height1, x1 + width1, y1 + height1 - radius1);
+      roundedRectShape2.quadraticCurveTo(
+        x1 + width1,
+        y1 + height1,
+        x1 + width1,
+        y1 + height1 - radius1
+      );
       roundedRectShape2.lineTo(x1 + width1, y1 + radius1);
-      roundedRectShape2.quadraticCurveTo(x1 + width1, y1, x1 + width1 - radius1, y1);
+      roundedRectShape2.quadraticCurveTo(
+        x1 + width1,
+        y1,
+        x1 + width1 - radius1,
+        y1
+      );
       roundedRectShape2.lineTo(x1 + radius1, y1);
       roundedRectShape2.quadraticCurveTo(x1, y1, x1, y1 + radius1);
 
@@ -225,13 +270,16 @@ export default defineCatalogElement({
         steps: 1,
         depth: 0.4,
         bevelEnabled: false,
-        bevelThickness: .4,
-        bevelSize: .4,
+        bevelThickness: 0.4,
+        bevelSize: 0.4,
         bevelSegments: 1
       };
 
-      for (let k = -.5; k < 27; k += 26) {
-        const geometry2 = new Three.ExtrudeGeometry(roundedRectShape2, extrudeSettings2);
+      for (let k = -0.5; k < 27; k += 26) {
+        const geometry2 = new Three.ExtrudeGeometry(
+          roundedRectShape2,
+          extrudeSettings2
+        );
         const mesh2 = new Three.Mesh(geometry2, grey);
         mesh2.position.set(0, k, 1);
         mesh2.rotation.z += Math.PI / 2;
@@ -245,9 +293,13 @@ export default defineCatalogElement({
       const deltaY = Math.abs(valueObject.max.y - valueObject.min.y);
       const deltaZ = Math.abs(valueObject.max.z - valueObject.min.z);
 
-      venetian.position.x += width1 / .025;
-      venetian.position.y += -height1 / .4;
-      venetian.scale.set(5.2 * width1 / deltaZ, 5.45 * height1 / deltaY, 2.5 * thickness / deltaX);
+      venetian.position.x += width1 / 0.025;
+      venetian.position.y += -height1 / 0.4;
+      venetian.scale.set(
+        (5.2 * width1) / deltaZ,
+        (5.45 * height1) / deltaY,
+        (2.5 * thickness) / deltaX
+      );
 
       return venetian;
     }

@@ -1,47 +1,49 @@
 import React from 'react';
-import * as Three from 'three';
-import { loadObjWithMaterial } from '../../utils/load-obj';
-import { Group, Object3DEventMap } from 'three';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
+import { Group, Object3DEventMap } from 'three';
+
+import { loadObjWithMaterial } from '../../utils/load-obj';
 
 let cached3DWindow: Group<Object3DEventMap>;
 
 export default defineCatalogElement({
-  name: "window",
-  prototype: "holes",
+  name: 'window',
+  prototype: 'holes',
 
   info: {
-    title: "window",
+    title: 'window',
     tag: ['window'],
-    description: "Window",
+    description: 'Window',
     image: require('./window.png')
   },
 
   properties: {
     width: {
-      label: "Width",
-      type: "length-measure",
+      label: 'Width',
+      type: 'length-measure',
       defaultValue: {
         length: 90
       }
     },
     height: {
-      label: "Height",
-      type: "length-measure",
+      label: 'Height',
+      type: 'length-measure',
       defaultValue: {
         length: 100
       }
     },
     altitude: {
-      label: "Altitude",
-      type: "length-measure",
+      label: 'Altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 90
       }
     },
     thickness: {
-      label: "Thickness",
-      type: "length-measure",
+      label: 'Thickness',
+      type: 'length-measure',
       defaultValue: {
         length: 10
       }
@@ -49,8 +51,17 @@ export default defineCatalogElement({
   },
 
   render2D: function (element, layer, scene) {
-    const STYLE_HOLE_BASE = { stroke: "#000", strokeWidth: "3px", fill: "#000" };
-    const STYLE_HOLE_SELECTED = { stroke: "#0096fd", strokeWidth: "3px", fill: "#0096fd", cursor: "move" };
+    const STYLE_HOLE_BASE = {
+      stroke: '#000',
+      strokeWidth: '3px',
+      fill: '#000'
+    };
+    const STYLE_HOLE_SELECTED = {
+      stroke: '#0096fd',
+      strokeWidth: '3px',
+      fill: '#0096fd',
+      cursor: 'move'
+    };
     //let line = layer.lines[hole.line];
     //let epsilon = line.properties.thickness / 2;
 
@@ -63,7 +74,14 @@ export default defineCatalogElement({
     return (
       <g transform={`translate(${-length / 2}, 0)`}>
         <path key="1" d={holePath} style={holeStyle} />
-        <line key="2" x1={holeWidth / 2} y1={-10 - epsilon} x2={holeWidth / 2} y2={10 + epsilon} style={holeStyle} />
+        <line
+          key="2"
+          x1={holeWidth / 2}
+          y1={-10 - epsilon}
+          x2={holeWidth / 2}
+          y2={10 + epsilon}
+          style={holeStyle}
+        />
       </g>
     );
   },
@@ -88,8 +106,11 @@ export default defineCatalogElement({
       const height = element.properties.height.length;
       const thickness = element.properties.thickness.length;
 
-      object.scale.set(width / initialWidth, height / initialHeight,
-        thickness / initialThickness);
+      object.scale.set(
+        width / initialWidth,
+        height / initialHeight,
+        thickness / initialThickness
+      );
 
       return object;
     };
@@ -101,7 +122,7 @@ export default defineCatalogElement({
     const mtl = require('./window.mtl');
     const obj = require('./window.obj');
     const img = require('./texture.png');
-    const resourcePath = img.substr(0, img.lastIndexOf("/")) + "/";
+    const resourcePath = img.substr(0, img.lastIndexOf('/')) + '/';
 
     cached3DWindow = await loadObjWithMaterial(mtl, obj, resourcePath);
     return onLoadItem(cached3DWindow.clone());

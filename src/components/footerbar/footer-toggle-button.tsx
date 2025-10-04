@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import * as SharedStyle from '../../shared-style';
+
 import ReactPlannerContext from '../../react-planner-context';
-import { State } from '../../models';
+import * as SharedStyle from '../../shared-style';
 
 const toggleButtonStyle = {
   width: '5.5em',
@@ -35,11 +35,17 @@ interface FooterToggleButtonState {
   active: boolean;
 }
 
-export default class FooterToggleButton extends Component<FooterToggleButtonProps, FooterToggleButtonState> {
+export default class FooterToggleButton extends Component<
+  FooterToggleButtonProps,
+  FooterToggleButtonState
+> {
   static contextType = ReactPlannerContext;
   context!: React.ContextType<typeof ReactPlannerContext>;
 
-  constructor(props, context) {
+  constructor(
+    props: FooterToggleButtonProps,
+    context: typeof ReactPlannerContext
+  ) {
     super(props, context);
 
     this.state = {
@@ -48,22 +54,28 @@ export default class FooterToggleButton extends Component<FooterToggleButtonProp
     };
   }
 
-  toggleOver(e) { this.setState({ over: true }); }
-  toggleOut(e) { this.setState({ over: false }); }
+  toggleOver(e: React.MouseEvent) {
+    this.setState({ over: true });
+  }
+  toggleOut(e: React.MouseEvent) {
+    this.setState({ over: false });
+  }
 
-  toggle(e) {
+  toggle(e: React.MouseEvent) {
     const isActive = !this.state.active;
     this.setState({ active: isActive });
 
     if (isActive) {
       this.props.toggleOn();
-    }
-    else {
+    } else {
       this.props.toggleOff();
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(
+    nextProps: FooterToggleButtonProps,
+    nextState: FooterToggleButtonState
+  ) {
     if (this.state.over != nextState.over) return true;
     if (this.state.active != nextState.active) return true;
     if (this.props.toggleState != nextProps.toggleState) return true;
@@ -71,19 +83,22 @@ export default class FooterToggleButton extends Component<FooterToggleButtonProp
     return false;
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: FooterToggleButtonProps) {
     if (this.props.toggleState != prevProps.toggleState)
-      this.setState({ ...this.state, active: this.props.toggleState });
+      this.setState({ ...this.state, active: !!this.props.toggleState });
   }
 
   render() {
-
     return (
       <div
-        style={this.state.over || this.state.active ? toggleButtonStyleOver : toggleButtonStyle}
-        onMouseOver={e => this.toggleOver(e)}
-        onMouseOut={e => this.toggleOut(e)}
-        onClick={e => this.toggle(e)}
+        style={
+          this.state.over || this.state.active
+            ? toggleButtonStyleOver
+            : toggleButtonStyle
+        }
+        onMouseOver={(e) => this.toggleOver(e)}
+        onMouseOut={(e) => this.toggleOut(e)}
+        onClick={(e) => this.toggle(e)}
         title={this.props.title}
       >
         {this.props.text}

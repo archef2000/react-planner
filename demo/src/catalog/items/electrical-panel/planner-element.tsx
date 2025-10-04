@@ -1,10 +1,15 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const cubeMaterial = new Three.MeshLambertMaterial({ color: 0xf5f4f4 });
 
-function makeObjectMaxLOD(newWidth: number, newHeight: number, newDepth: number) {
+function makeObjectMaxLOD(
+  newWidth: number,
+  newHeight: number,
+  newDepth: number
+) {
   const electricalPanel = new Three.Mesh();
 
   const textureLoader = new Three.TextureLoader();
@@ -23,10 +28,14 @@ function makeObjectMaxLOD(newWidth: number, newHeight: number, newDepth: number)
   p2.position.set(0, 1, 25.5);
   p1.add(p2);
 
-  return electricalPanel
+  return electricalPanel;
 }
 
-function makeObjectMinLOD(newWidth: number, newHeight: number, newDepth: number) {
+function makeObjectMinLOD(
+  newWidth: number,
+  newHeight: number,
+  newDepth: number
+) {
   const electricalPanel = new Three.Mesh();
 
   const cubeGeometryBase = new Three.BoxGeometry(newWidth, newHeight, newDepth);
@@ -34,44 +43,44 @@ function makeObjectMinLOD(newWidth: number, newHeight: number, newDepth: number)
   p1.position.set(0, 1, 0);
   electricalPanel.add(p1);
 
-  return electricalPanel
+  return electricalPanel;
 }
 
 export default defineCatalogElement({
-  name: "pannello_elettrico",
-  prototype: "items",
+  name: 'pannello_elettrico',
+  prototype: 'items',
 
   info: {
     tag: ['furnishings', 'metal'],
-    title: "electric panel",
-    description: "electric panel",
+    title: 'electric panel',
+    description: 'electric panel',
     image: require('./electricalPanel.png')
   },
   properties: {
     width: {
-      label: "width",
-      type: "length-measure",
+      label: 'width',
+      type: 'length-measure',
       defaultValue: {
         length: 90
       }
     },
     depth: {
-      label: "depth",
-      type: "length-measure",
+      label: 'depth',
+      type: 'length-measure',
       defaultValue: {
         length: 50
       }
     },
     height: {
-      label: "height",
-      type: "length-measure",
+      label: 'height',
+      type: 'length-measure',
       defaultValue: {
         length: 210
       }
     },
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 0
       }
@@ -85,21 +94,35 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-newWidth / 2},${-newDepth / 2})`}>
-        <rect key="1" x="0" y="0" width={newWidth} height={newDepth}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#ff0000" }} />
-        <text key="2" x="0" y="0"
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={newWidth}
+          height={newDepth}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#ff0000'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${newWidth / 2}, ${newDepth / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.name}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -107,7 +130,6 @@ export default defineCatalogElement({
     const newDepth = element.properties.depth.length;
     const newHeight = element.properties.height.length;
     const newAltitude = element.properties.altitude.length;
-
 
     /**************** LOD max ***********************/
 

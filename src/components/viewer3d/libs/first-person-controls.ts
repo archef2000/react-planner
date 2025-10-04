@@ -1,9 +1,15 @@
 import { Vector3 } from 'three';
 
-export function firstPersonOnKeyDown(event: KeyboardEvent, moveForward: boolean, moveLeft: boolean, moveBackward: boolean, moveRight: boolean, canJump: boolean, velocity: Vector3) {
-
+export function firstPersonOnKeyDown(
+  event: KeyboardEvent,
+  moveForward: boolean,
+  moveLeft: boolean,
+  moveBackward: boolean,
+  moveRight: boolean,
+  canJump: boolean,
+  velocity: Vector3
+) {
   switch (event.keyCode) {
-
     case 38: // up
     case 87: // w
       moveForward = true;
@@ -30,11 +36,17 @@ export function firstPersonOnKeyDown(event: KeyboardEvent, moveForward: boolean,
       break;
   }
 
-  return { moveForward, moveLeft, moveBackward, moveRight, canJump }
+  return { moveForward, moveLeft, moveBackward, moveRight, canJump };
 }
 
-export function firstPersonOnKeyUp(event: KeyboardEvent, moveForward: boolean, moveLeft: boolean, moveBackward: boolean, moveRight: boolean, canJump: boolean) {
-
+export function firstPersonOnKeyUp(
+  event: KeyboardEvent,
+  moveForward: boolean,
+  moveLeft: boolean,
+  moveBackward: boolean,
+  moveRight: boolean,
+  canJump: boolean
+) {
   switch (event.keyCode) {
     case 38: // up
     case 87: // w
@@ -56,5 +68,5 @@ export function firstPersonOnKeyUp(event: KeyboardEvent, moveForward: boolean, m
       moveRight = false;
       break;
   }
-  return { moveForward, moveLeft, moveBackward, moveRight, canJump }
+  return { moveForward, moveLeft, moveBackward, moveRight, canJump };
 }

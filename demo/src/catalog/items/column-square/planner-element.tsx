@@ -1,6 +1,7 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const material = new Three.MeshLambertMaterial({ color: 0xf5f4f4 });
 
@@ -53,21 +54,37 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
-    const circleStyle = { stroke: element.selected ? '#0096fd' : '#000', strokeWidth: '2px', fill: '#84e1ce' };
+    const circleStyle = {
+      stroke: element.selected ? '#0096fd' : '#000',
+      strokeWidth: '2px',
+      fill: '#84e1ce'
+    };
 
     return (
       <g transform={`translate(${-width / 2},${-depth / 2})`}>
-        <rect key='1' x='0' y='0' width={width} height={depth} style={circleStyle} />
-        <text key='2' x='0' y='0' transform={`translate(${width / 2}, ${depth / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: 'middle', fontSize: '11px' }}>
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={width}
+          height={depth}
+          style={circleStyle}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
+          transform={`translate(${width / 2}, ${depth / 2}) scale(1,-1) rotate(${textRotation})`}
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -78,7 +95,10 @@ export default defineCatalogElement({
 
     const column = new Three.Object3D();
 
-    const object = new Three.Mesh(new Three.BoxGeometry(width, HEIGHT, depth, 32), material);
+    const object = new Three.Mesh(
+      new Three.BoxGeometry(width, HEIGHT, depth, 32),
+      material
+    );
 
     column.add(object);
 

@@ -1,8 +1,10 @@
+import { Store } from 'redux';
+
 import actions from '../actions/export';
+import { ReactPlannerStateExtractor } from '../types';
 
 export default function consoleDebugger() {
-
-  return (store, stateExtractor) => {
+  return (store: Store, stateExtractor: ReactPlannerStateExtractor) => {
     (window as any).ReactPlanner = {
       ...actions,
 
@@ -11,10 +13,10 @@ export default function consoleDebugger() {
       },
 
       getState() {
-        return stateExtractor(store.getState())
+        return stateExtractor(store.getState());
       },
 
-      do(actions, delay = 300) {
+      do(actions: any[], delay = 300) {
         actions = actions.reverse();
         const dispatch = store.dispatch;
         const dispatchAction = () => {
@@ -28,10 +30,10 @@ export default function consoleDebugger() {
       }
     };
 
-    console.groupCollapsed("ReactPlanner");
-    console.info("ReactPlanner is ready");
-    console.info("console.log(ReactPlanner)");
+    console.groupCollapsed('ReactPlanner');
+    console.info('ReactPlanner is ready');
+    console.info('console.log(ReactPlanner)');
     console.log((window as any).ReactPlanner);
     console.groupEnd();
-  }
+  };
 }

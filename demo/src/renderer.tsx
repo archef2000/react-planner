@@ -1,19 +1,19 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
-import useMeasure from 'react-use-measure';
-import { configureStore, isPlain, createSerializableStateInvariantMiddleware } from '@reduxjs/toolkit';
-import { Provider } from 'react-redux';
-import MyCatalog, { createCatalog } from './catalog/mycatalog';
-
-import ToolbarScreenshotButton from './ui/toolbar-screenshot-button';
 
 import {
   Models as PlannerModels,
-  reducer as PlannerReducer,
-  ReactPlanner,
   Plugins as PlannerPlugins,
+  reducer as PlannerReducer,
+  ReactPlanner
 } from '@archef2000/react-planner';
+import { configureStore } from '@reduxjs/toolkit';
 import { produce } from 'immer';
+import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
+import useMeasure from 'react-use-measure';
+
+import { createCatalog } from './catalog/mycatalog';
+import ToolbarScreenshotButton from './ui/toolbar-screenshot-button';
 
 //define state
 const AppState = {
@@ -23,12 +23,11 @@ const AppState = {
 //define reducer
 const reducer = (state: { [key: string]: any } | undefined, action: any) => {
   state = state || AppState;
-  state = produce(state, draft => {
+  state = produce(state, (draft) => {
     draft['react-planner'] = PlannerReducer(draft['react-planner'], action);
   });
   return state;
 };
-
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -36,36 +35,38 @@ const isProduction = process.env.NODE_ENV === 'production';
 const devToolsActionsDenylist = [
   'UPDATE_MOUSE_COORDS',
   'UPDATE_ZOOM_SCALE',
-  'UPDATE_2D_CAMERA',
+  'UPDATE_2D_CAMERA'
 ];
 
 if (!isProduction) {
-  console.info('Environment is in development and these actions will be blacklisted', devToolsActionsDenylist);
+  console.info(
+    'Environment is in development and these actions will be blacklisted',
+    devToolsActionsDenylist
+  );
 }
 
-const isSerializable = (value: any) =>
-  typeof value === "function" || isPlain(value) // TODO: only exclude renderes: https://redux-toolkit.js.org/api/serializabilityMiddleware
+// const isSerializable = (value: any) =>
+//   typeof value === 'function' || isPlain(value); // TODO: only exclude renderes: https://redux-toolkit.js.org/api/serializabilityMiddleware
 
-const serializableMiddleware = createSerializableStateInvariantMiddleware({
-  isSerializable,
-})
+// const serializableMiddleware = createSerializableStateInvariantMiddleware({
+//   isSerializable
+// });
 
-const middleware = process.env.NODE_ENV !== 'production' ?
-  [serializableMiddleware] :
-  [];
+// const middleware = process.env.NODE_ENV !== 'production' ? [serializableMiddleware] : [];
 
 const store = configureStore({
   reducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-    thunk: true,
-    immutableCheck: true,
-    serializableCheck: false,
-    actionCreatorCheck: true,
-  }).concat(),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      thunk: true,
+      immutableCheck: true,
+      serializableCheck: false,
+      actionCreatorCheck: true
+    }).concat(),
   //middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middleware),
   devTools: {
     actionsDenylist: devToolsActionsDenylist,
-    maxAge: 10000,
+    maxAge: 10000
   },
   /*
   !isProduction && (window as any).devToolsExtension ?
@@ -87,21 +88,20 @@ const store = configureStore({
     }) :
     f => f,
     */
-  ...((window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__({
-    maxAge: 10000,
-    actionsDenylist: devToolsActionsDenylist,
-  }))
+  ...((window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__({
+      maxAge: 10000,
+      actionsDenylist: devToolsActionsDenylist
+    }))
 });
 
 const plugins = [
   PlannerPlugins.Keyboard(),
   PlannerPlugins.Autosave('react-planner_v0'),
-  PlannerPlugins.ConsoleDebugger(),
+  PlannerPlugins.ConsoleDebugger()
 ];
 
-const toolbarButtons = [
-  ToolbarScreenshotButton,
-];
+const toolbarButtons = [ToolbarScreenshotButton];
 
 // Component that uses useMeasure hook
 function ResponsiveReactPlanner() {
@@ -118,7 +118,7 @@ function ResponsiveReactPlanner() {
           height={bounds.height}
           plugins={plugins}
           toolbarButtons={toolbarButtons}
-          stateExtractor={state => state["react-planner"]}
+          stateExtractor={(state) => state['react-planner']}
         />
       )}
     </div>
@@ -134,14 +134,14 @@ if (!container) {
 // Reuse a single React root across HMR updates
 const globalAny = globalThis as any;
 const ROOT_KEY = '__REACT_PLANNER_DEMO_ROOT__';
-const root = globalAny[ROOT_KEY] || (globalAny[ROOT_KEY] = createRoot(container));
+const root =
+  globalAny[ROOT_KEY] || (globalAny[ROOT_KEY] = createRoot(container));
 
 root.render(
   <Provider store={store}>
     <ResponsiveReactPlanner />
   </Provider>
 );
-
 
 // Optional: clean up on hot dispose (will recreate root on next replace)
 if ((module as any)?.hot) {
@@ -153,5 +153,3 @@ if ((module as any)?.hot) {
     });
   } catch { }
 }
-
-

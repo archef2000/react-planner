@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
-import { FormNumberInput, FormTextInput } from '../../../style/export';
+
 import { PropertyLengthMeasure } from '../../../../catalog/properties/export';
-import ReactPlannerContext from '../../../../react-planner-context';
 import { State } from '../../../../models';
+import ReactPlannerContext from '../../../../react-planner-context';
+import { FormNumberInput, FormTextInput } from '../../../style/export';
 
 const tableStyle = { width: '100%' } as const;
 const firstTdStyle = { width: '6em' } as const;
@@ -19,7 +20,13 @@ interface LineAttributesEditorProps {
   [key: string]: any;
 }
 
-export default function LineAttributesEditor({ element, onUpdate, attributeFormData, state, ...rest }: LineAttributesEditorProps) {
+export default function LineAttributesEditor({
+  element,
+  onUpdate,
+  attributeFormData,
+  state,
+  ...rest
+}: LineAttributesEditorProps) {
   const { translator } = useContext(ReactPlannerContext);
 
   const name = attributeFormData.name || element.name;
@@ -36,7 +43,7 @@ export default function LineAttributesEditor({ element, onUpdate, attributeFormD
             <td>
               <FormTextInput
                 value={name}
-                onChange={event => onUpdate('name', event.target.value)}
+                onChange={(event) => onUpdate('name', event.target.value)}
                 style={inputStyle}
               />
             </td>
@@ -46,7 +53,9 @@ export default function LineAttributesEditor({ element, onUpdate, attributeFormD
             <td>
               <FormNumberInput
                 value={vertexOne.x}
-                onChange={event => onUpdate('vertexOne', { 'x': event.target.value })}
+                onChange={(event) =>
+                  onUpdate('vertexOne', { x: event.target.value })
+                }
                 style={inputStyle}
                 precision={2}
                 {...rest}
@@ -58,7 +67,9 @@ export default function LineAttributesEditor({ element, onUpdate, attributeFormD
             <td>
               <FormNumberInput
                 value={vertexOne.y}
-                onChange={event => onUpdate('vertexOne', { 'y': event.target.value })}
+                onChange={(event) =>
+                  onUpdate('vertexOne', { y: event.target.value })
+                }
                 style={inputStyle}
                 precision={2}
                 {...rest}
@@ -70,7 +81,9 @@ export default function LineAttributesEditor({ element, onUpdate, attributeFormD
             <td>
               <FormNumberInput
                 value={vertexTwo.x}
-                onChange={event => onUpdate('vertexTwo', { 'x': event.target.value })}
+                onChange={(event) =>
+                  onUpdate('vertexTwo', { x: event.target.value })
+                }
                 style={inputStyle}
                 precision={2}
                 {...rest}
@@ -82,7 +95,9 @@ export default function LineAttributesEditor({ element, onUpdate, attributeFormD
             <td>
               <FormNumberInput
                 value={vertexTwo.y}
-                onChange={event => onUpdate('vertexTwo', { 'y': event.target.value })}
+                onChange={(event) =>
+                  onUpdate('vertexTwo', { y: event.target.value })
+                }
                 style={inputStyle}
                 precision={2}
                 {...rest}
@@ -93,8 +108,13 @@ export default function LineAttributesEditor({ element, onUpdate, attributeFormD
       </table>
       <PropertyLengthMeasure
         value={lineLength}
-        onUpdate={mapped => onUpdate('lineLength', mapped)}
-        configs={{ label: translator.t('Length'), min: 0, max: Infinity, precision: 2 }}
+        onUpdate={(mapped) => onUpdate('lineLength', mapped)}
+        configs={{
+          label: translator.t('Length'),
+          min: 0,
+          max: Infinity,
+          precision: 2
+        }}
         state={state}
       />
     </div>

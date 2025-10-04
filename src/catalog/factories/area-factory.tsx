@@ -1,21 +1,32 @@
 import React from 'react';
-import { createArea, updatedArea } from './area-factory-3d';
+
+import { Object3D, Object3DEventMap } from 'three';
+
+import { Area, Layer, Scene } from '../../models';
 import * as SharedStyle from '../../shared-style';
 import Translator from '../../translator/translator';
-import { CatalogElementTextures } from '../../types';
-import { Area, Layer, Scene } from '../../models';
-import { Object3D, Object3DEventMap } from 'three';
-import { CatalogElement, CatalogElementInfo } from '../../types';
+import {
+  CatalogElement,
+  CatalogElementInfo,
+  CatalogElementTextures,
+  defineCatalogElement
+} from '../../types';
+
+import { createArea, updatedArea } from './area-factory-3d';
 
 const translator = new Translator();
 
-export default function AreaFactory(name: string, info: CatalogElementInfo, textures: CatalogElementTextures) {
-  const textureValues = { 'none': 'None' };
+export default function AreaFactory(
+  name: string,
+  info: CatalogElementInfo,
+  textures: CatalogElementTextures
+) {
+  const textureValues: Record<string, string> = { none: 'None' };
   for (const textureName in textures) {
-    textureValues[textureName] = textures[textureName].name
+    textureValues[textureName] = textures[textureName].name;
   }
 
-  const areaElement: CatalogElement = {
+  const areaElement = defineCatalogElement({
     name,
     prototype: 'areas',
     info: {
@@ -43,9 +54,9 @@ export default function AreaFactory(name: string, info: CatalogElementInfo, text
         type: 'enum',
         defaultValue: 'none',
         values: textureValues
-      },
+      }
     },
-    render2D: function (element: Area, layer: Layer, scene: Scene) {
+    render2D: function (element, layer, scene) {
       let path = '';
 
       ///print area path
@@ -55,29 +66,49 @@ export default function AreaFactory(name: string, info: CatalogElementInfo, text
       });
 
       //add holes
-      element.holes.forEach(areaID => {
+      element.holes.forEach((areaID) => {
         const area = layer.areas[areaID];
 
-        area.vertices.reverse().forEach((vertexID, ind) => {
+        [...area.vertices].reverse().forEach((vertexID, ind) => {
           const vertex = layer.vertices[vertexID];
           path += (ind ? 'L' : 'M') + vertex.x + ' ' + vertex.y + ' ';
         });
-
       });
 
-      const fill = element.selected ? SharedStyle.AREA_MESH_COLOR.selected : element.properties.patternColor;
+      const fill = element.selected
+        ? SharedStyle.AREA_MESH_COLOR.selected
+        : element.properties.patternColor;
 
-      return (<path d={path} fill={fill} />);
+      return <path d={path} fill={fill} />;
     },
 
     async render3D(element: Area, layer: Layer, scene: Scene) {
-      return createArea(element, layer, scene, textures)
+      return createArea(element, layer, scene, textures);
     },
 
-    async updateRender3D(element: Area, layer: Layer, scene: Scene, mesh: Object3D<Object3DEventMap>, oldElement: Area, differences, selfDestroy, selfBuild) {
-      return updatedArea(element, layer, scene, textures, mesh, oldElement, differences, selfDestroy, selfBuild);
-  }
-};
+    async updateRender3D(
+      element: Area,
+      layer: Layer,
+      scene: Scene,
+      mesh: Object3D<Object3DEventMap>,
+      oldElement: Area,
+      differences,
+      selfDestroy,
+      selfBuild
+    ) {
+      return updatedArea(
+        element,
+        layer,
+        scene,
+        textures,
+        mesh,
+        oldElement,
+        differences,
+        selfDestroy,
+        selfBuild
+      );
+    }
+  });
 
-return areaElement
+  return areaElement as unknown as CatalogElement;
 }

@@ -1,12 +1,8 @@
 import Autosave from './autosave';
-import Keyboard from './keyboard';
 import ConsoleDebugger from './console-debugger';
+import Keyboard from './keyboard';
 
-export {
-  Autosave,
-  Keyboard,
-  ConsoleDebugger
-};
+export { Autosave, ConsoleDebugger, Keyboard };
 
 export default {
   Autosave,

@@ -1,13 +1,23 @@
-import { BoxHelper, Box3, ObjectLoader, Object3DJSON, Object3D, Object3DEventMap, Vector3 } from 'three';
-import { loadObjWithMaterial } from '../../utils/load-obj';
-
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import {
+  Box3,
+  BoxHelper,
+  Object3D,
+  Object3DEventMap,
+  Object3DJSON,
+  ObjectLoader,
+  Vector3
+} from 'three';
+
+import { loadObjWithMaterial } from '../../utils/load-obj';
 
 const mtl = require('./sofa.mtl');
 const obj = require('./sofa.obj');
 const img = require('./texture.jpg');
-const resourcePath = img.substr(0, img.lastIndexOf("/")) + "/";
+
+const resourcePath = img.substr(0, img.lastIndexOf('/')) + '/';
 
 const width = { length: 90, unit: 'cm' };
 const depth = { length: 60, unit: 'cm' };
@@ -48,18 +58,37 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
     const width = element.properties.width;
     const depth = element.properties.depth;
-    const textRotation = Math.sin(angle * Math.PI / 180) < 0 ? 180 : 0;
+    const textRotation = Math.sin((angle * Math.PI) / 180) < 0 ? 180 : 0;
 
-    const style = { stroke: element.selected ? '#0096fd' : '#000', strokeWidth: '2px', fill: '#84e1ce' } as const;
-    const arrow_style = { stroke: element.selected ? '#0096fd' : undefined, strokeWidth: '2px', fill: '#84e1ce' } as const;
+    const style = {
+      stroke: element.selected ? '#0096fd' : '#000',
+      strokeWidth: '2px',
+      fill: '#84e1ce'
+    } as const;
+    const arrow_style = {
+      stroke: element.selected ? '#0096fd' : undefined,
+      strokeWidth: '2px',
+      fill: '#84e1ce'
+    } as const;
 
     return (
       <g transform={`translate(${-width.length / 2},${-depth.length / 2})`}>
-        <rect x="0" y="0" width={width.length} height={depth.length} style={style} />
-        <line x1={width.length / 2} x2={width.length / 2} y1={depth.length} y2={1.5 * depth.length}
-          style={arrow_style} />
+        <rect
+          x="0"
+          y="0"
+          width={width.length}
+          height={depth.length}
+          style={style}
+        />
         <line
-          x1={.35 * width.length}
+          x1={width.length / 2}
+          x2={width.length / 2}
+          y1={depth.length}
+          y2={1.5 * depth.length}
+          style={arrow_style}
+        />
+        <line
+          x1={0.35 * width.length}
           x2={width.length / 2}
           y1={1.2 * depth.length}
           y2={1.5 * depth.length}
@@ -67,7 +96,7 @@ export default defineCatalogElement({
         />
         <line
           x1={width.length / 2}
-          x2={.65 * width.length}
+          x2={0.65 * width.length}
           y1={1.5 * depth.length}
           y2={1.2 * depth.length}
           style={arrow_style}
@@ -110,12 +139,14 @@ export default defineCatalogElement({
       const center = [
         (boundingBox.max.x - boundingBox.min.x) / 2 + boundingBox.min.x,
         (boundingBox.max.y - boundingBox.min.y) / 2 + boundingBox.min.y,
-        (boundingBox.max.z - boundingBox.min.z) / 2 + boundingBox.min.z];
+        (boundingBox.max.z - boundingBox.min.z) / 2 + boundingBox.min.z
+      ];
 
       object.position.x -= center[0];
-      object.position.y -= center[1] - (boundingBox.max.y - boundingBox.min.y) / 2;
+      object.position.y -=
+        center[1] - (boundingBox.max.y - boundingBox.min.y) / 2;
       object.position.z -= center[2];
-      object.rotation.y = Math.PI + rotation * Math.PI / 180;
+      object.rotation.y = Math.PI + (rotation * Math.PI) / 180;
 
       const sx = newWidth / size.x;
       const sy = newHeight / size.y;
@@ -136,8 +167,20 @@ export default defineCatalogElement({
     return onLoadItem(object);
   },
 
-  async updateRender3D(element, layer, scene, mesh, oldElement, differences, selfDestroy, selfBuild) {
-    const noPerf = () => { selfDestroy(); return selfBuild(); };
+  async updateRender3D(
+    element,
+    layer,
+    scene,
+    mesh,
+    oldElement,
+    differences,
+    selfDestroy,
+    selfBuild
+  ) {
+    const noPerf = () => {
+      selfDestroy();
+      return selfBuild();
+    };
 
     if (differences.indexOf('selected') !== -1) {
       mesh.traverse((child) => {
@@ -150,7 +193,7 @@ export default defineCatalogElement({
     }
 
     if (differences.indexOf('rotation') !== -1) {
-      mesh.rotation.y = element.rotation * Math.PI / 180;
+      mesh.rotation.y = (element.rotation * Math.PI) / 180;
       return mesh;
     }
 

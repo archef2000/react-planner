@@ -1,6 +1,7 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const newWidth = 90;
 const newDepth = 90;
@@ -45,7 +46,7 @@ function makeObjectMaxLOD() {
   right.position.set(0.4, 1, 0);
   metalDetector.add(right);
 
-  for (let k = -0.165; k <= 2.20; k += 2.32) {
+  for (let k = -0.165; k <= 2.2; k += 2.32) {
     const cubeGeometrySide2 = new Three.BoxGeometry(0.09, 0.03, 0.68);
     const left2 = new Three.Mesh(cubeGeometrySide2, darkGrey);
     left2.position.set(-0.4, k, 0);
@@ -71,31 +72,36 @@ function makeObjectMaxLOD() {
     const right_borderLed = new Three.Mesh(cubeGeometryBorderLed, red);
 
     if (i < 0) {
-      left_borderLed.position.set(-0.4, 1, i - .02);
-      right_borderLed.position.set(0.4, 1, i - .02);
+      left_borderLed.position.set(-0.4, 1, i - 0.02);
+      right_borderLed.position.set(0.4, 1, i - 0.02);
     } else {
-      left_borderLed.position.set(-0.4, 1, i + .02);
-      right_borderLed.position.set(0.4, 1, i + .02);
+      left_borderLed.position.set(-0.4, 1, i + 0.02);
+      right_borderLed.position.set(0.4, 1, i + 0.02);
     }
     metalDetector.add(left_borderLed);
     metalDetector.add(right_borderLed);
-
   }
 
   const planeDisplay1 = new Three.PlaneGeometry(0.15, 0.15);
-  const planeMaterial1 = new Three.MeshLambertMaterial({ map: display1, transparent: true });
+  const planeMaterial1 = new Three.MeshLambertMaterial({
+    map: display1,
+    transparent: true
+  });
   const plane1 = new Three.Mesh(planeDisplay1, planeMaterial1);
   plane1.position.set(-0.15, 2, 0.21);
 
   const planeDisplay2 = new Three.PlaneGeometry(0.25, 0.15);
-  const planeMaterial2 = new Three.MeshLambertMaterial({ map: display2, transparent: true });
+  const planeMaterial2 = new Three.MeshLambertMaterial({
+    map: display2,
+    transparent: true
+  });
   const plane2 = new Three.Mesh(planeDisplay2, planeMaterial2);
   plane2.position.set(0.15, 2, 0.21);
 
   metalDetector.add(plane1);
   metalDetector.add(plane2);
 
-  return metalDetector
+  return metalDetector;
 }
 
 function makeObjectMinLOD() {
@@ -126,7 +132,7 @@ function makeObjectMinLOD() {
   right.position.set(0.4, 1, 0);
   metalDetector.add(right);
 
-  for (let k = -0.165; k <= 2.20; k += 2.32) {
+  for (let k = -0.165; k <= 2.2; k += 2.32) {
     const cubeGeometrySide2 = new Three.BoxGeometry(0.09, 0.03, 0.68);
     const left2 = new Three.Mesh(cubeGeometrySide2, darkGrey);
     left2.position.set(-0.4, k, 0);
@@ -147,24 +153,24 @@ function makeObjectMinLOD() {
     right_border.position.set(0.4, 1, i);
     metalDetector.add(right_border);
   }
-  return metalDetector
+  return metalDetector;
 }
 
 export default defineCatalogElement({
-  name: "metal_detector",
-  prototype: "items",
+  name: 'metal_detector',
+  prototype: 'items',
 
   info: {
     tag: ['furnishings', 'metal'],
-    title: "metal detector",
-    description: "metal detector",
+    title: 'metal detector',
+    description: 'metal detector',
     image: require('./metalDetector.png')
   },
 
   properties: {
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 0
       }
@@ -175,21 +181,44 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-newWidth / 2},${-newDepth / 2})`}>
-        <rect key="1" x="0" y="0" width={newWidth} height={newDepth}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#101010" }} />
-        <circle key="2" cx="0" cy="0" r="45" stroke="black" style={{ stroke: "black", strokeWidth: "2px", fill: "white" }} transform={'translate(45,45)'} />
-        <text key="3" x="0" y="0" transform={`translate(${newWidth / 2}, ${newDepth / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={newWidth}
+          height={newDepth}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#101010'
+          }}
+        />
+        <circle
+          key="2"
+          cx="0"
+          cy="0"
+          r="45"
+          stroke="black"
+          style={{ stroke: 'black', strokeWidth: '2px', fill: 'white' }}
+          transform={'translate(45,45)'}
+        />
+        <text
+          key="3"
+          x="0"
+          y="0"
+          transform={`translate(${newWidth / 2}, ${newDepth / 2}) scale(1,-1) rotate(${textRotation})`}
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -205,12 +234,20 @@ export default defineCatalogElement({
     const deltaZ = Math.abs(value.max.z - value.min.z);
 
     metalDetectorMaxLOD.position.y += newHeight / 11.5 + newAltitude;
-    metalDetectorMaxLOD.scale.set(newWidth / deltaX, newHeight / deltaY, newDepth / deltaZ);
+    metalDetectorMaxLOD.scale.set(
+      newWidth / deltaX,
+      newHeight / deltaY,
+      newDepth / deltaZ
+    );
 
     const metalDetectorMinLOD = new Three.Object3D();
     metalDetectorMinLOD.add(objectMinLOD.clone());
     metalDetectorMinLOD.position.y += newHeight / 11.5 + newAltitude;
-    metalDetectorMinLOD.scale.set(newWidth / deltaX, newHeight / deltaY, newDepth / deltaZ);
+    metalDetectorMinLOD.scale.set(
+      newWidth / deltaX,
+      newHeight / deltaY,
+      newDepth / deltaZ
+    );
 
     /*** add all Level of Detail ***/
 

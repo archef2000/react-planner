@@ -1,8 +1,12 @@
 import * as Three from 'three';
+import { Object3D } from 'three';
+
+import { CatalogFn } from '../../catalog/catalog';
+import { Layer, Scene } from '../../models';
+import { ReactPlannerContextProps } from '../../react-planner-context';
+
 import createGrid from './grid-creator';
 import { disposeObject } from './three-memory-cleaner';
-import { Layer, Scene } from '../../models';
-import { CatalogFn, CatalogJson } from '../../catalog/catalog';
 
 /**
  * Structures used by parseData to build the 3D scene graph.
@@ -37,13 +41,15 @@ export interface SceneGraphData {
 
 export interface PlanData {
   sceneGraph: SceneGraphData;
-  plan: Three.Object3D;     // root container for all scene objects
-  grid: Three.Object3D;     // visual reference grid
-  boundingBox: Three.Box3;  // axis-aligned bounding box centered at origin
+  plan: Three.Object3D; // root container for all scene objects
+  grid: Three.Object3D; // visual reference grid
+  boundingBox: Three.Box3; // axis-aligned bounding box centered at origin
 }
 
-export function parseData(sceneData: Scene, actions, catalog): PlanData {
-
+export function parseData(
+  sceneData: Scene,
+  context: ReactPlannerContextProps
+): PlanData {
   const planRoot = new Three.Object3D();
   planRoot.name = 'plan';
   const grid = createGrid(sceneData);
@@ -68,23 +74,28 @@ export function parseData(sceneData: Scene, actions, catalog): PlanData {
     boundingBox
   };
 
-  let promises = [];
+  let promises: Promise<void>[] = [];
 
-  Object.values(sceneData.layers).forEach(layer => {
-
+  Object.values(sceneData.layers).forEach((layer) => {
     if (layer.id === sceneData.selectedLayer || layer.visible) {
-      promises = promises.concat(createLayerObjects(layer, planData, sceneData, actions, catalog));
+      promises = promises.concat(
+        createLayerObjects(layer, planData, sceneData, context)
+      );
     }
   });
 
-  Promise.all(promises).then(value => updateBoundingBox(planData));
+  Promise.all(promises).then((value) => updateBoundingBox(planData));
 
   return planData;
 }
 
-function createLayerObjects(layer: Layer, planData: PlanData, sceneData, actions, catalog) {
-
-  const promises = [];
+function createLayerObjects(
+  layer: Layer,
+  planData: PlanData,
+  sceneData: Scene,
+  context: ReactPlannerContextProps
+) {
+  const promises: Promise<void>[] = [];
 
   planData.sceneGraph.layers[layer.id] = {
     id: layer.id,
@@ -105,29 +116,42 @@ function createLayerObjects(layer: Layer, planData: PlanData, sceneData, actions
   };
 
   // Import lines
-  Object.values(layer.lines).forEach(line => {
-    promises.push(addLine(sceneData, planData, layer, line.id, catalog, actions.linesActions));
-    line.holes.forEach(holeID => {
-      promises.push(addHole(sceneData, planData, layer, holeID, catalog, actions.holesActions));
+  Object.values(layer.lines).forEach((line) => {
+    promises.push(addLine(sceneData, planData, layer, line.id, context));
+    line.holes.forEach((holeID) => {
+      promises.push(addHole(sceneData, planData, layer, holeID, context));
     });
   });
 
   // Import areas
-  Object.values(layer.areas).forEach(area => {
-    promises.push(addArea(sceneData, planData, layer, area.id, catalog, actions.areaActions));
+  Object.values(layer.areas).forEach((area) => {
+    promises.push(addArea(sceneData, planData, layer, area.id, context));
   });
 
   // Import items
-  Object.values(layer.items).forEach(item => {
-    promises.push(addItem(sceneData, planData, layer, item.id, catalog, actions.itemsActions));
+  Object.values(layer.items).forEach((item) => {
+    promises.push(addItem(sceneData, planData, layer, item.id, context));
   });
 
   return promises;
 }
 
-export function updateScene(planData: PlanData, sceneData: Scene, oldSceneData: Scene, diffArray: { [key: string]: any }, actions, catalog: CatalogJson) {
+type Diff = {
+  op: 'add' | 'remove' | 'replace';
+  path: string[];
+  value: any;
+};
 
-  const splitted = Object.values(diffArray).map(el => { return { op: el.op, path: el.path.split('/'), value: el.value }; });
+export function updateScene(
+  planData: PlanData,
+  sceneData: Scene,
+  oldSceneData: Scene,
+  diffArray: { [key: string]: any },
+  context: ReactPlannerContextProps
+) {
+  const splitted = Object.values(diffArray).map((el) => {
+    return { op: el.op, path: el.path.split('/'), value: el.value };
+  });
   let filteredDiffs = filterDiffs(splitted, sceneData, oldSceneData);
 
   //***testing additional filter***
@@ -138,7 +162,6 @@ export function updateScene(planData: PlanData, sceneData: Scene, oldSceneData: 
   filteredDiffs.forEach(({ op, path, value }) => {
     /* First of all I need to find the object I need to update */
     if (path[1] === 'layers') {
-
       const layer = sceneData.layers[path[2]];
 
       if (path.length === 3 && op === 'remove') {
@@ -146,13 +169,34 @@ export function updateScene(planData: PlanData, sceneData: Scene, oldSceneData: 
       } else if (path.length > 3) {
         switch (op) {
           case 'replace':
-            replaceObject(path, layer, planData, actions, sceneData, oldSceneData, catalog);
+            replaceObject(
+              path as ModifiedPath,
+              layer,
+              planData,
+              sceneData,
+              oldSceneData,
+              context
+            );
             break;
           case 'add':
-            addObject(path, layer, planData, actions, sceneData, oldSceneData, catalog);
+            addObject(
+              path as ModifiedPath,
+              layer,
+              planData,
+              sceneData,
+              oldSceneData,
+              context
+            );
             break;
           case 'remove':
-            removeObject(path, layer, planData, actions, sceneData, oldSceneData, catalog);
+            removeObject(
+              path as ModifiedPath,
+              layer,
+              planData,
+              sceneData,
+              oldSceneData,
+              context
+            );
             break;
         }
       }
@@ -162,19 +206,29 @@ export function updateScene(planData: PlanData, sceneData: Scene, oldSceneData: 
       // First of all I check if the new selected layer is not visible
       if (!layerSelected.visible) {
         // I need to create the objects for this layer
-        const promises = createLayerObjects(layerSelected, planData, sceneData, actions, catalog);
+        const promises = createLayerObjects(
+          layerSelected,
+          planData,
+          sceneData,
+          context
+        );
         Promise.all(promises).then(() => updateBoundingBox(planData));
       }
 
-      const layerGraph = planData.sceneGraph.layers[oldSceneData.selectedLayer];
+      const layerGraph =
+        planData.sceneGraph.layers[oldSceneData.selectedLayer as string];
 
       if (layerGraph) {
         if (!layerGraph.visible) {
           // I need to remove the objects for this layer
-          for (const lineID in layerGraph.lines) removeLine(planData, layerGraph.id, lineID);
-          for (const areaID in layerGraph.areas) removeArea(planData, layerGraph.id, areaID);
-          for (const itemID in layerGraph.items) removeItem(planData, layerGraph.id, itemID);
-          for (const holeID in layerGraph.holes) removeHole(planData, layerGraph.id, holeID);
+          for (const lineID in layerGraph.lines)
+            removeLine(planData, layerGraph.id, lineID);
+          for (const areaID in layerGraph.areas)
+            removeArea(planData, layerGraph.id, areaID);
+          for (const itemID in layerGraph.items)
+            removeItem(planData, layerGraph.id, itemID);
+          for (const holeID in layerGraph.holes)
+            removeHole(planData, layerGraph.id, holeID);
         }
       }
     }
@@ -182,8 +236,17 @@ export function updateScene(planData: PlanData, sceneData: Scene, oldSceneData: 
   return planData;
 }
 
-function replaceObject(modifiedPath, layer: Layer, planData: PlanData, actions, sceneData: Scene, oldSceneData: Scene, catalog: CatalogJson) {
-  let promises = [];
+type ModifiedPath = [number, number, number, string, string, ...string[]];
+
+function replaceObject(
+  modifiedPath: ModifiedPath,
+  layer: Layer,
+  planData: PlanData,
+  sceneData: Scene,
+  oldSceneData: Scene,
+  context: ReactPlannerContextProps
+) {
+  let promises: Promise<void>[] = [];
 
   switch (modifiedPath[3]) {
     case 'vertices':
@@ -191,24 +254,59 @@ function replaceObject(modifiedPath, layer: Layer, planData: PlanData, actions, 
         const vertex = layer.vertices[modifiedPath[4]];
 
         if (modifiedPath[5] === 'x' || modifiedPath[5] === 'y') {
-          vertex.lines.forEach(lineID => {
+          vertex.lines.forEach((lineID) => {
             const lineHoles = oldSceneData.layers[layer.id].lines[lineID].holes;
-            if (lineHoles) lineHoles.forEach(holeID => { replaceObject([0, 0, 0, 'holes', holeID, 'selected'], layer, planData, actions, sceneData, oldSceneData, catalog); });
-            return replaceObject([0, 0, 0, 'lines', lineID], layer, planData, actions, sceneData, oldSceneData, catalog);
+            if (lineHoles)
+              lineHoles.forEach((holeID) => {
+                replaceObject(
+                  [0, 0, 0, 'holes', holeID, 'selected'],
+                  layer,
+                  planData,
+                  sceneData,
+                  oldSceneData,
+                  context
+                );
+              });
+            return replaceObject(
+              [0, 0, 0, 'lines', lineID],
+              layer,
+              planData,
+              sceneData,
+              oldSceneData,
+              context
+            );
           });
-          vertex.areas.forEach(areaID => replaceObject([0, 0, 0, 'areas', areaID], layer, planData, actions, sceneData, oldSceneData, catalog));
+          vertex.areas.forEach((areaID) =>
+            replaceObject(
+              [0, 0, 0, 'areas', areaID],
+              layer,
+              planData,
+              sceneData,
+              oldSceneData,
+              context
+            )
+          );
         }
 
         if (modifiedPath[5] === 'areas') {
           const areaID = vertex.areas[~~modifiedPath[6]];
-          replaceObject([0, 0, 0, 'areas', areaID], layer, planData, actions, sceneData, oldSceneData, catalog);
+          replaceObject(
+            [0, 0, 0, 'areas', areaID],
+            layer,
+            planData,
+            sceneData,
+            oldSceneData,
+            context
+          );
         }
       }
       break;
     case 'holes':
       const newHoleData = layer.holes[modifiedPath[4]];
 
-      if (CatalogFn.getElement(catalog, newHoleData.type).updateRender3D) {
+      if (
+        CatalogFn.getElement(context.catalog, newHoleData.type).updateRender3D
+      ) {
         promises.push(
           updateHole(
             sceneData,
@@ -216,29 +314,28 @@ function replaceObject(modifiedPath, layer: Layer, planData: PlanData, actions, 
             planData,
             layer,
             modifiedPath[4],
-            modifiedPath.slice(5),
-            catalog,
-            actions.holesActions,
+            modifiedPath.slice(5) as string[],
+            context,
             () => removeHole(planData, layer.id, newHoleData.id),
-            () => addHole(sceneData, planData, layer, newHoleData.id, catalog, actions.holesActions)
+            () => addHole(sceneData, planData, layer, newHoleData.id, context)
           )
         );
-      }
-      else {
+      } else {
         const lineID = newHoleData.line;
         if (modifiedPath[5] === 'selected') {
           // I remove only the hole without removing the wall
           removeHole(planData, layer.id, newHoleData.id);
-          promises.push(addHole(sceneData, planData, layer, newHoleData.id, catalog, actions.holesActions));
-        }
-        else {
-          layer.lines[lineID].holes.forEach(holeID => {
+          promises.push(
+            addHole(sceneData, planData, layer, newHoleData.id, context)
+          );
+        } else {
+          layer.lines[lineID].holes.forEach((holeID) => {
             removeHole(planData, layer.id, holeID);
           });
           removeLine(planData, layer.id, lineID);
-          promises.push(addLine(sceneData, planData, layer, lineID, catalog, actions.linesActions));
-          layer.lines[lineID].holes.forEach(holeID => {
-            promises.push(addHole(sceneData, planData, layer, holeID, catalog, actions.holesActions));
+          promises.push(addLine(sceneData, planData, layer, lineID, context));
+          layer.lines[lineID].holes.forEach((holeID) => {
+            promises.push(addHole(sceneData, planData, layer, holeID, context));
           });
         }
       }
@@ -246,7 +343,7 @@ function replaceObject(modifiedPath, layer: Layer, planData: PlanData, actions, 
     case 'lines':
       const line = layer.lines[modifiedPath[4]];
 
-      if (CatalogFn.getElement(catalog, line.type).updateRender3D) {
+      if (CatalogFn.getElement(context.catalog, line.type).updateRender3D) {
         promises.push(
           updateLine(
             sceneData,
@@ -254,39 +351,44 @@ function replaceObject(modifiedPath, layer: Layer, planData: PlanData, actions, 
             planData,
             layer,
             modifiedPath[4],
-            modifiedPath.slice(5),
-            catalog,
-            actions.linesActions,
+            modifiedPath.slice(5) as string[],
+            context,
             () => removeLine(planData, layer.id, modifiedPath[4]),
-            () => addLine(sceneData, planData, layer, modifiedPath[4], catalog, actions.linesActions)
+            () => addLine(sceneData, planData, layer, modifiedPath[4], context)
           )
         );
         // If wall thickness/height changed, rebuild adjacent connected walls to recalc shared edge geometry
-        if (modifiedPath[5] === 'properties' && (modifiedPath[6] === 'thickness' || modifiedPath[6] === 'height')) {
+        if (
+          modifiedPath[5] === 'properties' &&
+          (modifiedPath[6] === 'thickness' || modifiedPath[6] === 'height')
+        ) {
           const currentLineID = modifiedPath[4];
           const vertices = line.vertices || [];
-          vertices.forEach(vID => {
+          vertices.forEach((vID) => {
             const v = layer.vertices[vID];
             if (!v) return;
-            (v.lines || []).forEach(adjLineID => {
+            (v.lines || []).forEach((adjLineID) => {
               if (adjLineID !== currentLineID && layer.lines[adjLineID]) {
                 // Full rebuild of adjacent line
                 removeLine(planData, layer.id, adjLineID);
-                promises.push(addLine(sceneData, planData, layer, adjLineID, catalog, actions.linesActions));
+                promises.push(
+                  addLine(sceneData, planData, layer, adjLineID, context)
+                );
               }
             });
           });
         }
-      }
-      else {
+      } else {
         removeLine(planData, layer.id, modifiedPath[4]);
-        promises.push(addLine(sceneData, planData, layer, modifiedPath[4], catalog, actions.linesActions));
+        promises.push(
+          addLine(sceneData, planData, layer, modifiedPath[4], context)
+        );
       }
       break;
     case 'areas':
       const area = layer.areas[modifiedPath[4]];
 
-      if (CatalogFn.getElement(catalog, area.type).updateRender3D) {
+      if (CatalogFn.getElement(context.catalog, area.type).updateRender3D) {
         promises.push(
           updateArea(
             sceneData,
@@ -294,25 +396,25 @@ function replaceObject(modifiedPath, layer: Layer, planData: PlanData, actions, 
             planData,
             layer,
             modifiedPath[4],
-            modifiedPath.slice(5),
-            catalog,
-            actions.areaActions,
+            modifiedPath.slice(5) as string[],
+            context,
             () => removeArea(planData, layer.id, modifiedPath[4]),
-            () => addArea(sceneData, planData, layer, modifiedPath[4], catalog, actions.areaActions)
+            () => addArea(sceneData, planData, layer, modifiedPath[4], context)
           )
         );
-      }
-      else {
+      } else {
         if (planData.sceneGraph.layers[layer.id].areas[modifiedPath[4]]) {
           removeArea(planData, layer.id, modifiedPath[4]);
         }
-        promises.push(addArea(sceneData, planData, layer, modifiedPath[4], catalog, actions.areaActions));
+        promises.push(
+          addArea(sceneData, planData, layer, modifiedPath[4], context)
+        );
       }
       break;
     case 'items':
       const item = layer.items[modifiedPath[4]];
 
-      if (CatalogFn.getElement(catalog, item.type).updateRender3D) {
+      if (CatalogFn.getElement(context.catalog, item.type).updateRender3D) {
         promises.push(
           updateItem(
             sceneData,
@@ -320,17 +422,17 @@ function replaceObject(modifiedPath, layer: Layer, planData: PlanData, actions, 
             planData,
             layer,
             modifiedPath[4],
-            modifiedPath.slice(5),
-            catalog,
-            actions.itemsActions,
+            modifiedPath.slice(5) as string[],
+            context,
             () => removeItem(planData, layer.id, modifiedPath[4]),
-            () => addItem(sceneData, planData, layer, modifiedPath[4], catalog, actions.itemsActions)
+            () => addItem(sceneData, planData, layer, modifiedPath[4], context)
           )
         );
-      }
-      else {
+      } else {
         removeItem(planData, layer.id, modifiedPath[4]);
-        promises.push(addItem(sceneData, planData, layer, modifiedPath[4], catalog, actions.itemsActions));
+        promises.push(
+          addItem(sceneData, planData, layer, modifiedPath[4], context)
+        );
       }
       break;
 
@@ -338,13 +440,18 @@ function replaceObject(modifiedPath, layer: Layer, planData: PlanData, actions, 
       if (!layer.visible) {
         const layerGraph = planData.sceneGraph.layers[layer.id];
 
-        for (const lineID in layerGraph.lines) removeLine(planData, layer.id, lineID);
-        for (const areaID in layerGraph.areas) removeArea(planData, layer.id, areaID);
-        for (const itemID in layerGraph.items) removeItem(planData, layer.id, itemID);
-        for (const holeID in layerGraph.holes) removeHole(planData, layer.id, holeID);
-
+        for (const lineID in layerGraph.lines)
+          removeLine(planData, layer.id, lineID);
+        for (const areaID in layerGraph.areas)
+          removeArea(planData, layer.id, areaID);
+        for (const itemID in layerGraph.items)
+          removeItem(planData, layer.id, itemID);
+        for (const holeID in layerGraph.holes)
+          removeHole(planData, layer.id, holeID);
       } else {
-        promises = promises.concat(createLayerObjects(layer, planData, sceneData, actions, catalog));
+        promises = promises.concat(
+          createLayerObjects(layer, planData, sceneData, context)
+        );
       }
 
       break;
@@ -352,32 +459,44 @@ function replaceObject(modifiedPath, layer: Layer, planData: PlanData, actions, 
     case 'opacity':
     case 'altitude':
       const layerGraph = planData.sceneGraph.layers[layer.id];
-      for (const lineID in layerGraph.lines) removeLine(planData, layer.id, lineID);
-      for (const areaID in layerGraph.areas) removeArea(planData, layer.id, areaID);
-      for (const itemID in layerGraph.items) removeItem(planData, layer.id, itemID);
-      for (const holeID in layerGraph.holes) removeHole(planData, layer.id, holeID);
+      for (const lineID in layerGraph.lines)
+        removeLine(planData, layer.id, lineID);
+      for (const areaID in layerGraph.areas)
+        removeArea(planData, layer.id, areaID);
+      for (const itemID in layerGraph.items)
+        removeItem(planData, layer.id, itemID);
+      for (const holeID in layerGraph.holes)
+        removeHole(planData, layer.id, holeID);
 
-      promises = promises.concat(createLayerObjects(layer, planData, sceneData, actions, catalog));
-
+      promises = promises.concat(
+        createLayerObjects(layer, planData, sceneData, context)
+      );
   }
-  Promise.all(promises).then(values => updateBoundingBox(planData));
+  Promise.all(promises).then((values) => updateBoundingBox(planData));
 }
 
-function removeObject(modifiedPath, layer: Layer, planData: PlanData, actions, sceneData: Scene, oldSceneData: Scene, catalog: CatalogJson) {
+function removeObject(
+  modifiedPath: ModifiedPath,
+  layer: Layer,
+  planData: PlanData,
+  sceneData: Scene,
+  oldSceneData: Scene,
+  context: ReactPlannerContextProps
+) {
   const promises = [];
   switch (modifiedPath[3]) {
     case 'lines':
       // Here I remove the line with all its holes
       const lineID = modifiedPath[4];
-      oldSceneData.layers[layer.id].lines[lineID].holes.forEach(holeID => {
+      oldSceneData.layers[layer.id].lines[lineID].holes.forEach((holeID) => {
         removeHole(planData, layer.id, holeID);
       });
       removeLine(planData, layer.id, lineID);
       if (modifiedPath.length > 5) {
         // I removed an hole, so I should add the new line
-        promises.push(addLine(sceneData, planData, layer, lineID, catalog, actions.linesActions));
-        layer.lines[lineID].holes.forEach(holeID => {
-          promises.push(addHole(sceneData, planData, layer, holeID, catalog, actions.holesActions));
+        promises.push(addLine(sceneData, planData, layer, lineID, context));
+        layer.lines[lineID].holes.forEach((holeID) => {
+          promises.push(addHole(sceneData, planData, layer, holeID, context));
         });
       }
       break;
@@ -395,7 +514,7 @@ function removeObject(modifiedPath, layer: Layer, planData: PlanData, actions, s
       break;
   }
 
-  Promise.all(promises).then(values => updateBoundingBox(planData));
+  Promise.all(promises).then((values) => updateBoundingBox(planData));
 }
 
 function removeLayer(layerId: string, planData: PlanData) {
@@ -410,7 +529,6 @@ function removeLayer(layerId: string, planData: PlanData) {
 }
 
 function removeHole(planData: PlanData, layerId: string, holeID: string) {
-
   if (planData.sceneGraph.busyResources.layers[layerId].holes[holeID]) {
     setTimeout(() => removeHole(planData, layerId, holeID), 100);
     return;
@@ -418,7 +536,8 @@ function removeHole(planData: PlanData, layerId: string, holeID: string) {
 
   planData.sceneGraph.busyResources.layers[layerId].holes[holeID] = true;
 
-  let hole3D = planData.sceneGraph.layers[layerId].holes[holeID];
+  let hole3D: Object3D | null =
+    planData.sceneGraph.layers[layerId].holes[holeID];
 
   if (hole3D) {
     planData.plan.remove(hole3D);
@@ -433,7 +552,6 @@ function removeHole(planData: PlanData, layerId: string, holeID: string) {
 }
 
 function removeLine(planData: PlanData, layerId: string, lineID: string) {
-
   if (planData.sceneGraph.busyResources.layers[layerId].lines[lineID]) {
     setTimeout(() => removeLine(planData, layerId, lineID), 100);
     return;
@@ -441,7 +559,8 @@ function removeLine(planData: PlanData, layerId: string, lineID: string) {
 
   planData.sceneGraph.busyResources.layers[layerId].lines[lineID] = true;
 
-  let line3D = planData.sceneGraph.layers[layerId].lines[lineID];
+  let line3D: Object3D | null =
+    planData.sceneGraph.layers[layerId].lines[lineID];
 
   if (line3D) {
     planData.plan.remove(line3D);
@@ -456,7 +575,6 @@ function removeLine(planData: PlanData, layerId: string, lineID: string) {
 }
 
 function removeArea(planData: PlanData, layerId: string, areaID: string) {
-
   if (planData.sceneGraph.busyResources.layers[layerId].areas[areaID]) {
     setTimeout(() => removeArea(planData, layerId, areaID), 100);
     return;
@@ -464,7 +582,8 @@ function removeArea(planData: PlanData, layerId: string, areaID: string) {
 
   planData.sceneGraph.busyResources.layers[layerId].areas[areaID] = true;
 
-  let area3D = planData.sceneGraph.layers[layerId].areas[areaID];
+  let area3D: Object3D | null =
+    planData.sceneGraph.layers[layerId].areas[areaID];
 
   if (area3D) {
     planData.plan.remove(area3D);
@@ -486,7 +605,8 @@ function removeItem(planData: PlanData, layerId: string, itemID: string) {
 
   planData.sceneGraph.busyResources.layers[layerId].items[itemID] = true;
 
-  let item3D = planData.sceneGraph.layers[layerId].items[itemID];
+  let item3D: Object3D | null =
+    planData.sceneGraph.layers[layerId].items[itemID];
 
   if (item3D) {
     planData.plan.remove(item3D);
@@ -501,26 +621,53 @@ function removeItem(planData: PlanData, layerId: string, itemID: string) {
 }
 
 //TODO generate an area's replace if vertex has been changed
-function addObject(modifiedPath, layer: Layer, planData: PlanData, actions, sceneData: Scene, oldSceneData: Scene, catalog: CatalogJson) {
+function addObject(
+  modifiedPath: ModifiedPath,
+  layer: Layer,
+  planData: PlanData,
+  sceneData: Scene,
+  oldSceneData: Scene,
+  context: ReactPlannerContextProps
+) {
   if (modifiedPath.length === 5) {
-    let addPromise = null, addAction = null;
+    let addPromise = null;
 
     switch (modifiedPath[3]) {
-      case 'lines': addPromise = addLine; addAction = actions.linesActions; break;
-      case 'areas': addPromise = addArea; addAction = actions.areaActions; break;
-      case 'items': addPromise = addItem; addAction = actions.itemsActions; break;
-      case 'holes': addPromise = addHole; addAction = actions.holesActions; break;
+      case 'lines':
+        addPromise = addLine;
+        break;
+      case 'areas':
+        addPromise = addArea;
+        break;
+      case 'items':
+        addPromise = addItem;
+        break;
+      case 'holes':
+        addPromise = addHole;
+        break;
     }
 
-    if (addPromise) addPromise(sceneData, planData, layer, modifiedPath[4], catalog, addAction).then(() => updateBoundingBox(planData));
+    if (addPromise)
+      addPromise(sceneData, planData, layer, modifiedPath[4], context).then(
+        () => updateBoundingBox(planData)
+      );
   }
 }
 
-async function addHole(sceneData: Scene, planData: PlanData, layer: Layer, holeID: string, catalog: CatalogJson, holesActions) {
+async function addHole(
+  sceneData: Scene,
+  planData: PlanData,
+  layer: Layer,
+  holeID: string,
+  context: ReactPlannerContextProps
+) {
   const holeData = layer.holes[holeID];
 
   // Create the hole object
-  const object = await CatalogFn.getElement(catalog, holeData.type).render3D(holeData, layer, sceneData);
+  const object = await CatalogFn.getElement(
+    context.catalog,
+    holeData.type
+  ).render3D(holeData, layer, sceneData);
   if (object instanceof Three.LOD) {
     planData.sceneGraph.LODs[holeID] = object;
   }
@@ -538,7 +685,9 @@ async function addHole(sceneData: Scene, planData: PlanData, layer: Layer, holeI
     vertex1 = tmp;
     offset = 1 - offset;
   }
-  const distance = Math.sqrt(Math.pow(vertex0.x - vertex1.x, 2) + Math.pow(vertex0.y - vertex1.y, 2));
+  const distance = Math.sqrt(
+    Math.pow(vertex0.x - vertex1.x, 2) + Math.pow(vertex0.y - vertex1.y, 2)
+  );
   const alpha = Math.asin((vertex1.y - vertex0.y) / distance);
   const boundingBox = new Three.Box3().setFromObject(pivot);
   const center = [
@@ -549,13 +698,19 @@ async function addHole(sceneData: Scene, planData: PlanData, layer: Layer, holeI
   const holeAltitude = holeData.properties.altitude.length;
   const holeHeight = holeData.properties.height.length;
   pivot.rotation.y = alpha;
-  pivot.position.x = vertex0.x + distance * offset * Math.cos(alpha) - center[2] * Math.sin(alpha);
+  pivot.position.x =
+    vertex0.x +
+    distance * offset * Math.cos(alpha) -
+    center[2] * Math.sin(alpha);
   pivot.position.y = holeAltitude + holeHeight / 2 - center[1] + layer.altitude;
-  pivot.position.z = -vertex0.y - distance * offset * Math.sin(alpha) - center[2] * Math.cos(alpha);
+  pivot.position.z =
+    -vertex0.y -
+    distance * offset * Math.sin(alpha) -
+    center[2] * Math.cos(alpha);
   planData.plan.add(pivot);
   planData.sceneGraph.layers[layer.id].holes[holeData.id] = pivot;
   applyInteract(pivot, () => {
-    return holesActions.selectHole(layer.id, holeData.id);
+    return context.holesActions.selectHole(layer.id, holeData.id);
   });
   let opacity = layer.opacity;
   if (holeData.selected) {
@@ -564,20 +719,44 @@ async function addHole(sceneData: Scene, planData: PlanData, layer: Layer, holeI
   applyOpacity(pivot, opacity);
 }
 
-function updateHole(sceneData: Scene, oldSceneData: Scene, planData: PlanData, layer: Layer, holeID: string, differences, catalog: CatalogJson, holesActions, selfDestroy, selfBuild) {
+async function updateHole(
+  sceneData: Scene,
+  oldSceneData: Scene,
+  planData: PlanData,
+  layer: Layer,
+  holeID: string,
+  differences: string[],
+  context: ReactPlannerContextProps,
+  selfDestroy: () => void,
+  selfBuild: () => void
+) {
   const hole = layer.holes[holeID];
   const oldHole = oldSceneData.layers[layer.id].holes[holeID];
   const mesh = planData.sceneGraph.layers[layer.id].holes[holeID];
 
   if (!mesh) return null;
 
-  return CatalogFn.getElement(catalog, hole.type).updateRender3D(hole, layer, sceneData, mesh, oldHole, differences, selfDestroy, selfBuild);
+  return CatalogFn.getElement(context.catalog, hole.type).updateRender3D?.(
+    hole,
+    layer,
+    sceneData,
+    mesh,
+    oldHole,
+    differences,
+    selfDestroy,
+    selfBuild
+  );
 }
 
-async function addLine(sceneData: Scene, planData: PlanData, layer: Layer, lineID: string, catalog: CatalogJson, linesActions) {
-
+async function addLine(
+  sceneData: Scene,
+  planData: PlanData,
+  layer: Layer,
+  lineID: string,
+  context: ReactPlannerContextProps
+) {
   if (planData.sceneGraph.busyResources.layers[layer.id].lines[lineID]) {
-    setTimeout(() => addLine(sceneData, planData, layer, lineID, catalog, linesActions), 100);
+    setTimeout(() => addLine(sceneData, planData, layer, lineID, context), 100);
     return;
   }
 
@@ -595,7 +774,10 @@ async function addLine(sceneData: Scene, planData: PlanData, layer: Layer, lineI
     vertex1 = tmp;
   }
 
-  const line3D = await CatalogFn.getElement(catalog, line.type).render3D(line, layer, sceneData);
+  const line3D = await CatalogFn.getElement(
+    context.catalog,
+    line.type
+  ).render3D(line, layer, sceneData);
   if (line3D instanceof Three.LOD) {
     planData.sceneGraph.LODs[line.id] = line3D;
   }
@@ -608,7 +790,7 @@ async function addLine(sceneData: Scene, planData: PlanData, layer: Layer, lineI
   planData.plan.add(pivot);
   planData.sceneGraph.layers[layer.id].lines[lineID] = pivot;
   applyInteract(pivot, () => {
-    return linesActions.selectLine(layer.id, line.id);
+    return context.linesActions.selectLine(layer.id, line.id);
   });
   let opacity = layer.opacity;
   if (line.selected) {
@@ -618,29 +800,57 @@ async function addLine(sceneData: Scene, planData: PlanData, layer: Layer, lineI
   planData.sceneGraph.busyResources.layers[layer.id].lines[lineID] = false;
 }
 
-function updateLine(sceneData: Scene, oldSceneData: Scene, planData: PlanData, layer: Layer, lineID: string, differences, catalog: CatalogJson, linesActions, selfDestroy, selfBuild) {
+async function updateLine(
+  sceneData: Scene,
+  oldSceneData: Scene,
+  planData: PlanData,
+  layer: Layer,
+  lineID: string,
+  differences: string[],
+  context: ReactPlannerContextProps,
+  selfDestroy: () => void,
+  selfBuild: () => void
+) {
   const line = layer.lines[lineID];
   const oldLine = oldSceneData.layers[layer.id].lines[lineID];
   const mesh = planData.sceneGraph.layers[layer.id].lines[lineID];
 
   if (!mesh) return null;
 
-  return CatalogFn.getElement(catalog, line.type).updateRender3D(line, layer, sceneData, mesh, oldLine, differences, selfDestroy, selfBuild);
+  return CatalogFn.getElement(context.catalog, line.type).updateRender3D?.(
+    line,
+    layer,
+    sceneData,
+    mesh,
+    oldLine,
+    differences,
+    selfDestroy,
+    selfBuild
+  );
 }
 
-async function addArea(sceneData: Scene, planData: PlanData, layer: Layer, areaID: string, catalog: CatalogJson, areaActions) {
-
+async function addArea(
+  sceneData: Scene,
+  planData: PlanData,
+  layer: Layer,
+  areaID: string,
+  context: ReactPlannerContextProps
+) {
   if (planData.sceneGraph.busyResources.layers[layer.id].areas[areaID]) {
-    setTimeout(() => addArea(sceneData, planData, layer, areaID, catalog, areaActions), 100);
+    setTimeout(() => addArea(sceneData, planData, layer, areaID, context), 100);
     return;
   }
 
   planData.sceneGraph.busyResources.layers[layer.id].areas[areaID] = true;
 
   const area = layer.areas[areaID];
-  const interactFunction = () => areaActions.selectArea(layer.id, areaID);
+  const interactFunction = () =>
+    context.areaActions.selectArea(layer.id, areaID);
 
-  const area3D = await CatalogFn.getElement(catalog, area.type).render3D(area, layer, sceneData);
+  const area3D = await CatalogFn.getElement(
+    context.catalog,
+    area.type
+  ).render3D(area, layer, sceneData);
   if (area3D instanceof Three.LOD) {
     planData.sceneGraph.LODs[areaID] = area3D;
   }
@@ -659,34 +869,61 @@ async function addArea(sceneData: Scene, planData: PlanData, layer: Layer, areaI
   planData.sceneGraph.busyResources.layers[layer.id].areas[areaID] = false;
 }
 
-function updateArea(sceneData: Scene, oldSceneData: Scene, planData: PlanData, layer: Layer, areaID: string, differences, catalog: CatalogJson, areaActions, selfDestroy, selfBuild) {
+async function updateArea(
+  sceneData: Scene,
+  oldSceneData: Scene,
+  planData: PlanData,
+  layer: Layer,
+  areaID: string,
+  differences: string[],
+  context: ReactPlannerContextProps,
+  selfDestroy: () => void,
+  selfBuild: () => void
+) {
   const area = layer.areas[areaID];
   const oldArea = oldSceneData.layers[layer.id].areas[areaID];
   const mesh = planData.sceneGraph.layers[layer.id].areas[areaID];
 
   if (!mesh) return null;
 
-  return CatalogFn.getElement(catalog, area.type).updateRender3D(area, layer, sceneData, mesh, oldArea, differences, selfDestroy, selfBuild);
+  return CatalogFn.getElement(context.catalog, area.type).updateRender3D?.(
+    area,
+    layer,
+    sceneData,
+    mesh,
+    oldArea,
+    differences,
+    selfDestroy,
+    selfBuild
+  );
 }
 
-async function addItem(sceneData: Scene, planData: PlanData, layer: Layer, itemID: string, catalog: CatalogJson, itemsActions) {
+async function addItem(
+  sceneData: Scene,
+  planData: PlanData,
+  layer: Layer,
+  itemID: string,
+  context: ReactPlannerContextProps
+) {
   const item = layer.items[itemID];
 
-  const item3D = await CatalogFn.getElement(catalog, item.type).render3D(item, layer, sceneData);
+  const item3D = await CatalogFn.getElement(
+    context.catalog,
+    item.type
+  ).render3D(item, layer, sceneData);
   if (item3D instanceof Three.LOD) {
     planData.sceneGraph.LODs[itemID] = item3D;
   }
   const pivot = new Three.Object3D();
   pivot.name = 'pivot';
   pivot.add(item3D);
-  pivot.rotation.y = item.rotation * Math.PI / 180;
+  pivot.rotation.y = (item.rotation * Math.PI) / 180;
   pivot.position.x = item.x;
   pivot.position.y = layer.altitude;
   pivot.position.z = -item.y;
   applyInteract(item3D, () => {
-    itemsActions.selectItem(layer.id, item.id);
-  }
-  );
+    context.itemsActions.selectItem(layer.id, item.id);
+  });
   let opacity = layer.opacity;
   if (item.selected) {
     opacity = 1;
@@ -696,18 +933,40 @@ async function addItem(sceneData: Scene, planData: PlanData, layer: Layer, itemI
   planData.sceneGraph.layers[layer.id].items[item.id] = pivot;
 }
 
-function updateItem(sceneData: Scene, oldSceneData: Scene, planData: PlanData, layer: Layer, itemID: string, differences, catalog: CatalogJson, itemsActions, selfDestroy, selfBuild) {
+async function updateItem(
+  sceneData: Scene,
+  oldSceneData: Scene,
+  planData: PlanData,
+  layer: Layer,
+  itemID: string,
+  differences: string[],
+  context: ReactPlannerContextProps,
+  selfDestroy: () => void,
+  selfBuild: () => void
+) {
   const item = layer.items[itemID];
   const oldItem = oldSceneData.layers[layer.id].items[itemID];
   const mesh = planData.sceneGraph.layers[layer.id].items[itemID];
 
   if (!mesh) return null;
 
-  return CatalogFn.getElement(catalog, item.type).updateRender3D(item, layer, sceneData, mesh, oldItem, differences, selfDestroy, selfBuild);
+  return CatalogFn.getElement(context.catalog, item.type).updateRender3D?.(
+    item,
+    layer,
+    sceneData,
+    mesh,
+    oldItem,
+    differences,
+    selfDestroy,
+    selfBuild
+  );
 }
 
 // Apply interact function to children of an Object3D
-function applyInteract(object: Three.Object3D<Three.Object3DEventMap>, interactFunction) {
+function applyInteract(
+  object: Three.Object3D<Three.Object3DEventMap>,
+  interactFunction: () => void
+) {
   object.traverse((child) => {
     if (child instanceof Three.Mesh) {
       (child as any).interact = interactFunction; //TODO
@@ -716,11 +975,14 @@ function applyInteract(object: Three.Object3D<Three.Object3DEventMap>, interactF
 }
 
 // Apply opacity to children of an Object3D
-function applyOpacity(object: Three.Object3D<Three.Object3DEventMap>, opacity: number) {
+function applyOpacity(
+  object: Three.Object3D<Three.Object3DEventMap>,
+  opacity: number
+) {
   object.traverse((child) => {
     if (child instanceof Three.Mesh) {
       if (Array.isArray(child.material)) {
-        child.material.forEach(material => {
+        child.material.forEach((material) => {
           material.transparent = true;
           if (material.maxOpacity) {
             material.opacity = Math.min(material.maxOpacity, opacity);
@@ -742,16 +1004,16 @@ function applyOpacity(object: Three.Object3D<Three.Object3DEventMap>, opacity: n
   });
 }
 
-
 function updateBoundingBox(planData: PlanData) {
   const newBoundingBox = new Three.Box3().setFromObject(planData.plan);
-  if (isFinite(newBoundingBox.max.x)
-    && isFinite(newBoundingBox.min.x)
-    && isFinite(newBoundingBox.max.y)
-    && isFinite(newBoundingBox.min.y)
-    && isFinite(newBoundingBox.max.z)
-    && isFinite(newBoundingBox.min.z)) {
-
+  if (
+    isFinite(newBoundingBox.max.x) &&
+    isFinite(newBoundingBox.min.x) &&
+    isFinite(newBoundingBox.max.y) &&
+    isFinite(newBoundingBox.min.y) &&
+    isFinite(newBoundingBox.max.z) &&
+    isFinite(newBoundingBox.min.z)
+  ) {
     const newCenter = new Three.Vector3(
       (newBoundingBox.max.x - newBoundingBox.min.x) / 2 + newBoundingBox.min.x,
       (newBoundingBox.max.y - newBoundingBox.min.y) / 2 + newBoundingBox.min.y,
@@ -774,11 +1036,14 @@ function updateBoundingBox(planData: PlanData) {
  * @param sceneData
  * @param oldSceneData
  */
-function filterDiffs(diffArray, sceneData: Scene, oldSceneData: Scene) {
+function filterDiffs(diffArray: Diff[], sceneData: Scene, oldSceneData: Scene) {
   return minimizeRemoveDiffsWhenSwitchingLayers(
     minimizeChangePropertiesAfterSelectionsDiffs(
-      minimizeChangePropertiesDiffs(diffArray, sceneData, oldSceneData), sceneData, oldSceneData),
-    sceneData, oldSceneData);
+      minimizeChangePropertiesDiffs(diffArray)
+    ),
+    sceneData,
+    oldSceneData
+  );
 }
 
 /**
@@ -788,7 +1053,13 @@ function filterDiffs(diffArray, sceneData: Scene, oldSceneData: Scene) {
  * @param oldSceneData
  * @returns {Array}
  */
-function minimizeRemoveDiffsWhenSwitchingLayers(diffArray, sceneData: Scene, oldSceneData: Scene) {
+function minimizeRemoveDiffsWhenSwitchingLayers(
+  diffArray: Diff[],
+  sceneData: Scene,
+  oldSceneData: Scene
+) {
+  const oldSelectedLayer = oldSceneData.selectedLayer;
+  if (oldSelectedLayer === undefined) return diffArray;
   let foundDiff;
   for (let i = 0; i < diffArray.length && !foundDiff; i++) {
     if (diffArray[i].path[1] === 'selectedLayer') {
@@ -797,14 +1068,15 @@ function minimizeRemoveDiffsWhenSwitchingLayers(diffArray, sceneData: Scene, old
   }
 
   if (foundDiff) {
-    if (!sceneData.layers[oldSceneData.selectedLayer].visible) {
+    if (!sceneData.layers[oldSelectedLayer].visible) {
       return diffArray.filter(({ op, path }) => {
-
         return (
-          !(path[path.length - 1] === 'selected' && (path[1] === 'layers' && path[2] === oldSceneData.selectedLayer)) &&
-          !(op === 'remove' && path.indexOf(oldSceneData.selectedLayer) !== -1)
+          !(
+            path[path.length - 1] === 'selected' &&
+            path[1] === 'layers' &&
+            path[2] === oldSelectedLayer
+          ) && !(op === 'remove' && path.indexOf(oldSelectedLayer) !== -1)
         );
-
       });
     }
   }
@@ -818,8 +1090,8 @@ function minimizeRemoveDiffsWhenSwitchingLayers(diffArray, sceneData: Scene, old
  * @param sceneData
  * @param oldSceneData
  */
-function minimizeChangePropertiesAfterSelectionsDiffs(diffArray, sceneData: Scene, oldSceneData: Scene) {
-  const idsFound = {};
+function minimizeChangePropertiesAfterSelectionsDiffs(diffArray: Diff[]) {
+  const idsFound: Record<string, string> = {};
   diffArray.forEach(({ path }) => {
     if (path[5] === 'selected') {
       idsFound[path[4]] = path[4];
@@ -840,8 +1112,8 @@ function minimizeChangePropertiesAfterSelectionsDiffs(diffArray, sceneData: Scen
  * @param sceneData
  * @param oldSceneData
  */
-function minimizeChangePropertiesDiffs(diffArray, sceneData: Scene, oldSceneData: Scene) {
-  const idsFound = {};
+function minimizeChangePropertiesDiffs(diffArray: Diff[]) {
+  const idsFound: Record<string, boolean> = {};
   return diffArray.filter(({ path }) => {
     if (path[5] === 'properties') {
       return idsFound[path[4]] ? false : (idsFound[path[4]] = true);

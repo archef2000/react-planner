@@ -1,8 +1,9 @@
-import HtmlWebpackPlugin from "html-webpack-plugin"
+import path from "path";
 import { fileURLToPath } from 'url';
-import path from "path"
-import webpack from "webpack"
-import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin"
+
+import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import webpack from "webpack";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

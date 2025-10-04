@@ -1,31 +1,49 @@
-import React, { Component } from 'react';
-import { Layer, Grids } from './export';
+import React from 'react';
+
 import { CatalogJson } from '../../catalog/catalog';
 import { SceneJson } from '../../models';
 
+import { Grids, Layer } from './export';
+
 interface SceneProps {
-  scene: SceneJson,
-  catalog: CatalogJson,
+  scene: SceneJson;
+  catalog: CatalogJson;
 }
 
 export default function Scene({ scene, catalog }: SceneProps) {
-  const { height, layers } = scene;
-  const selectedLayer = layers[scene.selectedLayer];
+  const { layers } = scene;
+  const selectedLayer = scene.selectedLayer
+    ? layers[scene.selectedLayer]
+    : undefined;
 
   return (
     <g>
       <Grids scene={scene} />
 
       <g style={{ pointerEvents: 'none' }}>
-        {
-          Object.entries(layers)
-            .filter(([layerID, layer]) => layerID !== scene.selectedLayer && layer.visible)
-            .map(([layerID, layer]) => <Layer key={layerID} layer={layer} scene={scene} catalog={catalog} />)
-        }
+        {Object.entries(layers)
+          .filter(
+            ([layerID, layer]) =>
+              layerID !== scene.selectedLayer && layer.visible
+          )
+          .map(([layerID, layer]) => (
+            <Layer
+              key={layerID}
+              layer={layer}
+              scene={scene}
+              catalog={catalog}
+            />
+          ))}
       </g>
 
-      <Layer key={selectedLayer.id} layer={selectedLayer} scene={scene} catalog={catalog} />
+      {selectedLayer && (
+        <Layer
+          key={selectedLayer.id}
+          layer={selectedLayer}
+          scene={scene}
+          catalog={catalog}
+        />
+      )}
     </g>
   );
 }
-

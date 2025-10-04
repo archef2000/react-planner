@@ -1,66 +1,69 @@
-import * as Three from 'three';
 import React from 'react';
-import ImageFul from './imageful';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
+
+import ImageFul from './imageful';
 
 export default defineCatalogElement({
-  name: "image",
-  prototype: "items",
+  name: 'image',
+  prototype: 'items',
 
   info: {
-    title: "image",
+    title: 'image',
     tag: ['image'],
-    description: "Image",
+    description: 'Image',
     image: require('./image.png')
   },
 
   properties: {
     imageUri: {
-      label: "Image URI",
-      type: "string",
-      defaultValue: '',
+      label: 'Image URI',
+      type: 'string',
+      defaultValue: ''
     },
     x1: {
-      label: "x1",
-      type: "number",
+      label: 'x1',
+      type: 'number',
       defaultValue: 0
     },
     y1: {
-      label: "y1",
-      type: "number",
+      label: 'y1',
+      type: 'number',
       defaultValue: 0
     },
     x2: {
-      label: "x2",
-      type: "number",
+      label: 'x2',
+      type: 'number',
       defaultValue: 100
     },
     y2: {
-      label: "y2",
-      type: "number",
+      label: 'y2',
+      type: 'number',
       defaultValue: 0
     },
     distance: {
-      label: "Distance",
-      type: "length-measure",
+      label: 'Distance',
+      type: 'length-measure',
       defaultValue: {
         length: 100
       }
     },
     width: {
-      label: "Width",
-      type: "number",
+      label: 'Width',
+      type: 'number',
       defaultValue: 600
     },
     height: {
-      label: "Height",
-      type: "number",
+      label: 'Height',
+      type: 'number',
       defaultValue: 400
     }
   },
 
   render2D: function (element, layer, scene) {
-    const { x1, y1, x2, y2, distance, width, height, imageUri } = element.properties;
+    const { x1, y1, x2, y2, distance, width, height, imageUri } =
+      element.properties;
 
     return (
       <ImageFul

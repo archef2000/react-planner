@@ -1,24 +1,38 @@
 import React from 'react';
-import { buildWall, updatedWall } from './wall-factory-3d';
-import * as SharedStyle from '../../shared-style';
-import * as Geometry from '../../utils/geometry';
-import Translator from '../../translator/translator';
-import { Layer, Line, Scene } from '../../models';
-import { calcLineEnd } from './utils/calcPolygon';
-import { CatalogElementTextures, CatalogElementInfo, CatalogElement } from '../../types';
+
 import * as Three from 'three';
 
+import { Layer, Line, Scene } from '../../models';
+import * as SharedStyle from '../../shared-style';
+import Translator from '../../translator/translator';
+import {
+  CatalogElement,
+  CatalogElementInfo,
+  CatalogElementTextures,
+  defineCatalogElement
+} from '../../types';
+import * as Geometry from '../../utils/geometry';
+
+import { calcLineEnd } from './utils/calcPolygon';
+import { buildWall, updatedWall } from './wall-factory-3d';
+
 const epsilon = 20;
-const EPSILON_ANGLE = 0.01;
 
 const STYLE_TEXT = { textAnchor: 'middle' } as const;
 const STYLE_LINE = { stroke: SharedStyle.LINE_MESH_COLOR.selected };
-const STYLE_RECT = { strokeWidth: 1, stroke: SharedStyle.LINE_MESH_COLOR.unselected, fill: 'url(#diagonalFill)' };
-const STYLE_RECT_SELECTED = { ...STYLE_RECT, stroke: SharedStyle.LINE_MESH_COLOR.selected };
+const STYLE_RECT = {
+  strokeWidth: 1,
+  stroke: SharedStyle.LINE_MESH_COLOR.unselected,
+  fill: 'url(#diagonalFill)'
+};
+const STYLE_RECT_SELECTED = {
+  ...STYLE_RECT,
+  stroke: SharedStyle.LINE_MESH_COLOR.selected
+};
 
 const translator = new Translator();
 
-function orderPoints(points: { x: number, y: number }[]) {
+function orderPoints(points: { x: number; y: number }[]) {
   // Compute centroid
   const centroid = points.reduce(
     (acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }),
@@ -35,14 +49,19 @@ function orderPoints(points: { x: number, y: number }[]) {
   });
 }
 
-export default function WallFactory(name: string, info: CatalogElementInfo, textures: CatalogElementTextures) {
-  const textureValues = { 'none': 'None', 'bricks': false };
+export default function WallFactory(
+  name: string,
+  info: CatalogElementInfo,
+  textures: CatalogElementTextures
+) {
+  const textureValues: Record<string, string> = { none: 'None' };
 
-  for (const textureName in textures) { // textures is always an object
+  for (const textureName in textures) {
+    // textures is always an object
     textureValues[textureName] = textures[textureName].name;
   }
 
-  const wallElement: CatalogElement = {
+  const wallElement = defineCatalogElement({
     name,
     prototype: 'lines',
     info,
@@ -80,12 +99,12 @@ export default function WallFactory(name: string, info: CatalogElementInfo, text
         type: 'enum',
         defaultValue: textureValues.bricks ? 'bricks' : 'none',
         values: textureValues
-      },
+      }
     },
 
     render2D: function (element: Line, layer: Layer, scene: Scene) {
-      let { x: x1, y: y1, lines: lines1 } = layer.vertices[element.vertices[0]];
-      let { x: x2, y: y2, lines: lines2 } = layer.vertices[element.vertices[1]];
+      const { x: x1, y: y1 } = layer.vertices[element.vertices[0]];
+      const { x: x2, y: y2 } = layer.vertices[element.vertices[1]];
 
       const length = Geometry.pointsDistance(x1, y1, x2, y2);
       const length_5 = length / 5;
@@ -97,16 +116,27 @@ export default function WallFactory(name: string, info: CatalogElementInfo, text
       const extra_epsilon = 5;
       const textDistance = half_thickness + epsilon + extra_epsilon;
 
-      const points1 = calcLineEnd(layer, element.id, element.vertices[0], thickness);
-      const points2 = calcLineEnd(layer, element.id, element.vertices[1], thickness);
+      const points1 = calcLineEnd(
+        layer,
+        element.id,
+        element.vertices[0],
+        thickness
+      );
+      const points2 = calcLineEnd(
+        layer,
+        element.id,
+        element.vertices[1],
+        thickness
+      );
       const wp1 = layer.vertices[element.vertices[0]];
       const wp2 = layer.vertices[element.vertices[1]];
       const angleWall = Geometry.angleBetweenTwoVertices(wp1, wp2);
       let points = [];
 
-      const degreeWall = angleWall * 180 / Math.PI;
-      const lineInverted = (degreeWall > 90 || degreeWall < -90);
-      if (lineInverted) { // currently dragged
+      const degreeWall = (angleWall * 180) / Math.PI;
+      const lineInverted = degreeWall > 90 || degreeWall < -90;
+      if (lineInverted) {
+        // currently dragged
         points.push(...points1.map((p) => ({ x: length - p.x, y: p.y })));
         points.push(...points2);
       } else {
@@ -116,32 +146,73 @@ export default function WallFactory(name: string, info: CatalogElementInfo, text
 
       points = orderPoints(points);
 
-      lines1 = lines1.filter((line) => (line !== undefined && line !== element.id));
-      lines2 = lines2.filter((line) => (line !== undefined && line !== element.id));
+      //lines1 = lines1.filter((line) => (line !== undefined && line !== element.id));
+      //lines2 = lines2.filter((line) => (line !== undefined && line !== element.id));
 
-      return (element.selected) ?
+      return element.selected ? (
         <g>
           {/*<rect x="0" y={-half_thickness} width={length} height={thickness} style={STYLE_RECT_SELECTED} />*/}
-          {<polygon points={points.map((p) => `${p.x},${p.y}`).join(' ')} style={STYLE_RECT_SELECTED} />}
-          <line x1={length_5} y1={-half_thickness_eps} x2={length_5} y2={half_thickness_eps} style={STYLE_LINE} />
-          <text x={length_5} y={textDistance + char_height} style={STYLE_TEXT}>A</text>
-          <text x={length_5} y={-textDistance} style={STYLE_TEXT}>B</text>
-        </g> :
+          {
+            <polygon
+              points={points.map((p) => `${p.x},${p.y}`).join(' ')}
+              style={STYLE_RECT_SELECTED}
+            />
+          }
+          <line
+            x1={length_5}
+            y1={-half_thickness_eps}
+            x2={length_5}
+            y2={half_thickness_eps}
+            style={STYLE_LINE}
+          />
+          <text x={length_5} y={textDistance + char_height} style={STYLE_TEXT}>
+            A
+          </text>
+          <text x={length_5} y={-textDistance} style={STYLE_TEXT}>
+            B
+          </text>
+        </g>
+      ) : (
         <>
           {/*<rect x="0" y={-half_thickness} width={length} height={thickness} style={STYLE_RECT} />*/}
-          {<polygon points={points.map((p) => `${p.x},${p.y}`).join(' ')} style={STYLE_RECT} />}
+          {
+            <polygon
+              points={points.map((p) => `${p.x},${p.y}`).join(' ')}
+              style={STYLE_RECT}
+            />
+          }
           {/* ////<text x={length_5} y={-thickness} style={STYLE_TEXT}>{element.id}</text>*/}
         </>
+      );
     },
 
     async render3D(element: Line, layer: Layer, scene: Scene) {
       return buildWall(element, layer, scene, textures);
     },
 
-    async updateRender3D(element: Line, layer: Layer, scene: Scene, mesh: Three.Object3D<Three.Object3DEventMap>, oldElement: Line, differences, selfDestroy, selfBuild) {
-      return updatedWall(element, layer, scene, textures, mesh, oldElement, differences, selfDestroy, selfBuild);
+    async updateRender3D(
+      element: Line,
+      layer: Layer,
+      scene: Scene,
+      mesh: Three.Object3D<Three.Object3DEventMap>,
+      oldElement: Line,
+      differences,
+      selfDestroy,
+      selfBuild
+    ) {
+      return updatedWall(
+        element,
+        layer,
+        scene,
+        textures,
+        mesh,
+        oldElement,
+        differences,
+        selfDestroy,
+        selfBuild
+      );
     }
-  };
+  });
 
-  return wallElement;
+  return wallElement as unknown as CatalogElement;
 }

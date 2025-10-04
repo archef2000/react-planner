@@ -1,23 +1,23 @@
 import React from 'react';
 
 const STYLE = {
-  stroke: "#0096fd",
-  strokeWidth: "1px"
+  stroke: '#0096fd',
+  strokeWidth: '1px'
 };
 
 const STYLE_TEXT = {
-  textAnchor: "middle",
-  fontSize: "12px",
+  textAnchor: 'middle',
+  fontSize: '12px',
   fontFamily: "'Courier New', Courier, monospace",
-  pointerEvents: "none",
-  fontWeight: "bold",
+  pointerEvents: 'none',
+  fontWeight: 'bold',
 
   //http://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting-using-css
-  WebkitTouchCallout: "none", /* iOS Safari */
-  WebkitUserSelect: "none",   /* Chrome/Safari/Opera */
-  MozUserSelect: "none",      /* Firefox */
-  MsUserSelect: "none",       /* Internet Explorer/Edge */
-  userSelect: "none"
+  WebkitTouchCallout: 'none' /* iOS Safari */,
+  WebkitUserSelect: 'none' /* Chrome/Safari/Opera */,
+  MozUserSelect: 'none' /* Firefox */,
+  MsUserSelect: 'none' /* Internet Explorer/Edge */,
+  userSelect: 'none'
 } as const;
 
 interface RulerProps {
@@ -31,11 +31,12 @@ export default function Ruler({ length, unit, transform }: RulerProps) {
 
   return (
     <g transform={transform}>
-      <text x={length / 2} y="-3" transform={`scale(1, -1)`} style={STYLE_TEXT}>{distanceText}</text>
+      <text x={length / 2} y="-3" transform={`scale(1, -1)`} style={STYLE_TEXT}>
+        {distanceText}
+      </text>
       <line x1="0" y1="-5" x2="0" y2="5" style={STYLE} />
       <line x1={length} y1="-5" x2={length} y2="5" style={STYLE} />
       <line x1="0" y1="0" x2={length} y2="0" style={STYLE} />
     </g>
   );
-
 }

@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+
 import { FaPlusCircle as IconAdd } from 'react-icons/fa';
-import * as SharedStyle from '../../shared-style';
+
 import ReactPlannerContext from '../../react-planner-context';
+import * as SharedStyle from '../../shared-style';
+import { CatalogElement } from '../../types';
 
 const STYLE_BOX = {
   width: '14em',
@@ -16,7 +19,7 @@ const STYLE_BOX = {
   transition: 'all .15s ease-in-out',
   WebkitTransition: 'all .15s ease-in-out',
   alignSelf: 'center',
-  justifySelf: 'center',
+  justifySelf: 'center'
 } as const;
 
 const STYLE_BOX_HOVER = {
@@ -83,7 +86,7 @@ const STYLE_DESCRIPTION = {
   WebkitLineClamp: '2',
   WebkitBoxOrient: 'vertical',
   overflow: 'hidden',
-  textOverflow: 'ellipsis',
+  textOverflow: 'ellipsis'
 } as const;
 
 const STYLE_TAGS = {
@@ -104,27 +107,24 @@ const STYLE_TAG = {
 } as const;
 
 interface CatalogItemProps {
-  element: {
-    prototype: string;
-    name: string;
-    info: {
-      title: string;
-      image: string;
-      tag: string[];
-      description: string;
-    };
-  };
+  element: CatalogElement;
 }
 
 interface CatalogItemState {
   hover: boolean;
 }
 
-export default class CatalogItem extends Component<CatalogItemProps, CatalogItemState> {
+export default class CatalogItem extends Component<
+  CatalogItemProps,
+  CatalogItemState
+> {
   static contextType = ReactPlannerContext;
   context!: React.ContextType<typeof ReactPlannerContext>;
 
-  constructor(props, context) {
+  constructor(
+    props: CatalogItemProps,
+    context: React.ContextType<typeof ReactPlannerContext>
+  ) {
     super(props, context);
     this.state = { hover: false };
   }
@@ -144,7 +144,9 @@ export default class CatalogItem extends Component<CatalogItemProps, CatalogItem
         break;
     }
 
-    this.context.projectActions.pushLastSelectedCatalogElementToHistory(element);
+    this.context.projectActions.pushLastSelectedCatalogElementToHistory(
+      element
+    );
   }
 
   render() {
@@ -154,18 +156,29 @@ export default class CatalogItem extends Component<CatalogItemProps, CatalogItem
     return (
       <div
         style={hover ? STYLE_BOX_HOVER : STYLE_BOX}
-        onClick={e => this.select()}
-        onMouseEnter={e => this.setState({ hover: true })}
-        onMouseLeave={e => this.setState({ hover: false })}
+        onClick={(e) => this.select()}
+        onMouseEnter={(e) => this.setState({ hover: true })}
+        onMouseLeave={(e) => this.setState({ hover: false })}
       >
-        <b style={!hover ? STYLE_TITLE : STYLE_TITLE_HOVER}>{element.info.title}</b>
+        <b style={!hover ? STYLE_TITLE : STYLE_TITLE_HOVER}>
+          {element.info.title}
+        </b>
         <div style={STYLE_IMAGE_CONTAINER}>
-          <div style={{ ...(!hover ? STYLE_IMAGE : STYLE_IMAGE_HOVER), backgroundImage: 'url(' + element.info.image + ')' }}>
+          <div
+            style={{
+              ...(!hover ? STYLE_IMAGE : STYLE_IMAGE_HOVER),
+              backgroundImage: 'url(' + element.info.image + ')'
+            }}
+          >
             {hover ? <IconAdd style={STYLE_PLUS_HOVER} /> : null}
           </div>
         </div>
         <ul style={STYLE_TAGS}>
-          {element.info.tag.map((tag, index) => <li style={STYLE_TAG} key={index}>{tag}</li>)}
+          {element.info.tag.map((tag, index) => (
+            <li style={STYLE_TAG} key={index}>
+              {tag}
+            </li>
+          ))}
         </ul>
         <div style={STYLE_DESCRIPTION}>{element.info.description}</div>
       </div>

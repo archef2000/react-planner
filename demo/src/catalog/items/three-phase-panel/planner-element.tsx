@@ -1,15 +1,16 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 40;
 const DEPTH = 20;
 const HEIGHT = 50;
 
-const grey = new Three.MeshLambertMaterial({ color: 0xAAAAAA });
+const grey = new Three.MeshLambertMaterial({ color: 0xaaaaaa });
 grey.side = Three.DoubleSide;
-const red = new Three.MeshPhongMaterial({ color: 0xAA0000 });
-const blue = new Three.MeshPhongMaterial({ color: 0x0000AA });
+const red = new Three.MeshPhongMaterial({ color: 0xaa0000 });
+const blue = new Three.MeshPhongMaterial({ color: 0x0000aa });
 const black = new Three.MeshLambertMaterial({ color: 0x000000 });
 black.side = Three.DoubleSide;
 
@@ -35,7 +36,12 @@ function makeObjectMaxLOD() {
   roundedRectShape.lineTo(x, y + height - radius);
   roundedRectShape.quadraticCurveTo(x, y + height, x + radius, y + height);
   roundedRectShape.lineTo(x + width - radius, y + height);
-  roundedRectShape.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+  roundedRectShape.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width,
+    y + height - radius
+  );
   roundedRectShape.lineTo(x + width, y + radius);
   roundedRectShape.quadraticCurveTo(x + width, y, x + width - radius, y);
   roundedRectShape.lineTo(x + radius, y);
@@ -56,32 +62,41 @@ function makeObjectMaxLOD() {
   threePhasePanel.add(BackSide);
 
   const PanelGeometry = new Three.PlaneGeometry(0.5, 0.5);
-  const meshPanel = new Three.Mesh(PanelGeometry, new Three.MeshPhongMaterial({ map: quadro, transparent: true }));
+  const meshPanel = new Three.Mesh(
+    PanelGeometry,
+    new Three.MeshPhongMaterial({ map: quadro, transparent: true })
+  );
   meshPanel.position.set(0.5, 1.85, 0.31);
   threePhasePanel.add(meshPanel);
 
-  const geometry0 = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
+  const geometry0 = new Three.ExtrudeGeometry(
+    roundedRectShape,
+    extrudeSettings
+  );
   const mesh0 = new Three.Mesh(geometry0, grey);
   mesh0.position.set(0.1, 1.55, 0.1);
   threePhasePanel.add(mesh0);
 
-  const geometry1 = new Three.BoxGeometry(0.86, .38, 0.2);
+  const geometry1 = new Three.BoxGeometry(0.86, 0.38, 0.2);
   const mesh1 = new Three.Mesh(geometry1, grey);
   mesh1.position.set(0.495, 1.85, 0.2);
   threePhasePanel.add(mesh1);
 
-  const geometry00 = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
+  const geometry00 = new Three.ExtrudeGeometry(
+    roundedRectShape,
+    extrudeSettings
+  );
   const mesh00 = new Three.Mesh(geometry00, grey);
-  mesh00.position.set(0.1, .85, 0.1);
-  mesh00.scale.set(1, 1.2, .6);
+  mesh00.position.set(0.1, 0.85, 0.1);
+  mesh00.scale.set(1, 1.2, 0.6);
   threePhasePanel.add(mesh00);
 
-  const geometry11 = new Three.BoxGeometry(0.86, .51, 0.1);
+  const geometry11 = new Three.BoxGeometry(0.86, 0.51, 0.1);
   const mesh11 = new Three.Mesh(geometry11, grey);
   mesh11.position.set(0.495, 1.225, 0.15);
   threePhasePanel.add(mesh11);
 
-  const geometry1b = new Three.BoxGeometry(0.3, .5, 0.1);
+  const geometry1b = new Three.BoxGeometry(0.3, 0.5, 0.1);
   const mesh1b = new Three.Mesh(geometry1b, grey);
   mesh1b.position.set(0.68, 1.2, 0.25);
   threePhasePanel.add(mesh1b);
@@ -90,7 +105,7 @@ function makeObjectMaxLOD() {
   mesh1c.position.set(0.32, 1.2, 0.25);
   threePhasePanel.add(mesh1c);
 
-  const geometry1d = new Three.BoxGeometry(0.35, .6, 0.1);
+  const geometry1d = new Three.BoxGeometry(0.35, 0.6, 0.1);
   const mesh1d = new Three.Mesh(geometry1d, grey);
   mesh1d.position.set(0.68, 1.2, 0.2);
   threePhasePanel.add(mesh1d);
@@ -99,7 +114,7 @@ function makeObjectMaxLOD() {
   mesh1e.position.set(0.32, 1.2, 0.2);
   threePhasePanel.add(mesh1e);
 
-  const geometry1f = new Three.BoxGeometry(.15, .15, .01);
+  const geometry1f = new Three.BoxGeometry(0.15, 0.15, 0.01);
   const mesh1f = new Three.Mesh(geometry1f, red);
   mesh1f.position.set(0.32, 1.1, 0.3);
   threePhasePanel.add(mesh1f);
@@ -118,10 +133,16 @@ function makeObjectMaxLOD() {
   const stopper_p2 = new Three.Mesh(stopperGeometry2, red);
   stopper_p2.position.set(0.32, 1.1, 0.35);
   stopper_p2.rotation.x = Math.PI / 2;
-  stopper_p2.scale.set(1, .5, 1);
+  stopper_p2.scale.set(1, 0.5, 1);
   threePhasePanel.add(stopper_p2);
 
-  const stopperGeometry3 = new Three.CylinderGeometry(0.01, 0.01, 0.065, 16, 16);
+  const stopperGeometry3 = new Three.CylinderGeometry(
+    0.01,
+    0.01,
+    0.065,
+    16,
+    16
+  );
   const stopper_p3 = new Three.Mesh(stopperGeometry3, red);
   stopper_p3.position.set(0.32, 1.15, 0.32);
   stopper_p3.rotation.x = Math.PI / 2;
@@ -136,7 +157,7 @@ function makeObjectMaxLOD() {
   const stopper2_p2 = new Three.Mesh(stopperGeometry2, blue);
   stopper2_p2.position.set(0.68, 1.1, 0.35);
   stopper2_p2.rotation.x = Math.PI / 2;
-  stopper2_p2.scale.set(1, .5, 1);
+  stopper2_p2.scale.set(1, 0.5, 1);
   threePhasePanel.add(stopper2_p2);
 
   const stopper2_p3 = new Three.Mesh(stopperGeometry3, blue);
@@ -156,7 +177,14 @@ function makeObjectMaxLOD() {
   handle2_p1.rotation.x = Math.PI / 2;
   threePhasePanel.add(handle2_p1);
 
-  const cylinderGeometry2 = new Three.CylinderGeometry(0.051, 0.051, 0.05, 16, 16, true);
+  const cylinderGeometry2 = new Three.CylinderGeometry(
+    0.051,
+    0.051,
+    0.05,
+    16,
+    16,
+    true
+  );
   const handle_p2 = new Three.Mesh(cylinderGeometry2, black);
   handle_p2.position.set(0.32, 1.3, 0.31);
   handle_p2.rotation.x = Math.PI / 2;
@@ -176,7 +204,13 @@ function makeObjectMaxLOD() {
   handle2_p3.position.set(0.68, 1.3, 0.32);
   threePhasePanel.add(handle2_p3);
 
-  const cylinderGeometry3 = new Three.CylinderGeometry(0.015, 0.015, 0.1, 16, 16);
+  const cylinderGeometry3 = new Three.CylinderGeometry(
+    0.015,
+    0.015,
+    0.1,
+    16,
+    16
+  );
   const pivot1 = new Three.Mesh(cylinderGeometry3, black);
   pivot1.rotation.x += Math.PI / 2;
   pivot1.position.set(0.91, 2.05, 0.2);
@@ -189,15 +223,22 @@ function makeObjectMaxLOD() {
 
   const pivot3 = new Three.Mesh(cylinderGeometry3, black);
   pivot3.rotation.x += Math.PI / 2;
-  pivot3.position.set(.08, 2.05, 0.2);
+  pivot3.position.set(0.08, 2.05, 0.2);
   threePhasePanel.add(pivot3);
 
   const pivot4 = new Three.Mesh(cylinderGeometry3, black);
   pivot4.rotation.x += Math.PI / 2;
-  pivot4.position.set(.08, 1.65, 0.2);
+  pivot4.position.set(0.08, 1.65, 0.2);
   threePhasePanel.add(pivot4);
 
-  const cylinderGeometry4 = new Three.CylinderGeometry(0.018, 0.018, 0.22, 16, 16, true);
+  const cylinderGeometry4 = new Three.CylinderGeometry(
+    0.018,
+    0.018,
+    0.22,
+    16,
+    16,
+    true
+  );
   const pivot11 = new Three.Mesh(cylinderGeometry4, grey);
   pivot11.rotation.x += Math.PI / 2;
   pivot11.position.set(0.91, 2.05, 0.18);
@@ -210,12 +251,12 @@ function makeObjectMaxLOD() {
 
   const pivot33 = new Three.Mesh(cylinderGeometry4, grey);
   pivot33.rotation.x += Math.PI / 2;
-  pivot33.position.set(.08, 2.05, 0.18);
+  pivot33.position.set(0.08, 2.05, 0.18);
   threePhasePanel.add(pivot33);
 
   const pivot44 = new Three.Mesh(cylinderGeometry4, grey);
   pivot44.rotation.x += Math.PI / 2;
-  pivot44.position.set(.08, 1.65, 0.18);
+  pivot44.position.set(0.08, 1.65, 0.18);
   threePhasePanel.add(pivot44);
 
   const pivot1b = new Three.Mesh(cylinderGeometry3, black);
@@ -225,20 +266,27 @@ function makeObjectMaxLOD() {
 
   const pivot2b = new Three.Mesh(cylinderGeometry3, black);
   pivot2b.rotation.x += Math.PI / 2;
-  pivot2b.position.set(0.91, .95, 0.16);
+  pivot2b.position.set(0.91, 0.95, 0.16);
   threePhasePanel.add(pivot2b);
 
   const pivot3b = new Three.Mesh(cylinderGeometry3, black);
   pivot3b.rotation.x += Math.PI / 2;
-  pivot3b.position.set(.08, 1.5, 0.16);
+  pivot3b.position.set(0.08, 1.5, 0.16);
   threePhasePanel.add(pivot3b);
 
   const pivot4b = new Three.Mesh(cylinderGeometry3, black);
   pivot4b.rotation.x += Math.PI / 2;
-  pivot4b.position.set(.08, .95, 0.16);
+  pivot4b.position.set(0.08, 0.95, 0.16);
   threePhasePanel.add(pivot4b);
 
-  const cylinderGeometry5 = new Three.CylinderGeometry(0.018, 0.018, 0.1, 16, 16, true);
+  const cylinderGeometry5 = new Three.CylinderGeometry(
+    0.018,
+    0.018,
+    0.1,
+    16,
+    16,
+    true
+  );
   const pivot11b = new Three.Mesh(cylinderGeometry5, grey);
   pivot11b.rotation.x += Math.PI / 2;
   pivot11b.position.set(0.91, 1.5, 0.16);
@@ -246,17 +294,17 @@ function makeObjectMaxLOD() {
 
   const pivot22b = new Three.Mesh(cylinderGeometry5, grey);
   pivot22b.rotation.x += Math.PI / 2;
-  pivot22b.position.set(0.91, .95, 0.16);
+  pivot22b.position.set(0.91, 0.95, 0.16);
   threePhasePanel.add(pivot22b);
 
   const pivot33b = new Three.Mesh(cylinderGeometry5, grey);
   pivot33b.rotation.x += Math.PI / 2;
-  pivot33b.position.set(.08, 1.5, 0.16);
+  pivot33b.position.set(0.08, 1.5, 0.16);
   threePhasePanel.add(pivot33b);
 
   const pivot44b = new Three.Mesh(cylinderGeometry5, grey);
   pivot44b.rotation.x += Math.PI / 2;
-  pivot44b.position.set(.08, .95, 0.16);
+  pivot44b.position.set(0.08, 0.95, 0.16);
   threePhasePanel.add(pivot44b);
 
   return threePhasePanel;
@@ -277,7 +325,12 @@ function makeObjectMiddleLOD() {
   roundedRectShape.lineTo(x, y + height - radius);
   roundedRectShape.quadraticCurveTo(x, y + height, x + radius, y + height);
   roundedRectShape.lineTo(x + width - radius, y + height);
-  roundedRectShape.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+  roundedRectShape.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width,
+    y + height - radius
+  );
   roundedRectShape.lineTo(x + width, y + radius);
   roundedRectShape.quadraticCurveTo(x + width, y, x + width - radius, y);
   roundedRectShape.lineTo(x + radius, y);
@@ -298,32 +351,41 @@ function makeObjectMiddleLOD() {
   threePhasePanel.add(backSide);
 
   const PanelGeometry = new Three.PlaneGeometry(0.5, 0.5);
-  const Panel = new Three.Mesh(PanelGeometry, new Three.MeshPhongMaterial({ map: quadro, transparent: true }));
+  const Panel = new Three.Mesh(
+    PanelGeometry,
+    new Three.MeshPhongMaterial({ map: quadro, transparent: true })
+  );
   Panel.position.set(0.5, 1.85, 0.31);
   threePhasePanel.add(Panel);
 
-  const geometry0 = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
+  const geometry0 = new Three.ExtrudeGeometry(
+    roundedRectShape,
+    extrudeSettings
+  );
   const mesh0 = new Three.Mesh(geometry0, grey);
   mesh0.position.set(0.1, 1.55, 0.1);
   threePhasePanel.add(mesh0);
 
-  const geometry1 = new Three.BoxGeometry(0.86, .38, 0.2);
+  const geometry1 = new Three.BoxGeometry(0.86, 0.38, 0.2);
   const mesh1 = new Three.Mesh(geometry1, grey);
   mesh1.position.set(0.495, 1.85, 0.2);
   threePhasePanel.add(mesh1);
 
-  const geometry00 = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
+  const geometry00 = new Three.ExtrudeGeometry(
+    roundedRectShape,
+    extrudeSettings
+  );
   const mesh00 = new Three.Mesh(geometry00, grey);
-  mesh00.position.set(0.1, .85, 0.1);
-  mesh00.scale.set(1, 1.2, .6);
+  mesh00.position.set(0.1, 0.85, 0.1);
+  mesh00.scale.set(1, 1.2, 0.6);
   threePhasePanel.add(mesh00);
 
-  const geometry11 = new Three.BoxGeometry(0.86, .51, 0.1);
+  const geometry11 = new Three.BoxGeometry(0.86, 0.51, 0.1);
   const mesh11 = new Three.Mesh(geometry11, grey);
   mesh11.position.set(0.495, 1.225, 0.15);
   threePhasePanel.add(mesh11);
 
-  const geometry1b = new Three.BoxGeometry(0.3, .5, 0.1);
+  const geometry1b = new Three.BoxGeometry(0.3, 0.5, 0.1);
   const mesh1b = new Three.Mesh(geometry1b, grey);
   mesh1b.position.set(0.68, 1.2, 0.25);
   threePhasePanel.add(mesh1b);
@@ -332,7 +394,7 @@ function makeObjectMiddleLOD() {
   mesh1c.position.set(0.32, 1.2, 0.25);
   threePhasePanel.add(mesh1c);
 
-  const geometry1d = new Three.BoxGeometry(0.35, .6, 0.1);
+  const geometry1d = new Three.BoxGeometry(0.35, 0.6, 0.1);
   const mesh1d = new Three.Mesh(geometry1d, grey);
   mesh1d.position.set(0.68, 1.2, 0.2);
   threePhasePanel.add(mesh1d);
@@ -341,7 +403,7 @@ function makeObjectMiddleLOD() {
   mesh1e.position.set(0.32, 1.2, 0.2);
   threePhasePanel.add(mesh1e);
 
-  const geometry1f = new Three.BoxGeometry(.15, .15, .01);
+  const geometry1f = new Three.BoxGeometry(0.15, 0.15, 0.01);
   const mesh1f = new Three.Mesh(geometry1f, red);
   mesh1f.position.set(0.32, 1.1, 0.3);
   threePhasePanel.add(mesh1f);
@@ -360,10 +422,16 @@ function makeObjectMiddleLOD() {
   const stopper_p2 = new Three.Mesh(stopperGeometry2, red);
   stopper_p2.position.set(0.32, 1.1, 0.35);
   stopper_p2.rotation.x = Math.PI / 2;
-  stopper_p2.scale.set(1, .5, 1);
+  stopper_p2.scale.set(1, 0.5, 1);
   threePhasePanel.add(stopper_p2);
 
-  const stopperGeometry3 = new Three.CylinderGeometry(0.01, 0.01, 0.065, 16, 16);
+  const stopperGeometry3 = new Three.CylinderGeometry(
+    0.01,
+    0.01,
+    0.065,
+    16,
+    16
+  );
   const stopper_p3 = new Three.Mesh(stopperGeometry3, red);
   stopper_p3.position.set(0.32, 1.15, 0.32);
   stopper_p3.rotation.x = Math.PI / 2;
@@ -378,7 +446,7 @@ function makeObjectMiddleLOD() {
   const stopper2_p2 = new Three.Mesh(stopperGeometry2, blue);
   stopper2_p2.position.set(0.68, 1.1, 0.35);
   stopper2_p2.rotation.x = Math.PI / 2;
-  stopper2_p2.scale.set(1, .5, 1);
+  stopper2_p2.scale.set(1, 0.5, 1);
   threePhasePanel.add(stopper2_p2);
 
   const stopper2_p3 = new Three.Mesh(stopperGeometry3, blue);
@@ -398,7 +466,14 @@ function makeObjectMiddleLOD() {
   handle2_p1.rotation.x = Math.PI / 2;
   threePhasePanel.add(handle2_p1);
 
-  const cylinderGeometry2 = new Three.CylinderGeometry(0.051, 0.051, 0.05, 16, 16, true);
+  const cylinderGeometry2 = new Three.CylinderGeometry(
+    0.051,
+    0.051,
+    0.05,
+    16,
+    16,
+    true
+  );
   const handle_p2 = new Three.Mesh(cylinderGeometry2, black);
   handle_p2.position.set(0.32, 1.3, 0.31);
   handle_p2.rotation.x = Math.PI / 2;
@@ -436,7 +511,12 @@ function makeObjectMinLOD() {
   roundedRectShape.lineTo(x, y + height - radius);
   roundedRectShape.quadraticCurveTo(x, y + height, x + radius, y + height);
   roundedRectShape.lineTo(x + width - radius, y + height);
-  roundedRectShape.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+  roundedRectShape.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width,
+    y + height - radius
+  );
   roundedRectShape.lineTo(x + width, y + radius);
   roundedRectShape.quadraticCurveTo(x + width, y, x + width - radius, y);
   roundedRectShape.lineTo(x + radius, y);
@@ -456,28 +536,34 @@ function makeObjectMinLOD() {
   backSide.position.set(0.5, 1.5, 0.05);
   threePhasePanel.add(backSide);
 
-  const geometry0 = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
+  const geometry0 = new Three.ExtrudeGeometry(
+    roundedRectShape,
+    extrudeSettings
+  );
   const mesh0 = new Three.Mesh(geometry0, grey);
   mesh0.position.set(0.1, 1.55, 0.1);
   threePhasePanel.add(mesh0);
 
-  const geometry1 = new Three.BoxGeometry(0.86, .38, 0.2);
+  const geometry1 = new Three.BoxGeometry(0.86, 0.38, 0.2);
   const mesh1 = new Three.Mesh(geometry1, grey);
   mesh1.position.set(0.495, 1.85, 0.2);
   threePhasePanel.add(mesh1);
 
-  const geometry00 = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
+  const geometry00 = new Three.ExtrudeGeometry(
+    roundedRectShape,
+    extrudeSettings
+  );
   const mesh00 = new Three.Mesh(geometry00, grey);
-  mesh00.position.set(0.1, .85, 0.1);
-  mesh00.scale.set(1, 1.2, .6);
+  mesh00.position.set(0.1, 0.85, 0.1);
+  mesh00.scale.set(1, 1.2, 0.6);
   threePhasePanel.add(mesh00);
 
-  const geometry11 = new Three.BoxGeometry(0.86, .51, 0.1);
+  const geometry11 = new Three.BoxGeometry(0.86, 0.51, 0.1);
   const mesh11 = new Three.Mesh(geometry11, grey);
   mesh11.position.set(0.495, 1.225, 0.15);
   threePhasePanel.add(mesh11);
 
-  const geometry1b = new Three.BoxGeometry(0.3, .5, 0.1);
+  const geometry1b = new Three.BoxGeometry(0.3, 0.5, 0.1);
   const mesh1b = new Three.Mesh(geometry1b, grey);
   mesh1b.position.set(0.68, 1.2, 0.25);
   threePhasePanel.add(mesh1b);
@@ -486,7 +572,7 @@ function makeObjectMinLOD() {
   mesh1c.position.set(0.32, 1.2, 0.25);
   threePhasePanel.add(mesh1c);
 
-  const geometry1d = new Three.BoxGeometry(0.35, .6, 0.1);
+  const geometry1d = new Three.BoxGeometry(0.35, 0.6, 0.1);
   const mesh1d = new Three.Mesh(geometry1d, grey);
   mesh1d.position.set(0.68, 1.2, 0.2);
   threePhasePanel.add(mesh1d);
@@ -495,7 +581,7 @@ function makeObjectMinLOD() {
   mesh1e.position.set(0.32, 1.2, 0.2);
   threePhasePanel.add(mesh1e);
 
-  const geometry1f = new Three.BoxGeometry(.15, .15, .01);
+  const geometry1f = new Three.BoxGeometry(0.15, 0.15, 0.01);
   const mesh1f = new Three.Mesh(geometry1f, red);
   mesh1f.position.set(0.32, 1.1, 0.3);
   threePhasePanel.add(mesh1f);
@@ -515,7 +601,14 @@ function makeObjectMinLOD() {
   handle2_p1.rotation.x = Math.PI / 2;
   threePhasePanel.add(handle2_p1);
 
-  const cylinderGeometry2 = new Three.CylinderGeometry(0.051, 0.051, 0.05, 8, 8, true);
+  const cylinderGeometry2 = new Three.CylinderGeometry(
+    0.051,
+    0.051,
+    0.05,
+    8,
+    8,
+    true
+  );
   const handle_p2 = new Three.Mesh(cylinderGeometry2, black);
   handle_p2.position.set(0.32, 1.3, 0.31);
   handle_p2.rotation.x = Math.PI / 2;
@@ -539,19 +632,19 @@ function makeObjectMinLOD() {
 }
 
 export default defineCatalogElement({
-  name: "three- phase panel",
-  prototype: "items",
+  name: 'three- phase panel',
+  prototype: 'items',
 
   info: {
     tag: ['furnishings', 'metal'],
-    title: "three-phase panel",
-    description: "electric panel",
+    title: 'three-phase panel',
+    description: 'electric panel',
     image: require('./threePhasePanel.png')
   },
   properties: {
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 100
       }
@@ -563,21 +656,35 @@ export default defineCatalogElement({
     const newDepth = DEPTH;
     const angle = element.rotation + 90;
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-newWidth / 2},${-newDepth / 2})`}>
-        <rect key="1" x="0" y="0" width={newWidth} height={newDepth}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#ff0000" }} />
-        <text key="2" x="0" y="0"
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={newWidth}
+          height={newDepth}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#ff0000'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${newWidth / 2}, ${newDepth / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -585,7 +692,6 @@ export default defineCatalogElement({
     const newDepth = DEPTH;
     const newHeight = HEIGHT;
     const newAltitude = element.properties.altitude.length;
-
 
     /**************** LOD max ***********************/
 
@@ -598,7 +704,11 @@ export default defineCatalogElement({
     const deltaY = Math.abs(value.max.y - value.min.y);
     const deltaZ = Math.abs(value.max.z - value.min.z);
 
-    threePhasePanelMaxLOD.scale.set(newWidth / deltaX, newHeight / deltaY, newDepth / deltaZ);
+    threePhasePanelMaxLOD.scale.set(
+      newWidth / deltaX,
+      newHeight / deltaY,
+      newDepth / deltaZ
+    );
     threePhasePanelMaxLOD.position.y += -newHeight / 2 + newAltitude;
     threePhasePanelMaxLOD.position.x += -newWidth / 2;
     threePhasePanelMaxLOD.position.z += -newDepth / 2;
@@ -608,18 +718,25 @@ export default defineCatalogElement({
     const threePhasePanelMiddleLOD = new Three.Object3D();
     threePhasePanelMiddleLOD.add(objectMiddleLOD.clone());
 
-    threePhasePanelMiddleLOD.scale.set(newWidth / deltaX, newHeight / deltaY, newDepth / deltaZ);
+    threePhasePanelMiddleLOD.scale.set(
+      newWidth / deltaX,
+      newHeight / deltaY,
+      newDepth / deltaZ
+    );
     threePhasePanelMiddleLOD.position.y += -newHeight / 2 + newAltitude;
     threePhasePanelMiddleLOD.position.x += -newWidth / 2;
     threePhasePanelMiddleLOD.position.z += -newDepth / 2;
-
 
     /**************** LOD min ***********************/
 
     const threePhasePanelMinLOD = new Three.Object3D();
     threePhasePanelMinLOD.add(objectMinLOD.clone());
 
-    threePhasePanelMinLOD.scale.set(newWidth / deltaX, newHeight / deltaY, newDepth / deltaZ);
+    threePhasePanelMinLOD.scale.set(
+      newWidth / deltaX,
+      newHeight / deltaY,
+      newDepth / deltaZ
+    );
     threePhasePanelMinLOD.position.y += -newHeight / 2 + newAltitude;
     threePhasePanelMinLOD.position.x += -newWidth / 2;
     threePhasePanelMinLOD.position.z += -newDepth / 2;

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import * as SharedStyle from '../../shared-style';
+
 import { FaTimes as IconClose } from 'react-icons/fa';
+
 import ReactPlannerContext from '../../react-planner-context';
-import { State } from '../../models';
+import * as SharedStyle from '../../shared-style';
 
 const labelContainerStyle = {
   width: 'auto',
@@ -98,7 +99,7 @@ const textStyle = {
 interface FooterContentButtonProps {
   text: string;
   textStyle?: React.CSSProperties;
-  icon?: React.FC<React.SVGProps<SVGSVGElement>>;
+  icon: React.FC<React.SVGProps<SVGSVGElement>>;
   iconStyle?: React.CSSProperties;
   content: React.ReactNode[];
   toggleState?: boolean;
@@ -112,10 +113,16 @@ interface FooterContentButtonState {
   active: boolean;
 }
 
-export default class FooterContentButton extends Component<FooterContentButtonProps, FooterContentButtonState> {
+export default class FooterContentButton extends Component<
+  FooterContentButtonProps,
+  FooterContentButtonState
+> {
   static contextType = ReactPlannerContext;
   context!: React.ContextType<typeof ReactPlannerContext>;
-  constructor(props, context) {
+  constructor(
+    props: FooterContentButtonProps,
+    context: FooterContentButtonState
+  ) {
     super(props, context);
 
     this.state = {
@@ -125,15 +132,22 @@ export default class FooterContentButton extends Component<FooterContentButtonPr
     };
   }
 
-  toggleOver(e) { this.setState({ over: true }); }
-  toggleOut(e) { this.setState({ over: false }); }
+  toggleOver() {
+    this.setState({ over: true });
+  }
+  toggleOut() {
+    this.setState({ over: false });
+  }
 
-  toggle(e) {
+  toggle(e: React.MouseEvent) {
     const isActive = !this.state.active;
     this.setState({ active: isActive });
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(
+    nextProps: FooterContentButtonProps,
+    nextState: FooterContentButtonState
+  ) {
     if (this.state.over != nextState.over) return true;
     if (this.state.closeOver != nextState.closeOver) return true;
     if (this.state.active != nextState.active) return true;
@@ -144,17 +158,16 @@ export default class FooterContentButton extends Component<FooterContentButtonPr
     return false;
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: FooterContentButtonProps) {
     if (this.props.toggleState != prevProps.toggleState)
-      this.setState({ ...this.state, active: this.props.toggleState });
+      this.setState({ ...this.state, active: !!this.props.toggleState });
   }
 
   render() {
-
     const s = this.state;
     const p = this.props;
 
-    const LabelIcon = p.icon || null;
+    const LabelIcon = p.icon;
     const labelIconStyle = p.iconStyle || {};
     const labelTextStyle = p.textStyle || {};
     const inputTitleStyle = p.titleStyle || {};
@@ -163,25 +176,29 @@ export default class FooterContentButton extends Component<FooterContentButtonPr
       <div style={labelContainerStyle}>
         <div
           style={s.over || s.active ? toggleButtonStyleOver : toggleButtonStyle}
-          onClick={e => this.toggle(e)}
+          onClick={(e) => this.toggle(e)}
           title={p.title}
         >
           <LabelIcon style={{ ...labelIconStyle, ...iconStyle }} />
           <span style={{ ...textStyle, ...labelTextStyle }}>{p.text}</span>
         </div>
-        <div style={s.active ? contentContainerStyleActive : contentContainerStyleInactive}>
+        <div
+          style={
+            s.active
+              ? contentContainerStyleActive
+              : contentContainerStyleInactive
+          }
+        >
           <div style={contentHeaderStyle}>
             <b style={{ ...titleStyle, ...inputTitleStyle }}>{p.title}</b>
             <IconClose
               style={s.closeOver ? iconCloseStyleOver : iconCloseStyleOut}
-              onMouseOver={e => this.setState({ closeOver: true })}
-              onMouseOut={e => this.setState({ closeOver: false })}
-              onClick={e => this.toggle(e)}
+              onMouseOver={(e) => this.setState({ closeOver: true })}
+              onMouseOut={(e) => this.setState({ closeOver: false })}
+              onClick={(e) => this.toggle(e)}
             />
           </div>
-          <div style={contentAreaStyle}>
-            {p.content}
-          </div>
+          <div style={contentAreaStyle}>{p.content}</div>
         </div>
       </div>
     );

@@ -1,19 +1,23 @@
-const localStorage = window.hasOwnProperty('localStorage') ? window.localStorage : false;
+const localStorage = window.hasOwnProperty('localStorage')
+  ? window.localStorage
+  : false;
+import { Store } from 'redux';
+
+import { ReactPlannerStateExtractor } from '..';
 import { loadProject } from '../actions/project-actions';
 
 const TIMEOUT_DELAY = 500;
 
-let timeout = null;
+let timeout: NodeJS.Timeout | null = null;
 
-export default function autosave(autosaveKey, delay = TIMEOUT_DELAY) {
-
-  return (store, stateExtractor) => {
+export default function autosave(autosaveKey: string, delay = TIMEOUT_DELAY) {
+  return (store: Store, stateExtractor: ReactPlannerStateExtractor) => {
     if (!autosaveKey) return;
     if (!localStorage) return;
 
     //revert
-    if (localStorage.getItem(autosaveKey) !== null) {
-      const data = localStorage.getItem(autosaveKey);
+    if (autosaveKey in localStorage) {
+      const data = localStorage[autosaveKey];
       const json = JSON.parse(data);
       store.dispatch(loadProject(json));
     }

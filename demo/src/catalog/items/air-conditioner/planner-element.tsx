@@ -1,6 +1,7 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 90;
 const DEPTH = 40;
@@ -23,14 +24,19 @@ function makeObjectMaxLOD() {
 
   const x = 0;
   const y = 0;
-  const width = .15;
-  const height = .6;
+  const width = 0.15;
+  const height = 0.6;
   const radius = 0.15;
 
   roundedRectShape.moveTo(x, y);
   roundedRectShape.lineTo(x + width, y);
   roundedRectShape.lineTo(x + width + radius, y + radius);
-  roundedRectShape.quadraticCurveTo(x + width + radius, y + height, x + width / 2, y + height);
+  roundedRectShape.quadraticCurveTo(
+    x + width + radius,
+    y + height,
+    x + width / 2,
+    y + height
+  );
   roundedRectShape.lineTo(x + width / 2, y + height);
   roundedRectShape.lineTo(x, y + height);
 
@@ -43,29 +49,31 @@ function makeObjectMaxLOD() {
     bevelSegments: 1
   };
 
-  const bodyGeometry = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
+  const bodyGeometry = new Three.ExtrudeGeometry(
+    roundedRectShape,
+    extrudeSettings
+  );
   const body = new Three.Mesh(bodyGeometry, grey);
 
-  body.position.set(-.11, 1.2, 0);
+  body.position.set(-0.11, 1.2, 0);
   body.rotation.z += Math.PI;
   air_conditioner.add(body);
 
   let j = 1.18;
 
-  for (let i = -.30; i > -.36; i -= .005) {
-
-    const gridHorizontalGeometry = new Three.BoxGeometry(.001, .025, .705);
+  for (let i = -0.3; i > -0.36; i -= 0.005) {
+    const gridHorizontalGeometry = new Three.BoxGeometry(0.001, 0.025, 0.705);
     const gridHorizontal = new Three.Mesh(gridHorizontalGeometry, darkGrey);
-    gridHorizontal.position.set(i, j, .5);
+    gridHorizontal.position.set(i, j, 0.5);
     gridHorizontal.rotation.z += Math.PI / 4;
     air_conditioner.add(gridHorizontal);
-    j -= .005
+    j -= 0.005;
   }
 
-  for (let k = .15; k < .87; k += .05) {
-    const gridVerticalGeometry = new Three.BoxGeometry(.079, .025, .005);
+  for (let k = 0.15; k < 0.87; k += 0.05) {
+    const gridVerticalGeometry = new Three.BoxGeometry(0.079, 0.025, 0.005);
     const gridVertical = new Three.Mesh(gridVerticalGeometry, darkGrey);
-    gridVertical.position.set(-.324, 1.148, k);
+    gridVertical.position.set(-0.324, 1.148, k);
     gridVertical.rotation.z += Math.PI / 4;
     air_conditioner.add(gridVertical);
   }
@@ -74,15 +82,25 @@ function makeObjectMaxLOD() {
 
   const x2 = 0;
   const y2 = 0;
-  const width2 = .2;
-  const height2 = .4;
+  const width2 = 0.2;
+  const height2 = 0.4;
   const radius2 = 0.15;
 
   roundedRectShape2.moveTo(x2, y2);
   roundedRectShape2.lineTo(x2 + width2, y2);
-  roundedRectShape2.quadraticCurveTo(x2 + width2 + radius2, y2 + height2, x2 + width2 / 2, y2 + height2);
+  roundedRectShape2.quadraticCurveTo(
+    x2 + width2 + radius2,
+    y2 + height2,
+    x2 + width2 / 2,
+    y2 + height2
+  );
   roundedRectShape2.lineTo(x2 + width2 / 2, y2 + height2);
-  roundedRectShape2.quadraticCurveTo(x2 + width2 + radius2, y2 + height2 / 4, x2, y2);
+  roundedRectShape2.quadraticCurveTo(
+    x2 + width2 + radius2,
+    y2 + height2 / 4,
+    x2,
+    y2
+  );
 
   const extrudeSettings2 = {
     steps: 2,
@@ -93,10 +111,13 @@ function makeObjectMaxLOD() {
     bevelSegments: 1
   };
 
-  const frontCoverGeometry = new Three.ExtrudeGeometry(roundedRectShape2, extrudeSettings2);
+  const frontCoverGeometry = new Three.ExtrudeGeometry(
+    roundedRectShape2,
+    extrudeSettings2
+  );
   const frontCover = new Three.Mesh(frontCoverGeometry, grey);
 
-  frontCover.position.set(-.2, 1.1, 0);
+  frontCover.position.set(-0.2, 1.1, 0);
   frontCover.rotation.z += Math.PI;
   air_conditioner.add(frontCover);
 
@@ -104,52 +125,70 @@ function makeObjectMaxLOD() {
 
   const x3 = 0;
   const y3 = 0;
-  const width3 = .1;
-  const height3 = .1;
+  const width3 = 0.1;
+  const height3 = 0.1;
   const radius3 = 0.15;
 
   roundedRectShape3.moveTo(x3, y3);
-  roundedRectShape3.quadraticCurveTo(x3 - width3 / 2 + radius3 / 2, y3 - height3, x3 + width3, y3);
+  roundedRectShape3.quadraticCurveTo(
+    x3 - width3 / 2 + radius3 / 2,
+    y3 - height3,
+    x3 + width3,
+    y3
+  );
   roundedRectShape3.lineTo(x3 + width3, y3);
-  roundedRectShape3.quadraticCurveTo(x3 + width3 / 2 + radius3 / 2, y3 + 2 * height3, x3 + width3 / 2, y3 + height3);
+  roundedRectShape3.quadraticCurveTo(
+    x3 + width3 / 2 + radius3 / 2,
+    y3 + 2 * height3,
+    x3 + width3 / 2,
+    y3 + height3
+  );
   roundedRectShape3.lineTo(x3 + width3 / 2, y3 + height3);
   roundedRectShape3.quadraticCurveTo(x3 + width3 / 4, y3 + height3 / 6, x3, y3);
 
   const extrudeSettings3 = {
     steps: 2,
-    depth: .1,
+    depth: 0.1,
     bevelEnabled: false,
     bevelThickness: 1,
     bevelSize: 1,
     bevelSegments: 1
   };
 
-  const flapSupportGeometry = new Three.ExtrudeGeometry(roundedRectShape3, extrudeSettings3);
+  const flapSupportGeometry = new Three.ExtrudeGeometry(
+    roundedRectShape3,
+    extrudeSettings3
+  );
   const flapLeft = new Three.Mesh(flapSupportGeometry, darkGrey);
 
-  flapLeft.position.set(-.27, .62, 0.1);
+  flapLeft.position.set(-0.27, 0.62, 0.1);
   flapLeft.rotation.y += Math.PI;
   flapLeft.rotation.z -= Math.PI / 9;
   air_conditioner.add(flapLeft);
 
   const flapRight = new Three.Mesh(flapSupportGeometry, darkGrey);
 
-  flapRight.position.set(-.27, .62, 1);
+  flapRight.position.set(-0.27, 0.62, 1);
   flapRight.rotation.y += Math.PI;
   flapRight.rotation.z -= Math.PI / 9;
   air_conditioner.add(flapRight);
 
   const points2: Three.Vector2[] = [];
 
-  points2.push(new Three.Vector2(.5, 0));
-  points2.push(new Three.Vector2(.5, 0));
-  points2.push(new Three.Vector2(.5, .8));
-  points2.push(new Three.Vector2(.5, .8));
+  points2.push(new Three.Vector2(0.5, 0));
+  points2.push(new Three.Vector2(0.5, 0));
+  points2.push(new Three.Vector2(0.5, 0.8));
+  points2.push(new Three.Vector2(0.5, 0.8));
 
-  const flapGeometry = new Three.LatheGeometry(points2, 200, Math.PI / 2, Math.PI / 16);
+  const flapGeometry = new Three.LatheGeometry(
+    points2,
+    200,
+    Math.PI / 2,
+    Math.PI / 16
+  );
   const flap1 = new Three.Mesh(flapGeometry, darkGrey);
 
-  flap1.position.set(-.4, .18, .9);
+  flap1.position.set(-0.4, 0.18, 0.9);
   flap1.rotation.z += Math.PI / 2;
   flap1.rotation.y += -Math.PI / 2;
 
@@ -157,13 +196,13 @@ function makeObjectMaxLOD() {
 
   const flap2 = new Three.Mesh(flapGeometry, darkGrey);
 
-  flap2.position.set(-.4, .15, .9);
+  flap2.position.set(-0.4, 0.15, 0.9);
   flap2.rotation.z += Math.PI / 2;
   flap2.rotation.y += -Math.PI / 2;
 
   air_conditioner.add(flap2);
 
-  return air_conditioner
+  return air_conditioner;
 }
 
 function makeObjectMinLOD() {
@@ -173,14 +212,19 @@ function makeObjectMinLOD() {
 
   const x = 0;
   const y = 0;
-  const width = .15;
-  const height = .6;
+  const width = 0.15;
+  const height = 0.6;
   const radius = 0.15;
 
   roundedRectShape.moveTo(x, y);
   roundedRectShape.lineTo(x + width, y);
   roundedRectShape.lineTo(x + width + radius, y + radius);
-  roundedRectShape.quadraticCurveTo(x + width + radius, y + height, x + width / 2, y + height);
+  roundedRectShape.quadraticCurveTo(
+    x + width + radius,
+    y + height,
+    x + width / 2,
+    y + height
+  );
   roundedRectShape.lineTo(x + width / 2, y + height);
   roundedRectShape.lineTo(x, y + height);
 
@@ -193,10 +237,13 @@ function makeObjectMinLOD() {
     bevelSegments: 1
   };
 
-  const bodyGeometry = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings);
+  const bodyGeometry = new Three.ExtrudeGeometry(
+    roundedRectShape,
+    extrudeSettings
+  );
   const body = new Three.Mesh(bodyGeometry, grey);
 
-  body.position.set(-.11, 1.2, 0);
+  body.position.set(-0.11, 1.2, 0);
   body.rotation.z += Math.PI;
   air_conditioner.add(body);
 
@@ -204,15 +251,25 @@ function makeObjectMinLOD() {
 
   const x2 = 0;
   const y2 = 0;
-  const width2 = .2;
-  const height2 = .4;
+  const width2 = 0.2;
+  const height2 = 0.4;
   const radius2 = 0.15;
 
   roundedRectShape2.moveTo(x2, y2);
   roundedRectShape2.lineTo(x2 + width2, y2);
-  roundedRectShape2.quadraticCurveTo(x2 + width2 + radius2, y2 + height2, x2 + width2 / 2, y2 + height2);
+  roundedRectShape2.quadraticCurveTo(
+    x2 + width2 + radius2,
+    y2 + height2,
+    x2 + width2 / 2,
+    y2 + height2
+  );
   roundedRectShape2.lineTo(x2 + width2 / 2, y2 + height2);
-  roundedRectShape2.quadraticCurveTo(x2 + width2 + radius2, y2 + height2 / 4, x2, y2);
+  roundedRectShape2.quadraticCurveTo(
+    x2 + width2 + radius2,
+    y2 + height2 / 4,
+    x2,
+    y2
+  );
 
   const extrudeSettings2 = {
     steps: 2,
@@ -223,14 +280,17 @@ function makeObjectMinLOD() {
     bevelSegments: 1
   };
 
-  const frontCoverGeometry = new Three.ExtrudeGeometry(roundedRectShape2, extrudeSettings2);
+  const frontCoverGeometry = new Three.ExtrudeGeometry(
+    roundedRectShape2,
+    extrudeSettings2
+  );
   const frontCover = new Three.Mesh(frontCoverGeometry, grey);
 
-  frontCover.position.set(-.2, 1.1, 0);
+  frontCover.position.set(-0.2, 1.1, 0);
   frontCover.rotation.z += Math.PI;
   air_conditioner.add(frontCover);
 
-  return air_conditioner
+  return air_conditioner;
 }
 
 export default defineCatalogElement({
@@ -257,21 +317,35 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key='1' x='0' y='0' width={WIDTH} height={DEPTH}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: '2px', fill: '#84e1ce' }} />
-        <text key='2' x='0' y='0'
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#84e1ce'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: 'middle', fontSize: '11px' }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -292,8 +366,11 @@ export default defineCatalogElement({
     air_conditionerMaxLOD.position.z += DEPTH / 1.2;
     air_conditionerMaxLOD.position.y += newAltitude;
     air_conditionerMaxLOD.rotation.y += -Math.PI / 2;
-    air_conditionerMaxLOD.scale.set(WIDTH / deltaZ, HEIGHT / deltaY, DEPTH / deltaX / 1.4);
-
+    air_conditionerMaxLOD.scale.set(
+      WIDTH / deltaZ,
+      HEIGHT / deltaY,
+      DEPTH / deltaX / 1.4
+    );
 
     /*************** lod min *******************/
 
@@ -303,7 +380,11 @@ export default defineCatalogElement({
     air_conditionerMinLOD.position.z += DEPTH / 1.2;
     air_conditionerMinLOD.position.y += newAltitude;
     air_conditionerMinLOD.rotation.y += -Math.PI / 2;
-    air_conditionerMinLOD.scale.set(WIDTH / deltaZ, HEIGHT / deltaY, DEPTH / deltaX / 1.4);
+    air_conditionerMinLOD.scale.set(
+      WIDTH / deltaZ,
+      HEIGHT / deltaY,
+      DEPTH / deltaX / 1.4
+    );
 
     /**** all level of detail ***/
 

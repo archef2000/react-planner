@@ -1,14 +1,19 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 50;
 const DEPTH = 50;
 const HEIGHT = 180;
 
-const blackMaterial = new Three.MeshLambertMaterial({ color: 0x4B4B4B });
-const greyMaterial = new Three.MeshLambertMaterial({ color: 0xC0C0C0 });
-const blueMaterial = new Three.MeshLambertMaterial({ color: 0x3399FF, transparent: true, opacity: 0.8 });
+const blackMaterial = new Three.MeshLambertMaterial({ color: 0x4b4b4b });
+const greyMaterial = new Three.MeshLambertMaterial({ color: 0xc0c0c0 });
+const blueMaterial = new Three.MeshLambertMaterial({
+  color: 0x3399ff,
+  transparent: true,
+  opacity: 0.8
+});
 
 const objectMaxLOD = makeObjectMaxLOD();
 const objectMinLOD = makeObjectMinLOD();
@@ -71,11 +76,10 @@ function makeObjectMaxLOD() {
     hook_body.add(hook);
     hook.position.y = 0.085;
 
-    hooks[i].rotation.z = 45 * i * Math.PI / 180;
+    hooks[i].rotation.z = (45 * i * Math.PI) / 180;
     hook_body.position.y = 0.115;
 
-    if ((i % 2) === 1)
-      hooks[i].position.y += 0.2;
+    if (i % 2 === 1) hooks[i].position.y += 0.2;
   }
 
   hanger.add(base);
@@ -114,7 +118,7 @@ function makeObjectMinLOD() {
   //umbrella support
   const g_umbrella_base = new Three.TorusGeometry(0.045, 0.02, 8, 8);
   const m_umbrella = new Three.MeshLambertMaterial({
-    color: 0x3399FF,
+    color: 0x3399ff,
     transparent: true,
     opacity: 0.8
   });
@@ -155,11 +159,10 @@ function makeObjectMinLOD() {
     hook_body.add(hook);
     hook.position.y = 0.085;
 
-    hooks[i].rotation.z = 45 * i * Math.PI / 180;
+    hooks[i].rotation.z = (45 * i * Math.PI) / 180;
     hook_body.position.y = 0.115;
 
-    if (i % 2 === 1)
-      hooks[i].position.y += 0.2;
+    if (i % 2 === 1) hooks[i].position.y += 0.2;
   }
 
   hanger.add(base);
@@ -179,20 +182,20 @@ function makeObjectMinLOD() {
 }
 
 export default defineCatalogElement({
-  name: "hanger",
-  prototype: "items",
+  name: 'hanger',
+  prototype: 'items',
 
   info: {
     tag: ['furnishings', 'metallo', 'plastic'],
-    title: "hanger",
-    description: "hanger",
+    title: 'hanger',
+    description: 'hanger',
     image: require('./hanger.png')
   },
 
   properties: {
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 0
       }
@@ -203,21 +206,35 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key="1" x="0" y="0" width={WIDTH} height={DEPTH}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#84e1ce" }} />
-        <text key="2" x="0" y="0"
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#84e1ce'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {

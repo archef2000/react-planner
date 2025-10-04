@@ -1,6 +1,10 @@
 import React from 'react';
-import { BoxGeometry, MeshBasicMaterial, Mesh, BoxHelper } from 'three';
-import { defineCatalogElement, ReactPlannerSharedStyle } from '@archef2000/react-planner';
+
+import {
+  defineCatalogElement,
+  ReactPlannerSharedStyle
+} from '@archef2000/react-planner';
+import { BoxGeometry, BoxHelper, Mesh, MeshBasicMaterial } from 'three';
 
 export default defineCatalogElement({
   name: 'cube',
@@ -39,12 +43,14 @@ export default defineCatalogElement({
       defaultValue: {
         length: 100
       }
-    },
+    }
   },
 
   render2D: (element, layer, scene) => {
     const style = {
-      stroke: !element.selected ? ReactPlannerSharedStyle.LINE_MESH_COLOR.unselected : ReactPlannerSharedStyle.MESH_SELECTED,
+      stroke: !element.selected
+        ? ReactPlannerSharedStyle.LINE_MESH_COLOR.unselected
+        : ReactPlannerSharedStyle.MESH_SELECTED,
       strokeWidth: 2,
       fill: element.properties.color
     } as const;
@@ -72,12 +78,17 @@ export default defineCatalogElement({
 
     const mesh = new Mesh(geometry, material);
 
-    const box = new BoxHelper(mesh, !element.selected ? ReactPlannerSharedStyle.LINE_MESH_COLOR.unselected : ReactPlannerSharedStyle.MESH_SELECTED);
+    const box = new BoxHelper(
+      mesh,
+      !element.selected
+        ? ReactPlannerSharedStyle.LINE_MESH_COLOR.unselected
+        : ReactPlannerSharedStyle.MESH_SELECTED
+    );
     box.material.linewidth = 2;
     box.renderOrder = 1000;
     mesh.add(box);
 
-    mesh.position.y = (h / 2);
+    mesh.position.y = h / 2;
 
     return mesh;
   }

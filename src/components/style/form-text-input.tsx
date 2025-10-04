@@ -1,4 +1,5 @@
-import React, { Component, CSSProperties, useState } from 'react';
+import React, { useState } from 'react';
+
 import * as SharedStyle from '../../shared-style';
 
 const STYLE_INPUT = {
@@ -12,27 +13,26 @@ const STYLE_INPUT = {
   backgroundImage: 'none',
   border: '1px solid rgba(0,0,0,.15)',
   outline: 'none',
-  height: '30px',
+  height: '30px'
 } as const;
 
-interface FormTextInputProps {
-  style?: CSSProperties;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  [key: string]: any;
-}
-
-export default function FormTextInput(props: FormTextInputProps) {
-  const [state, setState] = useState({ focus: false });
+export default function FormTextInput(
+  props: React.InputHTMLAttributes<HTMLInputElement>
+) {
+  const [focus, setFocus] = useState(false);
   const { style, ...rest } = props;
 
   const textInputStyle = { ...STYLE_INPUT, ...style };
-  if (state.focus) textInputStyle.border = `1px solid ${SharedStyle.SECONDARY_COLOR.main}`;
+  if (focus)
+    textInputStyle.border = `1px solid ${SharedStyle.SECONDARY_COLOR.main}`;
 
-  return <input
-    onFocus={e => setState({ focus: true })}
-    onBlur={e => setState({ focus: false })}
-    style={textInputStyle}
-    type="text"
-    {...rest}
-  />
+  return (
+    <input
+      onFocus={(e) => setFocus(true)}
+      onBlur={(e) => setFocus(false)}
+      style={textInputStyle}
+      type="text"
+      {...rest}
+    />
+  );
 }

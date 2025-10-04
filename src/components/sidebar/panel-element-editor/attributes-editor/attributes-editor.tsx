@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
+
+import { State } from '../../../../models';
+
+import HoleAttributesEditor from './hole-attributes-editor';
 import ItemAttributesEditor from './item-attributes-editor';
 import LineAttributesEditor from './line-attributes-editor';
-import HoleAttributesEditor from './hole-attributes-editor';
-import { State } from '../../../../models';
 
 interface AttributesEditorProps {
   element: any;
@@ -13,40 +15,51 @@ interface AttributesEditorProps {
   [key: string]: any;
 }
 
-export default function AttributesEditor({ element, onUpdate, onValid, attributeFormData, state, ...rest }: AttributesEditorProps) {
+export default function AttributesEditor({
+  element,
+  onUpdate,
+  onValid,
+  attributeFormData,
+  state,
+  ...rest
+}: AttributesEditorProps) {
   switch (element.prototype) {
     case 'items':
-      return <ItemAttributesEditor
-        element={element}
-        onUpdate={onUpdate}
-        onValid={onValid}
-        attributeFormData={attributeFormData}
-        state={state}
-        {...rest}
-      />;
+      return (
+        <ItemAttributesEditor
+          element={element}
+          onUpdate={onUpdate}
+          onValid={onValid}
+          attributeFormData={attributeFormData}
+          state={state}
+          {...rest}
+        />
+      );
     case 'lines':
-      return <LineAttributesEditor
-        element={element}
-        onUpdate={onUpdate}
-        onValid={onValid}
-        attributeFormData={attributeFormData}
-        state={state}
-        {...rest}
-      />;
+      return (
+        <LineAttributesEditor
+          element={element}
+          onUpdate={onUpdate}
+          onValid={onValid}
+          attributeFormData={attributeFormData}
+          state={state}
+          {...rest}
+        />
+      );
     case 'holes':
-      return <HoleAttributesEditor
-        element={element}
-        onUpdate={onUpdate}
-        onValid={onValid}
-        attributeFormData={attributeFormData}
-        state={state}
-        {...rest}
-      />;
+      return (
+        <HoleAttributesEditor
+          element={element}
+          onUpdate={onUpdate}
+          onValid={onValid}
+          attributeFormData={attributeFormData}
+          state={state}
+          {...rest}
+        />
+      );
     case 'areas':
       return null;
-
   }
 
   return null;
 }
-

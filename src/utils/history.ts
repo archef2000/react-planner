@@ -1,8 +1,15 @@
-import { produce } from "immer";
-import { HistoryStructureJson, Scene } from "../models";
+import { produce } from 'immer';
+
+import { HistoryStructureJson, Scene } from '../models';
 
 export function diff(obj1: any, obj2: any) {
-  const ops: { [k: string]: { op: 'add' | 'remove' | 'replace'; path: string; value?: any } } = {};
+  const ops: {
+    [k: string]: {
+      op: 'add' | 'remove' | 'replace';
+      path: string;
+      value?: any;
+    };
+  } = {};
   let idx = 0;
 
   const isObject = (v: any) => v && typeof v === 'object' && !Array.isArray(v);
@@ -35,25 +42,32 @@ export function diff(obj1: any, obj2: any) {
 
     if (aIsObj && bIsObj) {
       // Keys union
-      const aKeys = new Set<string>(Array.isArray(a) ? a.map((_, i) => String(i)) : Object.keys(a));
-      const bKeys = new Set<string>(Array.isArray(b) ? b.map((_, i) => String(i)) : Object.keys(b));
+      const aKeys = new Set<string>(
+        Array.isArray(a) ? a.map((_, i) => String(i)) : Object.keys(a)
+      );
+      const bKeys = new Set<string>(
+        Array.isArray(b) ? b.map((_, i) => String(i)) : Object.keys(b)
+      );
 
       // Removed
-      Array.from(aKeys).forEach(k => {
+      Array.from(aKeys).forEach((k) => {
         if (!bKeys.has(k)) {
           ops[idx++] = { op: 'remove', path: `${basePath}/${k}` };
         }
       });
       // Added or changed
-      Array.from(bKeys).forEach(k => {
+      Array.from(bKeys).forEach((k) => {
         const subPath = `${basePath}/${k}`;
         if (!aKeys.has(k)) {
           ops[idx++] = { op: 'add', path: subPath, value: b[k] };
         } else {
           const av = a[k];
           const bv = b[k];
-          if (av !== bv) { // skip equal
-            const bothObj = (isObject(av) || Array.isArray(av)) && (isObject(bv) || Array.isArray(bv));
+          if (av !== bv) {
+            // skip equal
+            const bothObj =
+              (isObject(av) || Array.isArray(av)) &&
+              (isObject(bv) || Array.isArray(bv));
             if (bothObj && !isEqual(av, bv)) {
               walk(subPath, av, bv);
             } else if (!bothObj && av !== bv) {
@@ -65,25 +79,34 @@ export function diff(obj1: any, obj2: any) {
         }
       });
     } else {
-      ops[idx++] = { op: (a === undefined ? 'add' : b === undefined ? 'remove' : 'replace'), path: basePath || '/', value: b };
+      ops[idx++] = {
+        op: a === undefined ? 'add' : b === undefined ? 'remove' : 'replace',
+        path: basePath || '/',
+        value: b
+      };
     }
   };
 
   walk('', obj1, obj2);
   return ops;
-};
+}
 
-export function patch(obj: object, diffObj): object {
+export function patch(obj: object, diffObj: any): object {
   if (!diffObj || typeof diffObj !== 'object') return obj;
 
   // Sort numeric-like keys to preserve original generation order
   const ops = Object.keys(diffObj)
     .sort((a, b) => Number(a) - Number(b))
-    .map(k => diffObj[k]);
+    .map((k) => diffObj[k]);
 
-  let result: any = obj;
+  let result: object = obj;
 
-  const applyOnDraft = (draft: any, path: string, op: 'add' | 'remove' | 'replace', value: any) => {
+  const applyOnDraft = (
+    draft: any,
+    path: string,
+    op: 'add' | 'remove' | 'replace',
+    value: any
+  ) => {
     if (!path || path === '/') {
       // Root handled outside produce (we never mutate root inside this helper)
       return;
@@ -117,7 +140,8 @@ export function patch(obj: object, diffObj): object {
         if (!Number.isNaN(idx)) {
           parent.splice(idx, 1);
         } else {
-          delete parent[lastKey];
+          throw new Error('Cannot remove non-numeric key from array');
+          //delete parent[lastKey];
         }
       } else {
         delete parent[lastKey];
@@ -126,25 +150,28 @@ export function patch(obj: object, diffObj): object {
   };
 
   for (const { op, path, value } of ops) {
-    // Handle root-level operations directly (cannot reassign draft root inside produce)
+    // Handle root-level operations directly
     if (path === '/' || path === '') {
       if (op === 'remove') {
-        result = undefined;
+        result = {};
       } else if (op === 'add' || op === 'replace') {
         result = value;
       }
       continue;
     }
 
-    result = produce(result, draft => {
+    result = produce(result, (draft) => {
       applyOnDraft(draft, path, op, value);
     });
   }
 
   return result;
-};
+}
 
-export function historyPush(historyStructure: HistoryStructureJson, item: Scene) {
+export function historyPush(
+  historyStructure: HistoryStructureJson,
+  item: Scene
+) {
   if (historyStructure.last) {
     if (historyStructure.last !== item) {
       const toPush = {
@@ -152,18 +179,18 @@ export function historyPush(historyStructure: HistoryStructureJson, item: Scene)
         diff: diff(historyStructure.last, item)
       };
 
-      historyStructure = produce(historyStructure, draft => {
+      historyStructure = produce(historyStructure, (draft) => {
         draft.last = item;
         draft.list.push(toPush);
       });
     }
   } else {
-    historyStructure = produce(historyStructure, draft => {
+    historyStructure = produce(historyStructure, (draft) => {
       draft.last = item;
     });
   }
   return historyStructure;
-};
+}
 
 export function historyPop(historyStructure: HistoryStructureJson) {
   if (historyStructure.last) {
@@ -173,11 +200,11 @@ export function historyPop(historyStructure: HistoryStructureJson) {
         last = patch(last, historyStructure.list[x].diff) as Scene;
       }
 
-      historyStructure = produce(historyStructure, draft => {
+      historyStructure = produce(historyStructure, (draft) => {
         draft.last = last;
         draft.list = draft.list.slice(0, -1);
       });
     }
   }
   return historyStructure;
-};
+}

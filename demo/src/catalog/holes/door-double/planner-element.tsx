@@ -1,23 +1,32 @@
 import React from 'react';
-import * as Three from 'three';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const black = new Three.MeshLambertMaterial({ color: 0x000000 });
-const metalBlue = new Three.MeshLambertMaterial({ color: 0xB7CEEC });
-const grey = new Three.MeshLambertMaterial({ color: 0xD2B06A });
-const darkGrey = new Three.MeshLambertMaterial({ color: 0xFFEFCE });
+const metalBlue = new Three.MeshLambertMaterial({ color: 0xb7ceec });
+const grey = new Three.MeshLambertMaterial({ color: 0xd2b06a });
+const darkGrey = new Three.MeshLambertMaterial({ color: 0xffefce });
 
 const boxMaterials = [grey, grey, grey, grey, darkGrey, darkGrey];
 
 function makeDoor(width: number, height: number, thickness: number) {
   const door_double = new Three.Mesh();
 
-  const LongDoorGeometry = new Three.BoxGeometry(.75 * width, height, thickness);
+  const LongDoorGeometry = new Three.BoxGeometry(
+    0.75 * width,
+    height,
+    thickness
+  );
   const longDoor = new Three.Mesh(LongDoorGeometry, boxMaterials);
-  longDoor.position.x -= width * .25;
+  longDoor.position.x -= width * 0.25;
   door_double.add(longDoor);
 
-  const ShortDoorGeometry = new Three.BoxGeometry(.25 * width, height, thickness);
+  const ShortDoorGeometry = new Three.BoxGeometry(
+    0.25 * width,
+    height,
+    thickness
+  );
   const shortDoor = new Three.Mesh(ShortDoorGeometry, boxMaterials);
   shortDoor.position.x += width * 0.25;
   shortDoor.position.z += thickness / 10;
@@ -35,7 +44,11 @@ function makeDoor(width: number, height: number, thickness: number) {
   door_double.add(handleBase);
 
   const handle2 = makeHandle(width);
-  handle2.position.set(width / 20, height / 40, -thickness / 2 - thickness / 10);
+  handle2.position.set(
+    width / 20,
+    height / 40,
+    -thickness / 2 - thickness / 10
+  );
   handle2.rotation.z += Math.PI;
   handle2.rotation.x -= Math.PI / 2;
   door_double.add(handle2);
@@ -45,15 +58,28 @@ function makeDoor(width: number, height: number, thickness: number) {
   handleBase2.rotation.x = 0;
   door_double.add(handleBase2);
 
-  return door_double
+  return door_double;
 }
-
 
 function makeHandle(width: number) {
   const handle = new Three.Object3D();
-  const geometry_p1 = new Three.CylinderGeometry(width / 100, width / 100, width / 32.5, Math.round(32));
-  const geometry_p2 = new Three.SphereGeometry(width / 100, Math.round(32), Math.round(32));
-  const geometry_p3 = new Three.CylinderGeometry(width / 100, width / 100, width / 14.5, Math.round(32));
+  const geometry_p1 = new Three.CylinderGeometry(
+    width / 100,
+    width / 100,
+    width / 32.5,
+    Math.round(32)
+  );
+  const geometry_p2 = new Three.SphereGeometry(
+    width / 100,
+    Math.round(32),
+    Math.round(32)
+  );
+  const geometry_p3 = new Three.CylinderGeometry(
+    width / 100,
+    width / 100,
+    width / 14.5,
+    Math.round(32)
+  );
   const p1 = new Three.Mesh(geometry_p1, black);
   const p2 = new Three.Mesh(geometry_p2, black);
   const p3 = new Three.Mesh(geometry_p3, black);
@@ -150,17 +176,37 @@ export default defineCatalogElement({
       type: 'checkbox',
       defaultValue: false,
       values: {
-        'none': false,
-        'yes': true
+        none: false,
+        yes: true
       }
     }
   },
 
   render2D: function (element, layer, scene) {
-    const STYLE_HOLE_BASE = { stroke: '#ff0000', strokeWidth: '3px', fill: '#ff0000' };
-    const STYLE_HOLE_SELECTED = { stroke: '#ff0000', strokeWidth: '4px', fill: '#ff0000', cursor: 'move' };
-    const STYLE_ARC_BASE = { stroke: '#ff0000', strokeWidth: '3px', strokeDasharray: '5,5', fill: 'none' };
-    const STYLE_ARC_SELECTED = { stroke: '#ff0000', strokeWidth: '4px', strokeDasharray: '5,5', fill: 'none', cursor: 'move' };
+    const STYLE_HOLE_BASE = {
+      stroke: '#ff0000',
+      strokeWidth: '3px',
+      fill: '#ff0000'
+    };
+    const STYLE_HOLE_SELECTED = {
+      stroke: '#ff0000',
+      strokeWidth: '4px',
+      fill: '#ff0000',
+      cursor: 'move'
+    };
+    const STYLE_ARC_BASE = {
+      stroke: '#ff0000',
+      strokeWidth: '3px',
+      strokeDasharray: '5,5',
+      fill: 'none'
+    };
+    const STYLE_ARC_SELECTED = {
+      stroke: '#ff0000',
+      strokeWidth: '4px',
+      strokeDasharray: '5,5',
+      fill: 'none',
+      cursor: 'move'
+    };
 
     const epsilon = 3;
     const flip = element.properties.flip_horizontal;
@@ -175,24 +221,71 @@ export default defineCatalogElement({
     if (flip) {
       return (
         <g transform={`translate(${-length / 2}, 0)`}>
-          <path key='1' d={arcPath} style={arcStyle} transform={`translate(${0},${-holeWidth / 4})`} />
-          <line key='2' x1={0} y1={0 - epsilon} x2={0} y2={-holeWidth / 4 - epsilon} style={holeStyle} />
-          <path key='3' d={arcPath2} style={arcStyle} transform={`translate(${holeWidth},${-holeWidth / 2 - holeWidth / 4}) rotate(90)`} />
-          <line key='4' x1={holeWidth} y1={0 - epsilon} x2={holeWidth} y2={-holeWidth / 2 - holeWidth / 4 - epsilon} style={holeStyle} />
-          <path key='5' d={holePath} style={holeStyle} />
+          <path
+            key="1"
+            d={arcPath}
+            style={arcStyle}
+            transform={`translate(${0},${-holeWidth / 4})`}
+          />
+          <line
+            key="2"
+            x1={0}
+            y1={0 - epsilon}
+            x2={0}
+            y2={-holeWidth / 4 - epsilon}
+            style={holeStyle}
+          />
+          <path
+            key="3"
+            d={arcPath2}
+            style={arcStyle}
+            transform={`translate(${holeWidth},${-holeWidth / 2 - holeWidth / 4}) rotate(90)`}
+          />
+          <line
+            key="4"
+            x1={holeWidth}
+            y1={0 - epsilon}
+            x2={holeWidth}
+            y2={-holeWidth / 2 - holeWidth / 4 - epsilon}
+            style={holeStyle}
+          />
+          <path key="5" d={holePath} style={holeStyle} />
         </g>
-      )
-    }
-    else {
+      );
+    } else {
       return (
         <g transform={`translate(${-length / 2}, 0)`}>
-          <path key='1' d={arcPath} style={arcStyle} transform={`translate(${holeWidth},${holeWidth / 4}) rotate(180)`} />
-          <line key='2' x1={0} y1={0 - epsilon} x2={0} y2={holeWidth / 2 + holeWidth / 4 - epsilon} style={holeStyle} />
-          <path key='3' d={arcPath2} style={arcStyle} transform={`translate(${0},${holeWidth / 2 + holeWidth / 4}) rotate(270)`} />
-          <line key='4' x1={holeWidth} y1={0 - epsilon} x2={holeWidth} y2={holeWidth / 4 - epsilon} style={holeStyle} />
-          <path key='5' d={holePath} style={holeStyle} />
+          <path
+            key="1"
+            d={arcPath}
+            style={arcStyle}
+            transform={`translate(${holeWidth},${holeWidth / 4}) rotate(180)`}
+          />
+          <line
+            key="2"
+            x1={0}
+            y1={0 - epsilon}
+            x2={0}
+            y2={holeWidth / 2 + holeWidth / 4 - epsilon}
+            style={holeStyle}
+          />
+          <path
+            key="3"
+            d={arcPath2}
+            style={arcStyle}
+            transform={`translate(${0},${holeWidth / 2 + holeWidth / 4}) rotate(270)`}
+          />
+          <line
+            key="4"
+            x1={holeWidth}
+            y1={0 - epsilon}
+            x2={holeWidth}
+            y2={holeWidth / 4 - epsilon}
+            style={holeStyle}
+          />
+          <path key="5" d={holePath} style={holeStyle} />
         </g>
-      )
+      );
     }
   },
 

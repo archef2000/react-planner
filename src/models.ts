@@ -1,16 +1,10 @@
-import { immerable } from 'immer';
-import { MODE_IDLE, ModeType, UnitLengthType } from './constants';
-import { ElementPrototypes, ElementTypes, SnapMaskType, CatalogElement } from './types';
-import { SNAP_MASK, SnapElement } from './utils/snap';
+import { ReactNode } from 'react';
 
-function safeLoadMapList<T>(mapList: any, Model: new (json: any) => T, defaultMap?: Record<string, T>): Record<string, T> {
-  if (!mapList || typeof mapList !== 'object' || (Array.isArray(mapList) && mapList.length === 0)) return defaultMap || {};
-  const result: Record<string, T> = {};
-  for (const k in mapList) {
-    result[k] = new Model(mapList[k]);
-  }
-  return result;
-}
+import { immerable } from 'immer';
+
+import { MODE_IDLE, ModeType, UnitLengthType } from './constants';
+import { CatalogElement, SnapMaskType } from './types';
+import { SNAP_MASK, SnapElement } from './utils/snap';
 
 export type Grid = {
   id: string;
@@ -20,7 +14,7 @@ export type Grid = {
     colors: string[];
     [key: string]: any;
   };
-}
+};
 
 export function Grid(props: Grid): Grid {
   const defaults = {
@@ -32,7 +26,7 @@ export function Grid(props: Grid): Grid {
 }
 
 export const DefaultGrids = {
-  'h1': Grid({
+  h1: Grid({
     id: 'h1',
     type: 'horizontal-streak',
     properties: {
@@ -40,7 +34,7 @@ export const DefaultGrids = {
       colors: ['#808080', '#ddd', '#ddd', '#ddd', '#ddd']
     }
   }),
-  'v1': Grid({
+  v1: Grid({
     id: 'v1',
     type: 'vertical-streak',
     properties: {
@@ -56,7 +50,7 @@ export type ElementsSet = {
   holes: string[];
   areas: string[];
   items: string[];
-}
+};
 
 export function ElementsSet(props: Partial<ElementsSet> = {}): ElementsSet {
   const defaults = {
@@ -65,7 +59,7 @@ export function ElementsSet(props: Partial<ElementsSet> = {}): ElementsSet {
     holes: [],
     areas: [],
     items: []
-  }
+  };
   return { ...defaults, ...props };
 }
 
@@ -88,7 +82,7 @@ export type Vertex = SharedAttributes & {
   y: number;
   lines: any[];
   areas: any[];
-}
+};
 
 export type VertexPrototypeKeys = keyof Vertex;
 
@@ -98,9 +92,9 @@ export function Vertex(props: Partial<Vertex> = {}): Vertex {
     x: -1,
     y: -1,
     lines: [],
-    areas: [],
-  } as Vertex;
-  return { ...sharedAttributes, ...defaults, ...props };
+    areas: []
+  } as const;
+  return { ...sharedAttributes, ...defaults, ...props } as Vertex;
 }
 
 export type Line = SharedAttributes & {
@@ -110,29 +104,29 @@ export type Line = SharedAttributes & {
   misc: {
     _unitLength?: UnitLengthType;
     [key: string]: any;
-  }
-}
+  };
+};
 
 export function Line(props: Partial<Line>): Line {
   const defaults = {
     prototype: 'lines',
     vertices: [],
-    holes: [],
-  } as Line;
-  return { ...sharedAttributes, ...defaults, ...props };
+    holes: []
+  } as const;
+  return { ...sharedAttributes, ...defaults, ...props } as Line;
 }
 
 export type Hole = SharedAttributes & {
   prototype: 'holes';
   offset: number;
   line: string;
-}
+};
 
 export function Hole(props: Partial<Hole>): Hole {
   const defaults = {
     prototype: 'holes',
     offset: -1,
-    line: '',
+    line: ''
   } as Hole;
   return { ...sharedAttributes, ...defaults, ...props };
 }
@@ -141,15 +135,15 @@ export type Area = SharedAttributes & {
   prototype: 'areas';
   vertices: string[];
   holes: string[];
-}
+};
 
 export function Area(props: Partial<Area>): Area {
   const defaults = {
     prototype: 'areas',
     vertices: [],
-    holes: [],
-  } as Area;
-  return { ...sharedAttributes, ...defaults, ...props };
+    holes: []
+  } as const;
+  return { ...sharedAttributes, ...defaults, ...props } as Area;
 }
 
 export interface Item extends SharedAttributes {
@@ -164,7 +158,7 @@ export function Item(props: Partial<Item>): Item {
     prototype: 'items',
     x: 0,
     y: 0,
-    rotation: 0,
+    rotation: 0
   } as Item;
   return { ...sharedAttributes, ...defaults, ...props };
 }
@@ -182,7 +176,7 @@ export type Layer = {
   areas: { [id: string]: Area };
   items: { [id: string]: Item };
   selected: ElementsSet;
-}
+};
 
 export function Layer(props: Partial<Layer>): Layer {
   const defaults = {
@@ -197,17 +191,17 @@ export function Layer(props: Partial<Layer>): Layer {
     holes: {},
     areas: {},
     items: {},
-    selected: ElementsSet(),
+    selected: ElementsSet()
   };
   return { ...defaults, ...props };
 }
 
-type GroupElementPrototypes = "items" | "lines" | "holes" | "areas";
+export type GroupElementPrototypes = 'items' | 'lines' | 'holes' | 'areas';
 
 export type GroupElement = Record<GroupElementPrototypes, string[]>;
 
 export type Group = {
-  prototype: "groups";
+  prototype: 'groups';
   id: string;
   type: string;
   name: string;
@@ -219,7 +213,7 @@ export type Group = {
   y: number;
   rotation: number;
   elements: Record<string, GroupElement>;
-}
+};
 
 export function Group(props: Partial<Group>): Group {
   const defaults = {
@@ -234,7 +228,7 @@ export function Group(props: Partial<Group>): Group {
     x: 0,
     y: 0,
     rotation: 0,
-    elements: {},
+    elements: {}
   } as const;
   return { ...defaults, ...props };
 }
@@ -247,7 +241,7 @@ export interface SceneJson {
   unit: UnitLengthType;
   layers: { [key: string]: Layer };
   grids: { [key: string]: Grid };
-  selectedLayer: string | null;
+  selectedLayer: string | undefined;
   groups: { [key: string]: Group };
   width: number;
   height: number;
@@ -266,7 +260,7 @@ export function Scene(props: Partial<SceneJson> = {}): SceneJson {
     unit: 'cm',
     layers: DefaultLayers,
     grids: DefaultGrids,
-    selectedLayer: null,
+    selectedLayer: undefined,
     groups: {},
     width: 3000,
     height: 2000,
@@ -274,8 +268,8 @@ export function Scene(props: Partial<SceneJson> = {}): SceneJson {
     guides: { horizontal: {}, vertical: {}, circular: {} }
   };
   const result = { ...defaults, ...props };
-  if (result.layers && result.selectedLayer === null) {
-    result.selectedLayer = Object.keys(result.layers)[0] || null;
+  if (result.layers && result.selectedLayer === undefined) {
+    result.selectedLayer = Object.keys(result.layers)[0];
   }
   return result;
 }
@@ -286,16 +280,16 @@ export interface CatalogProps {
   path: string[];
 }
 
-export interface CatalogJson {
+export type CatalogState = {
   elements: Record<string, CatalogElement>;
   page: string;
   path: string[];
   ready: boolean;
-}
+};
 
-export type Catalog = CatalogJson;
-
-export function Catalog({ elements, page, path = [] }: CatalogProps = { elements: {}, path: [] }): CatalogJson {
+export function CatalogState(
+  { elements, page, path = [] }: CatalogProps = { elements: {}, path: [] }
+): CatalogState {
   return {
     elements,
     page: page || 'root',
@@ -304,35 +298,41 @@ export function Catalog({ elements, page, path = [] }: CatalogProps = { elements
   };
 }
 
-export function catalogElementFactory(catalog: Catalog, type, options?, initialProperties?) {
+export function catalogElementFactory(
+  catalog: CatalogState,
+  type: string,
+  options?: Record<string, any>,
+  initialProperties?: Record<string, any>
+) {
   if (!catalog.elements[type]) {
-    const catList = Object.values(catalog.elements).map(element => (element as { name?: string }).name);
+    const catList = Object.values(catalog.elements).map(
+      (element) => (element as { name?: string }).name
+    );
     throw new Error(`Element ${type} does not exist in catalog ${catList}`);
   }
 
   const element = catalog.elements[type];
-  const properties = {};
+  const properties: Record<string, any> = {};
   for (const key in element.properties) {
-    properties[key] = (initialProperties && initialProperties[key] !== undefined)
-      ? initialProperties[key]
-      : (element.properties[key] as { defaultValue: any }).defaultValue;
+    properties[key] =
+      initialProperties && initialProperties[key] !== undefined
+        ? initialProperties[key]
+        : (element.properties[key] as { defaultValue: any }).defaultValue;
   }
 
   switch (element.prototype) {
     case 'lines':
-      return Object.assign(Line(options), { properties });
+      return Object.assign(Line(options as Partial<Line>), { properties });
     case 'holes':
-      return Object.assign(Hole(options), { properties });
+      return Object.assign(Hole(options as Partial<Hole>), { properties });
     case 'areas':
-      return Object.assign(Area(options), { properties });
+      return Object.assign(Area(options as Partial<Area>), { properties });
     case 'items':
-      return Object.assign(Item(options), { properties });
+      return Object.assign(Item(options as Partial<Item>), { properties });
     default:
       throw new Error('prototype not valid');
   }
 }
-
-
 
 export class Catalog2 {
   static [immerable] = true;
@@ -348,29 +348,37 @@ export class Catalog2 {
     this.path = json.path ? [...json.path] : [];
   }
 
-  factoryElement(type, options?, initialProperties?) {
+  factoryElement(
+    type: string,
+    options?: SharedAttributes &
+      (Partial<Line> & Partial<Hole> & Partial<Area> & Partial<Item>),
+    initialProperties?: Record<string, any>
+  ) {
     if (!this.elements[type]) {
-      const catList = Object.values(this.elements).map(element => (element as { name?: string }).name);
+      const catList = Object.values(this.elements).map(
+        (element) => (element as { name?: string }).name
+      );
       throw new Error(`Element ${type} does not exist in catalog ${catList}`);
     }
 
     const element = this.elements[type];
-    const properties = {};
+    const properties: Record<string, any> = {};
     for (const key in element.properties) {
-      properties[key] = (initialProperties && initialProperties[key] !== undefined)
-        ? initialProperties[key]
-        : (element.properties[key] as { defaultValue: any }).defaultValue;
+      properties[key] =
+        initialProperties && initialProperties[key] !== undefined
+          ? initialProperties[key]
+          : (element.properties[key] as { defaultValue: any }).defaultValue;
     }
 
     switch (element.prototype) {
       case 'lines':
-        return Object.assign(Line(options), { properties });
+        return Object.assign(Line(options as Partial<Line>), { properties });
       case 'holes':
-        return Object.assign(Hole(options), { properties });
+        return Object.assign(Hole(options as Partial<Hole>), { properties });
       case 'areas':
-        return Object.assign(Area(options), { properties });
+        return Object.assign(Area(options as Partial<Area>), { properties });
       case 'items':
-        return Object.assign(Item(options), { properties });
+        return Object.assign(Item(options as Partial<Item>), { properties });
       default:
         throw new Error('prototype not valid');
     }
@@ -391,17 +399,19 @@ export interface HistoryStructureJson {
 
 export type HistoryStructure = HistoryStructureJson;
 
-export function HistoryStructure(props: Partial<HistoryStructureProps> = {}): HistoryStructureJson {
+export function HistoryStructure(
+  props: Partial<HistoryStructureProps> = {}
+): HistoryStructureJson {
   const resullt = {
     list: props.list ?? [],
     first: Scene(props.scene || {}),
-    last: Scene(props.last || props.scene || {}),
-  }
+    last: Scene(props.last || props.scene || {})
+  };
   return resullt;
 }
 
 export type DraggingSupportType = {
-  layerID?: string;
+  layerID: string;
   itemID?: string;
   startPointX?: number;
   startPointY?: number;
@@ -417,29 +427,29 @@ export type DraggingSupportType = {
   originalY?: number;
   holeID?: string;
   lineID?: string;
-}
+};
 
 export type StateProps = {
   mode: ModeType;
   scene: Scene;
   sceneHistory: HistoryStructure;
-  catalog: Catalog;
+  catalog: CatalogState;
   viewer2D: Record<string, any>;
-  mouse: { x: number, y: number };
+  mouse: { x: number; y: number };
   zoom: number;
   snapMask: SnapMaskType;
   snapElements: SnapElement[];
   activeSnapElement: any;
   drawingSupport: Record<string, any>;
-  draggingSupport: DraggingSupportType;
-  rotatingSupport: { layerID: string, itemID: string } | undefined;
-  errors: any[];
-  warnings: any[];
+  draggingSupport: DraggingSupportType | undefined;
+  rotatingSupport: { layerID: string; itemID: string } | undefined;
+  errors: { date: number; error: ReactNode }[];
+  warnings: { date: number; warning: ReactNode }[];
   clipboardProperties: Record<string, any>;
-  selectedElementsHistory: any[];
+  selectedElementsHistory: CatalogElement[];
   misc: Record<string, any>;
   alterate: boolean;
-}
+};
 
 export type State = StateProps;
 
@@ -448,7 +458,7 @@ export function State(props: Partial<StateProps> = {}): StateProps {
     mode: MODE_IDLE,
     scene: Scene(),
     sceneHistory: HistoryStructure(),
-    catalog: Catalog(),
+    catalog: CatalogState(),
     viewer2D: {},
     mouse: { x: 0, y: 0 },
     zoom: 0,
@@ -456,7 +466,7 @@ export function State(props: Partial<StateProps> = {}): StateProps {
     snapElements: [],
     activeSnapElement: null,
     drawingSupport: {},
-    draggingSupport: {},
+    draggingSupport: undefined,
     rotatingSupport: undefined,
     errors: [],
     warnings: [],

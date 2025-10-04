@@ -1,13 +1,18 @@
 import React from 'react';
+
 import { Grid } from '../../../models';
 
 interface GridHorizontalStreakProps {
   width: number;
   height: number;
-  grid: Grid
+  grid: Grid;
 }
 
-export default function GridHorizontalStreak({ width, height, grid }: GridHorizontalStreakProps) {
+export default function GridHorizontalStreak({
+  width,
+  height,
+  grid
+}: GridHorizontalStreakProps) {
   const step = grid.properties.step;
   let colors: string[];
 
@@ -22,8 +27,18 @@ export default function GridHorizontalStreak({ width, height, grid }: GridHorizo
   for (let y = 0; y <= height; y += step) {
     const color = colors[i % colors.length];
     i++;
-    rendered.push(<line key={y} x1="0" y1={y} x2={width} y2={y} strokeWidth="1" stroke={color} />);
+    rendered.push(
+      <line
+        key={y}
+        x1="0"
+        y1={y}
+        x2={width}
+        y2={y}
+        strokeWidth="1"
+        stroke={color}
+      />
+    );
   }
 
-  return (<g>{rendered}</g>);
+  return <g>{rendered}</g>;
 }

@@ -1,9 +1,11 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const textureLoader = new Three.TextureLoader();
 const mat = textureLoader.load(require('./copper.jpg'));
+
 const frameMaterial = new Three.MeshLambertMaterial({ map: mat });
 
 function makeObjectMaxLOD(RADIUS: number, HEIGHT: number) {
@@ -11,12 +13,27 @@ function makeObjectMaxLOD(RADIUS: number, HEIGHT: number) {
   const RADIUS_2_5 = RADIUS / 2.5;
 
   const column = new Three.Mesh();
-  const object = new Three.Mesh(new Three.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 32), frameMaterial);
+  const object = new Three.Mesh(
+    new Three.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 32),
+    frameMaterial
+  );
 
-  const frame1 = new Three.Mesh(new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 32), frameMaterial);
-  const frame2 = new Three.Mesh(new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 32), frameMaterial);
-  const frame3 = new Three.Mesh(new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 32), frameMaterial);
-  const frame4 = new Three.Mesh(new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 32), frameMaterial);
+  const frame1 = new Three.Mesh(
+    new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 32),
+    frameMaterial
+  );
+  const frame2 = new Three.Mesh(
+    new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 32),
+    frameMaterial
+  );
+  const frame3 = new Three.Mesh(
+    new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 32),
+    frameMaterial
+  );
+  const frame4 = new Three.Mesh(
+    new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 32),
+    frameMaterial
+  );
 
   frame1.position.x += RADIUS_2_5;
   frame1.position.z += RADIUS_2_5;
@@ -32,7 +49,7 @@ function makeObjectMaxLOD(RADIUS: number, HEIGHT: number) {
   column.add(frame4);
   column.add(object);
 
-  return column
+  return column;
 }
 
 function makeObjectMinLOD(RADIUS: number, HEIGHT: number) {
@@ -40,12 +57,27 @@ function makeObjectMinLOD(RADIUS: number, HEIGHT: number) {
   const RADIUS_2_5 = RADIUS / 2.5;
 
   const column = new Three.Mesh();
-  const object = new Three.Mesh(new Three.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 6, 6), frameMaterial);
+  const object = new Three.Mesh(
+    new Three.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 6, 6),
+    frameMaterial
+  );
 
-  const frame1 = new Three.Mesh(new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 6), frameMaterial);
-  const frame2 = new Three.Mesh(new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 6), frameMaterial);
-  const frame3 = new Three.Mesh(new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 6), frameMaterial);
-  const frame4 = new Three.Mesh(new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 6), frameMaterial);
+  const frame1 = new Three.Mesh(
+    new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 6),
+    frameMaterial
+  );
+  const frame2 = new Three.Mesh(
+    new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 6),
+    frameMaterial
+  );
+  const frame3 = new Three.Mesh(
+    new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 6),
+    frameMaterial
+  );
+  const frame4 = new Three.Mesh(
+    new Three.CylinderGeometry(RADIUS_10, RADIUS_10, HEIGHT + HEIGHT / 10, 6),
+    frameMaterial
+  );
 
   frame1.position.x += RADIUS_2_5;
   frame1.position.z += RADIUS_2_5;
@@ -61,7 +93,7 @@ function makeObjectMinLOD(RADIUS: number, HEIGHT: number) {
   column.add(frame4);
   column.add(object);
 
-  return column
+  return column;
 }
 
 export default defineCatalogElement({
@@ -104,22 +136,30 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
-    const circleStyle = { stroke: element.selected ? '#0096fd' : '#000', strokeWidth: '2px', fill: '#84e1ce' };
+    const circleStyle = {
+      stroke: element.selected ? '#0096fd' : '#000',
+      strokeWidth: '2px',
+      fill: '#84e1ce'
+    };
 
     return (
       <g>
-        <circle key='1' cx='0' cy='0' r={RADIUS} style={circleStyle} />
-        <text key='2' cx='0' cy='0'
+        <circle key="1" cx="0" cy="0" r={RADIUS} style={circleStyle} />
+        <text
+          key="2"
+          cx="0"
+          cy="0"
           transform={`scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: 'middle', fontSize: '11px' }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {

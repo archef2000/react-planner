@@ -1,22 +1,21 @@
 import {
-  Shape,
-  MeshPhongMaterial,
-  ShapeGeometry,
   Box3,
-  TextureLoader,
-  BackSide,
-  FrontSide,
-  Object3D,
+  DoubleSide,
   Mesh,
   MeshBasicMaterial,
+  MeshPhongMaterial,
+  Object3D,
+  Object3DEventMap,
   RepeatWrapping,
-  Vector2,
-  DoubleSide,
-  Object3DEventMap
+  Shape,
+  ShapeGeometry,
+  TextureLoader,
+  Vector2
 } from 'three';
+
+import { Area, Layer, Scene, Vertex } from '../../models';
 import * as SharedStyle from '../../shared-style';
 import { CatalogElementTextures } from '../../types';
-import { Scene, Layer, Area } from '../../models';
 
 /**
  * Apply a texture to a wall face
@@ -25,7 +24,12 @@ import { Scene, Layer, Area } from '../../models';
  * @param length: The lenght of the face
  * @param height: The height of the face
  */
-const applyTexture = (material: MeshPhongMaterial, texture: CatalogElementTextures[string], length: number, height: number) => {
+const applyTexture = (
+  material: MeshPhongMaterial,
+  texture: CatalogElementTextures[string],
+  length: number,
+  height: number
+) => {
   const loader = new TextureLoader();
 
   if (texture) {
@@ -33,14 +37,23 @@ const applyTexture = (material: MeshPhongMaterial, texture: CatalogElementTextur
     material.needsUpdate = true;
     material.map.wrapS = RepeatWrapping;
     material.map.wrapT = RepeatWrapping;
-    material.map.repeat.set(length * texture.lengthRepeatScale, height * texture.heightRepeatScale);
+    material.map.repeat.set(
+      length * texture.lengthRepeatScale,
+      height * texture.heightRepeatScale
+    );
 
     if (texture.normal) {
       material.normalMap = loader.load(texture.normal.uri);
-      material.normalScale = new Vector2(texture.normal.normalScaleX, texture.normal.normalScaleY);
+      material.normalScale = new Vector2(
+        texture.normal.normalScaleX,
+        texture.normal.normalScaleY
+      );
       material.normalMap.wrapS = RepeatWrapping;
       material.normalMap.wrapT = RepeatWrapping;
-      material.normalMap.repeat.set(length * texture.normal.lengthRepeatScale, height * texture.normal.heightRepeatScale);
+      material.normalMap.repeat.set(
+        length * texture.normal.lengthRepeatScale,
+        height * texture.normal.heightRepeatScale
+      );
     }
   }
 };
@@ -49,10 +62,11 @@ const applyTexture = (material: MeshPhongMaterial, texture: CatalogElementTextur
  * Function that assign UV coordinates to a geometry
  * @param geometry
  */
-const assignUVs = (geometry) => {
+/*
+const assignUVs = (geometry: BufferGeometry) => {
   geometry.computeBoundingBox();
 
-  const { min, max } = geometry.boundingBox;
+  const { min, max } = geometry.boundingBox as Box3;
 
   const offset = new Vector2(0 - min.x, 0 - min.y);
   const range = new Vector2(max.x - min.x, max.y - min.y);
@@ -73,11 +87,17 @@ const assignUVs = (geometry) => {
 
   geometry.uvsNeedUpdate = true;
 };
+*/
 
-export function createArea(element: Area, layer: Layer, scene: Scene, textures: CatalogElementTextures) {
-  const vertices = [];
+export function createArea(
+  element: Area,
+  layer: Layer,
+  scene: Scene,
+  textures: CatalogElementTextures
+) {
+  const vertices: Vertex[] = [];
 
-  element.vertices.forEach(vertexID => {
+  element.vertices.forEach((vertexID) => {
     vertices.push(layer.vertices[vertexID]);
   });
 
@@ -99,9 +119,9 @@ export function createArea(element: Area, layer: Layer, scene: Scene, textures: 
   const areaMaterial = new MeshPhongMaterial({ side: DoubleSide, color });
 
   /* Create holes for the area */
-  element.holes.forEach(holeID => {
-    let holeCoords = [];
-    layer.areas[holeID].vertices.forEach(vertexID => {
+  element.holes.forEach((holeID) => {
+    let holeCoords: [number, number][] = [];
+    layer.areas[holeID].vertices.forEach((vertexID) => {
       const { x, y } = layer.vertices[vertexID];
       holeCoords.push([x, y]);
     });
@@ -113,7 +133,9 @@ export function createArea(element: Area, layer: Layer, scene: Scene, textures: 
   const shapeGeometry = new ShapeGeometry(shape);
   //assignUVs(shapeGeometry);
 
-  const boundingBox = new Box3().setFromObject(new Mesh(shapeGeometry, new MeshBasicMaterial()));
+  const boundingBox = new Box3().setFromObject(
+    new Mesh(shapeGeometry, new MeshBasicMaterial())
+  );
 
   const width = boundingBox.max.x - boundingBox.min.x;
   const height = boundingBox.max.y - boundingBox.min.y;
@@ -130,20 +152,34 @@ export function createArea(element: Area, layer: Layer, scene: Scene, textures: 
   return area;
 }
 
-export function updatedArea(element, layer, scene, textures, mesh: Object3D<Object3DEventMap>, oldElement, differences, selfDestroy, selfBuild) {
-  const noPerf = () => { selfDestroy(); return selfBuild(); };
+export function updatedArea(
+  element: Area,
+  layer: Layer,
+  scene: Scene,
+  textures: CatalogElementTextures,
+  mesh: Object3D<Object3DEventMap>,
+  oldElement: Area,
+  differences: string[],
+  selfDestroy: () => void,
+  selfBuild: () => void
+) {
+  const noPerf = () => {
+    selfDestroy();
+    return selfBuild();
+  };
   const floor = mesh.getObjectByName('floor');
 
   if (differences[0] == 'selected') {
-    const color = element.selected ? SharedStyle.AREA_MESH_COLOR.selected : (element.properties.patternColor || SharedStyle.AREA_MESH_COLOR.unselected);
+    const color = element.selected
+      ? SharedStyle.AREA_MESH_COLOR.selected
+      : element.properties.patternColor ||
+      SharedStyle.AREA_MESH_COLOR.unselected;
     ((floor as Mesh).material as MeshPhongMaterial).color.set(color);
-  }
-  else if (differences[0] == 'properties') {
+  } else if (differences[0] == 'properties') {
     if (differences[1] === 'texture') {
       return noPerf();
     }
-  }
-  else return noPerf();
+  } else return noPerf();
 
   return mesh;
 }
@@ -153,7 +189,7 @@ export function updatedArea(element, layer, scene, textures, mesh: Object3D<Obje
  * @param shapeCoords
  * @returns {Shape}
  */
-const createShape = (shapeCoords) => {
+const createShape = (shapeCoords: [number, number][]): Shape => {
   const shape = new Shape();
   shape.moveTo(shapeCoords[0][0], shapeCoords[0][1]);
   for (let i = 1; i < shapeCoords.length; i++) {

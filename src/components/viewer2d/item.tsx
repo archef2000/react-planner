@@ -1,22 +1,18 @@
 import React from 'react';
-import If from '../../utils/react-if';
-import { CatalogFn, CatalogJson } from '../../catalog/catalog';
 
-const STYLE_LINE = {
-  fill: "#0096fd",
-  stroke: "#0096fd"
-};
+import { CatalogFn, CatalogJson } from '../../catalog/catalog';
+import If from '../../utils/react-if';
 
 const STYLE_CIRCLE = {
-  fill: "#0096fd",
-  stroke: "#0096fd",
-  cursor: "ew-resize"
+  fill: '#0096fd',
+  stroke: '#0096fd',
+  cursor: 'ew-resize'
 };
 
 const STYLE_CIRCLE2 = {
-  fill: "none",
-  stroke: "#0096fd",
-  cursor: "ew-resize"
+  fill: 'none',
+  stroke: '#0096fd',
+  cursor: 'ew-resize'
 };
 
 interface ItemProps {
@@ -27,10 +23,13 @@ interface ItemProps {
 }
 
 export default function Item({ layer, item, scene, catalog }: ItemProps) {
-
   const { x, y, rotation } = item;
 
-  const renderedItem = CatalogFn.getElement(catalog, item.type).render2D(item, layer, scene);
+  const renderedItem = CatalogFn.getElement(catalog, item.type).render2D(
+    item,
+    layer,
+    scene
+  );
 
   return (
     <g
@@ -39,12 +38,13 @@ export default function Item({ layer, item, scene, catalog }: ItemProps) {
       data-id={item.id}
       data-selected={item.selected}
       data-layer={layer.id}
-      style={item.selected ? { cursor: "move" } : {}}
-      transform={`translate(${x},${y}) rotate(${rotation})`}>
-
+      style={item.selected ? { cursor: 'move' } : {}}
+      transform={`translate(${x},${y}) rotate(${rotation})`}
+    >
       {renderedItem}
       <If condition={item.selected} style={{}}>
-        <g data-element-root
+        <g
+          data-element-root
           data-prototype={item.prototype}
           data-id={item.id}
           data-selected={item.selected}
@@ -56,5 +56,5 @@ export default function Item({ layer, item, scene, catalog }: ItemProps) {
         </g>
       </If>
     </g>
-  )
+  );
 }

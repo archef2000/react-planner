@@ -1,8 +1,10 @@
 import React from 'react';
+
+import { CatalogFn, CatalogJson } from '../../catalog/catalog';
+import { Layer, Line as LineModel, Scene } from '../../models';
 import { GeometryUtils } from '../../utils/export';
+
 import Ruler from './ruler';
-import { CatalogJson, CatalogFn } from '../../catalog/catalog';
-import { Line as LineModel, Layer, Scene } from '../../models'
 
 interface LineProps {
   line: LineModel;
@@ -12,11 +14,11 @@ interface LineProps {
 }
 
 export default function Line({ line, layer, scene, catalog }: LineProps) {
-
   const vertex0 = layer.vertices[line.vertices[0]];
   const vertex1 = layer.vertices[line.vertices[1]];
 
-  if (vertex0.id === vertex1.id || GeometryUtils.samePoints(vertex0, vertex1)) return null; //avoid 0-length lines
+  if (vertex0.id === vertex1.id || GeometryUtils.samePoints(vertex0, vertex1))
+    return null; //avoid 0-length lines
 
   let { x: x1, y: y1 } = vertex0;
   let { x: x2, y: y2 } = vertex1;
@@ -29,10 +31,14 @@ export default function Line({ line, layer, scene, catalog }: LineProps) {
   const length = GeometryUtils.pointsDistance(x1, y1, x2, y2);
   const angle = GeometryUtils.angleBetweenTwoPointsAndOrigin(x1, y1, x2, y2);
 
-  const renderedHoles = line.holes.map(holeID => {
+  const renderedHoles = line.holes.map((holeID) => {
     const hole = layer.holes[holeID];
     const startAt = length * hole.offset;
-    const renderedHole = CatalogFn.getElement(catalog, hole.type).render2D(hole, layer, scene);
+    const renderedHole = CatalogFn.getElement(catalog, hole.type).render2D(
+      hole,
+      layer,
+      scene
+    );
 
     return (
       <g
@@ -52,9 +58,18 @@ export default function Line({ line, layer, scene, catalog }: LineProps) {
   const thickness = line.properties.thickness.length;
   const half_thickness = thickness / 2;
 
-  const renderedLine = CatalogFn.getElement(catalog, line.type).render2D(line, layer, scene);
-  const renderedRuler = line.selected ?
-    <Ruler unit={scene.unit} length={length} transform={`translate(0, ${half_thickness + 10} )`} /> : null;
+  const renderedLine = CatalogFn.getElement(catalog, line.type).render2D(
+    line,
+    layer,
+    scene
+  );
+  const renderedRuler = line.selected ? (
+    <Ruler
+      unit={scene.unit}
+      length={length}
+      transform={`translate(0, ${half_thickness + 10} )`}
+    />
+  ) : null;
 
   return (
     <g
@@ -71,5 +86,4 @@ export default function Line({ line, layer, scene, catalog }: LineProps) {
       {renderedHoles}
     </g>
   );
-
 }

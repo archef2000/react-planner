@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
-import CatalogItem from './catalog-item';
-import CatalogBreadcrumb from './catalog-breadcrumb';
-import CatalogPageItem from './catalog-page-item';
-import CatalogTurnBackPageItem from './catalog-turn-back-page-item';
+
+import { CatalogCategory, CatalogFn } from '../../catalog/catalog';
+import { State } from '../../models';
+import ReactPlannerContext, {
+  ReactPlannerContextProps
+} from '../../react-planner-context';
+import * as SharedStyle from '../../shared-style';
+import { CatalogElement } from '../../types';
 import ContentContainer from '../style/content-container';
 import ContentTitle from '../style/content-title';
-import * as SharedStyle from '../../shared-style';
-import ReactPlannerContext, { ReactPlannerContextProps } from '../../react-planner-context';
+
+import CatalogBreadcrumb from './catalog-breadcrumb';
+import CatalogItem from './catalog-item';
+import CatalogPageItem from './catalog-page-item';
+import CatalogTurnBackPageItem from './catalog-turn-back-page-item';
 
 const containerStyle = {
   position: 'fixed',
@@ -74,8 +81,6 @@ const historyElementStyle = {
   margin: '0.25em',
   padding: '0 1em'
 } as const;
-import { State } from '../../models';
-import { CatalogFn } from '../../catalog/catalog';
 
 interface CatalogListProps {
   state: State;
@@ -85,13 +90,16 @@ interface CatalogListProps {
 }
 
 interface CatalogListState {
-  categories: any[];
-  elements: any[];
+  categories: CatalogCategory[];
+  elements: CatalogElement[];
   matchString: string;
-  matchedElements: any[];
+  matchedElements: CatalogElement[];
 }
 
-export default class CatalogList extends Component<CatalogListProps, CatalogListState> {
+export default class CatalogList extends Component<
+  CatalogListProps,
+  CatalogListState
+> {
   static contextType = ReactPlannerContext;
   context!: React.ContextType<typeof ReactPlannerContext>;
 
@@ -100,8 +108,9 @@ export default class CatalogList extends Component<CatalogListProps, CatalogList
 
     const page = props.state.catalog.page;
     const currentCategory = CatalogFn.getCategory(context.catalog, page);
-    const categoriesToDisplay = currentCategory.categories;
-    const elementsToDisplay = currentCategory.elements.filter(element => element.info.visibility ? element.info.visibility.catalog : true);
+    const elementsToDisplay = currentCategory.elements.filter((element) =>
+      element.info.visibility ? element.info.visibility.catalog : true
+    );
 
     this.state = {
       categories: currentCategory.categories,
@@ -111,21 +120,23 @@ export default class CatalogList extends Component<CatalogListProps, CatalogList
     };
   }
 
-  flattenCategories(categories) {
-    let toRet = [];
+  flattenCategories(categories: CatalogCategory[]) {
+    let toRet: CatalogElement[] = [];
 
     for (let x = 0; x < categories.length; x++) {
       const curr = categories[x];
       toRet = toRet.concat(curr.elements);
-      if (curr.categories.length) toRet = toRet.concat(this.flattenCategories(curr.categories));
+      if (curr.categories.length)
+        toRet = toRet.concat(this.flattenCategories(curr.categories));
     }
 
     return toRet;
   }
 
-  matcharray(text) {
-
-    const array = this.state.elements.concat(this.flattenCategories(this.state.categories));
+  matcharray(text: string) {
+    const array = this.state.elements.concat(
+      this.flattenCategories(this.state.categories)
+    );
 
     const filtered = [];
 
@@ -142,10 +153,9 @@ export default class CatalogList extends Component<CatalogListProps, CatalogList
       matchString: text,
       matchedElements: filtered
     });
-  };
+  }
 
-  select(element) {
-
+  select(element: CatalogElement) {
     switch (element.prototype) {
       case 'lines':
         this.context.linesActions.selectToolDrawingLine(element.name);
@@ -158,71 +168,109 @@ export default class CatalogList extends Component<CatalogListProps, CatalogList
         break;
     }
 
-    this.context.projectActions.pushLastSelectedCatalogElementToHistory(element);
+    this.context.projectActions.pushLastSelectedCatalogElementToHistory(
+      element
+    );
   }
 
   render() {
-
     const page = this.props.state.catalog.page;
     const currentCategory = CatalogFn.getCategory(this.context.catalog, page);
     const categoriesToDisplay = currentCategory.categories;
-    const elementsToDisplay = currentCategory.elements.filter(element => element.info.visibility ? element.info.visibility.catalog : true);
+    const elementsToDisplay = currentCategory.elements.filter((element) =>
+      element.info.visibility ? element.info.visibility.catalog : true
+    );
 
     let breadcrumbComponent = null;
 
     if (page !== 'root') {
-
       const breadcrumbsNames = [];
 
-      this.props.state.catalog.path.forEach(pathName => {
+      this.props.state.catalog.path.forEach((pathName) => {
         breadcrumbsNames.push({
           name: CatalogFn.getCategory(this.context.catalog, pathName).label,
-          action: () => this.context.projectActions.goBackToCatalogPage(pathName)
+          action: () =>
+            this.context.projectActions.goBackToCatalogPage(pathName)
         });
       });
 
-      breadcrumbsNames.push({ name: currentCategory.label, action: '' });
+      breadcrumbsNames.push({ name: currentCategory.label });
 
-      breadcrumbComponent = (<CatalogBreadcrumb names={breadcrumbsNames} />);
+      breadcrumbComponent = <CatalogBreadcrumb names={breadcrumbsNames} />;
     }
 
     const pathSize = this.props.state.catalog.path.length;
 
-    const turnBackButton = pathSize > 0 ? (
-      <CatalogTurnBackPageItem key={pathSize} page={this.context.catalog.categories[this.props.state.catalog.path[pathSize - 1]]} />) : null;
-
+    const turnBackButton =
+      pathSize > 0 ? (
+        <CatalogTurnBackPageItem
+          key={pathSize}
+          page={
+            this.context.catalog.categories[
+            this.props.state.catalog.path[pathSize - 1]
+            ]
+          }
+        />
+      ) : null;
 
     const selectedHistory = this.props.state.selectedElementsHistory;
-    const selectedHistoryElements = selectedHistory.map((el, ind) =>
-      <div key={ind} style={historyElementStyle} title={el.name} onClick={() => this.select(el)}>{el.name}</div>
-    );
+    const selectedHistoryElements = selectedHistory.map((el, ind) => (
+      <div
+        key={ind}
+        style={historyElementStyle}
+        title={el.name}
+        onClick={() => this.select(el)}
+      >
+        {el.name}
+      </div>
+    ));
 
     return (
-      <ContentContainer width={this.props.width} height={this.props.height} style={{ ...containerStyle, ...this.props.style }}>
+      <ContentContainer
+        width={this.props.width}
+        height={this.props.height}
+        style={{ ...containerStyle, ...this.props.style }}
+      >
         <ContentTitle>{this.context.translator.t('Catalog')}</ContentTitle>
         {breadcrumbComponent}
         <div style={searchContainer}>
-          <span style={searchText}>{this.context.translator.t('Search Element')}</span>
-          <input type="text" style={searchInput} onChange={(e) => { this.matcharray(e.target.value); }} />
+          <span style={searchText}>
+            {this.context.translator.t('Search Element')}
+          </span>
+          <input
+            type="text"
+            style={searchInput}
+            onChange={(e) => {
+              this.matcharray(e.target.value);
+            }}
+          />
         </div>
-        {selectedHistory.length ?
+        {selectedHistory.length ? (
           <div style={historyContainer}>
             <span>{this.context.translator.t('Last Selected')}</span>
             {selectedHistoryElements}
-          </div> :
-          null
-        }
+          </div>
+        ) : null}
         <div style={itemsStyle}>
-          {
-            this.state.matchString === '' ? [
+          {this.state.matchString === ''
+            ? [
               turnBackButton,
-              categoriesToDisplay.map(cat => <CatalogPageItem key={cat.name} page={cat} oldPage={currentCategory} />),
-              elementsToDisplay.map(elem => <CatalogItem key={elem.name} element={elem} />)
-            ] :
-              this.state.matchedElements.map(elem => <CatalogItem key={elem.name} element={elem} />)
-          }
+              categoriesToDisplay.map((cat) => (
+                <CatalogPageItem
+                  key={cat.name}
+                  page={cat}
+                  oldPage={currentCategory}
+                />
+              )),
+              elementsToDisplay.map((elem) => (
+                <CatalogItem key={elem.name} element={elem} />
+              ))
+            ]
+            : this.state.matchedElements.map((elem) => (
+              <CatalogItem key={elem.name} element={elem} />
+            ))}
         </div>
       </ContentContainer>
-    )
+    );
   }
 }

@@ -1,6 +1,7 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 20;
 const DEPTH = 5;
@@ -9,7 +10,7 @@ const RADIUS = 10;
 
 const grey = new Three.MeshLambertMaterial({ color: 0x6b6b6b });
 const grey2 = new Three.MeshLambertMaterial({ color: 0x939393 });
-const greenMaterial = new Three.MeshLambertMaterial({ color: 0x00FF00 });
+const greenMaterial = new Three.MeshLambertMaterial({ color: 0x00ff00 });
 
 const objectMaxLOD = makeObjectMaxLOD();
 const objectMinLOD = makeObjectMinLOD();
@@ -35,7 +36,6 @@ function makeObjectMaxLOD() {
   roundedRectShape.lineTo(x + r, y);
   roundedRectShape.quadraticCurveTo(x, y, x, y + r);
 
-
   const extrudeSettings = {
     steps: 2,
     depth: DEPTH / 2,
@@ -60,13 +60,22 @@ function makeObjectMaxLOD() {
     bevelSegments: 2
   };
 
-  const geometry2 = new Three.ExtrudeGeometry(roundedRectShape, extrudeSettings2);
+  const geometry2 = new Three.ExtrudeGeometry(
+    roundedRectShape,
+    extrudeSettings2
+  );
   const mesh2 = new Three.Mesh(geometry2, grey2);
 
   mesh2.position.set(-0.4, 1, 5.5);
   routerWifi.add(mesh2);
 
-  const cylinderGeometry = new Three.CylinderGeometry(RADIUS / 20, RADIUS / 20, DEPTH, 32, 32);
+  const cylinderGeometry = new Three.CylinderGeometry(
+    RADIUS / 20,
+    RADIUS / 20,
+    DEPTH,
+    32,
+    32
+  );
   const led = new Three.Mesh(cylinderGeometry, greenMaterial);
   led.rotation.x += Math.PI / 2;
   led.position.set(WIDTH / 2, WIDTH / 2, 1.2 * DEPTH);
@@ -125,19 +134,19 @@ function makeObjectMinLOD() {
 }
 
 export default defineCatalogElement({
-  name: "router_wifi",
-  prototype: "items",
+  name: 'router_wifi',
+  prototype: 'items',
 
   info: {
     tag: ['telecomunication'],
-    title: "router Wifi",
-    description: "router Wifi",
+    title: 'router Wifi',
+    description: 'router Wifi',
     image: require('./routerWifi.png')
   },
   properties: {
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 0
       }
@@ -148,22 +157,35 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
-
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key="1" x="0" y="0" width={WIDTH} height={DEPTH}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#bb00ff" }} />
-        <text key="2" x="0" y="0"
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#bb00ff'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {

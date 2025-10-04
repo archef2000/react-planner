@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+
 import { MdNavigateNext } from 'react-icons/md';
-import * as SharedStyle from '../../shared-style';
+
 import ReactPlannerContext from '../../react-planner-context';
+import * as SharedStyle from '../../shared-style';
 
 const STYLE_BOX = {
   width: '14em',
@@ -16,7 +18,7 @@ const STYLE_BOX = {
   transition: 'all .2s ease-in-out',
   WebkitTransition: 'all .2s ease-in-out',
   alignSelf: 'center',
-  justifySelf: 'center',
+  justifySelf: 'center'
 } as const;
 
 const STYLE_BOX_HOVER = {
@@ -47,7 +49,7 @@ const STYLE_NEXT_HOVER = {
   position: 'absolute',
   color: SharedStyle.SECONDARY_COLOR.main,
   fontSize: '5em',
-  width: '100%',
+  width: '100%'
 } as const;
 
 const CONTAINER_DIV = {
@@ -78,17 +80,26 @@ interface CatalogPageItemState {
   hover: boolean;
 }
 
-export default class CatalogPageItem extends Component<CatalogPageItemProps, CatalogPageItemState> {
+export default class CatalogPageItem extends Component<
+  CatalogPageItemProps,
+  CatalogPageItemState
+> {
   static contextType = ReactPlannerContext;
   context!: React.ContextType<typeof ReactPlannerContext>;
 
-  constructor(props, context) {
+  constructor(
+    props: CatalogPageItemProps,
+    context: React.ContextType<typeof ReactPlannerContext>
+  ) {
     super(props, context);
     this.state = { hover: false };
   }
 
-  changePage(newPage) {
-    this.context.projectActions.changeCatalogPage(newPage, this.props.oldPage.name)
+  changePage(newPage: string) {
+    this.context.projectActions.changeCatalogPage(
+      newPage,
+      this.props.oldPage.name
+    );
   }
 
   render() {
@@ -98,20 +109,20 @@ export default class CatalogPageItem extends Component<CatalogPageItemProps, Cat
     return (
       <div
         style={hover ? STYLE_BOX_HOVER : STYLE_BOX}
-        onClick={e => this.changePage(page.name)}
-        onMouseEnter={e => this.setState({ hover: true })}
-        onMouseLeave={e => this.setState({ hover: false })}
+        onClick={(e) => this.changePage(page.name)}
+        onMouseEnter={(e) => this.setState({ hover: true })}
+        onMouseLeave={(e) => this.setState({ hover: false })}
       >
-        {hover ?
+        {hover ? (
           <div style={CONTAINER_DIV}>
             <b style={STYLE_TITLE_HOVERED}>{page.label}</b>
             <MdNavigateNext style={STYLE_NEXT_HOVER} />
           </div>
-          :
+        ) : (
           <div style={CONTAINER_DIV}>
             <b style={STYLE_TITLE}>{page.label}</b>
-          </div>}
-
+          </div>
+        )}
       </div>
     );
   }

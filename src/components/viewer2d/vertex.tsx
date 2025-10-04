@@ -1,15 +1,19 @@
 import React from 'react';
+
 import * as SharedStyle from '../../shared-style';
 
-const STYLE = { fill: "#0096fd", stroke: SharedStyle.COLORS.white, cursor: "move" };
+const STYLE = {
+  fill: '#0096fd',
+  stroke: SharedStyle.COLORS.white,
+  cursor: 'move'
+};
 
 interface VertexProps {
-  vertex: any, // object
-  layer: any, // object
+  vertex: any; // object
+  layer: any; // object
 }
 
 export default function Vertex({ vertex, layer }: VertexProps) {
-
   const { x, y } = vertex;
 
   return (

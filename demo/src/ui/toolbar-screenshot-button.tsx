@@ -1,6 +1,11 @@
 import React, { useContext } from 'react';
-import { MdCamera } from 'react-icons/md'
-import { ReactPlannerComponents, ReactPlannerConstants, ReactPlannerContext } from '@archef2000/react-planner';
+
+import {
+  ReactPlannerComponents,
+  ReactPlannerConstants,
+  ReactPlannerContext
+} from '@archef2000/react-planner';
+import { MdCamera } from 'react-icons/md';
 
 const {
   MODE_IDLE,
@@ -40,14 +45,17 @@ export default function ToolbarScreenshotButton({ mode }: { mode: string }) {
     document.body.removeChild(fileOutputLink);
   };
 
-
-  const saveScreenshotToFile: React.MouseEventHandler<HTMLDivElement> = event => {
+  const saveScreenshotToFile: React.MouseEventHandler<HTMLDivElement> = (
+    event
+  ) => {
     event.preventDefault();
     const canvas = document.getElementsByTagName('canvas')[0];
     imageBrowserDownload(canvas.toDataURL());
   };
 
-  const saveSVGScreenshotToFile: React.MouseEventHandler<HTMLDivElement> = event => {
+  const saveSVGScreenshotToFile: React.MouseEventHandler<HTMLDivElement> = (
+    event
+  ) => {
     event.preventDefault();
 
     // First of all I need the svg content of the viewer
@@ -56,14 +64,17 @@ export default function ToolbarScreenshotButton({ mode }: { mode: string }) {
     // I get the element with max width (which is the viewer)
     let maxWidthSVGElement = svgElements[0];
     for (let i = 1; i < svgElements.length; i++) {
-      if (svgElements[i].width.baseVal.value > maxWidthSVGElement.width.baseVal.value) {
+      if (
+        svgElements[i].width.baseVal.value >
+        maxWidthSVGElement.width.baseVal.value
+      ) {
         maxWidthSVGElement = svgElements[i];
       }
     }
 
     const serializer = new XMLSerializer();
 
-    const img = new Image;
+    const img = new Image();
 
     // I create the new canvas to draw
     const canvas = document.createElement('canvas');
@@ -85,35 +96,52 @@ export default function ToolbarScreenshotButton({ mode }: { mode: string }) {
     img.src = `data:image/svg+xml;base64,${window.btoa(serializer.serializeToString(maxWidthSVGElement))}`;
 
     img.onload = () => {
-      ctx.drawImage(img, 0, 0, maxWidthSVGElement.width.baseVal.value, maxWidthSVGElement.height.baseVal.value);
+      ctx.drawImage(
+        img,
+        0,
+        0,
+        maxWidthSVGElement.width.baseVal.value,
+        maxWidthSVGElement.height.baseVal.value
+      );
       imageBrowserDownload(canvas.toDataURL());
     };
   };
 
   if ([MODE_3D_FIRST_PERSON, MODE_3D_VIEW].includes(mode)) {
     return (
-      <ToolbarButton active={false} tooltip={translator.t('Get Screenshot')} onClick={saveScreenshotToFile}>
+      <ToolbarButton
+        active={false}
+        tooltip={translator.t('Get Screenshot')}
+        onClick={saveScreenshotToFile}
+      >
         <MdCamera />
       </ToolbarButton>
     );
   }
 
-  if ([MODE_IDLE,
-    MODE_2D_ZOOM_IN,
-    MODE_2D_ZOOM_OUT,
-    MODE_2D_PAN,
-    MODE_WAITING_DRAWING_LINE,
-    MODE_DRAGGING_LINE,
-    MODE_DRAGGING_VERTEX,
-    MODE_DRAGGING_ITEM,
-    MODE_DRAWING_LINE,
-    MODE_DRAWING_HOLE,
-    MODE_DRAWING_ITEM,
-    MODE_DRAGGING_HOLE,
-    MODE_ROTATING_ITEM].includes(mode)) {
-
+  if (
+    [
+      MODE_IDLE,
+      MODE_2D_ZOOM_IN,
+      MODE_2D_ZOOM_OUT,
+      MODE_2D_PAN,
+      MODE_WAITING_DRAWING_LINE,
+      MODE_DRAGGING_LINE,
+      MODE_DRAGGING_VERTEX,
+      MODE_DRAGGING_ITEM,
+      MODE_DRAWING_LINE,
+      MODE_DRAWING_HOLE,
+      MODE_DRAWING_ITEM,
+      MODE_DRAGGING_HOLE,
+      MODE_ROTATING_ITEM
+    ].includes(mode)
+  ) {
     return (
-      <ToolbarButton active={false} tooltip={translator.t('Get Screenshot')} onClick={saveSVGScreenshotToFile}>
+      <ToolbarButton
+        active={false}
+        tooltip={translator.t('Get Screenshot')}
+        onClick={saveSVGScreenshotToFile}
+      >
         <MdCamera />
       </ToolbarButton>
     );

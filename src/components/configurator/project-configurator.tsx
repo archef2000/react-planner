@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import {
-  ContentTitle,
-  ContentContainer,
-  FormLabel,
-  FormBlock,
-  FormNumberInput,
-  FormSubmitButton,
-  CancelButton
-} from '../style/export';
-import ReactPlannerContext from '../../react-planner-context';
+
 import { State } from '../../models';
+import ReactPlannerContext from '../../react-planner-context';
+import {
+  CancelButton,
+  ContentContainer,
+  ContentTitle,
+  FormBlock,
+  FormLabel,
+  FormNumberInput,
+  FormSubmitButton
+} from '../style/export';
 
 interface ProjectConfiguratorProps {
   state: State;
@@ -22,36 +23,42 @@ interface ProjectConfiguratorState {
   dataHeight: number;
 }
 
-export default class ProjectConfigurator extends Component<ProjectConfiguratorProps, ProjectConfiguratorState> {
+export default class ProjectConfigurator extends Component<
+  ProjectConfiguratorProps,
+  ProjectConfiguratorState
+> {
   static contextType = ReactPlannerContext;
   context!: React.ContextType<typeof ReactPlannerContext>;
 
-  constructor(props, context) {
+  constructor(
+    props: ProjectConfiguratorProps,
+    context: typeof ReactPlannerContext
+  ) {
     super(props, context);
 
     const scene = props.state.scene;
 
     this.state = {
-      dataWidth: parseInt(scene.width),
-      dataHeight: parseInt(scene.height),
+      dataWidth: scene.width,
+      dataHeight: scene.height
     };
   }
 
-  onSubmit(event) {
+  onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const { projectActions } = this.context;
 
-    let { dataWidth, dataHeight } = this.state;
-    dataWidth = dataWidth;
-    dataHeight = dataHeight;
+    const { dataWidth, dataHeight } = this.state;
     if (dataWidth <= 100 || dataHeight <= 100) {
       alert('Scene size too small');
     } else {
-      projectActions.setProjectProperties({ width: dataWidth, height: dataHeight });
+      projectActions.setProjectProperties({
+        width: dataWidth,
+        height: dataHeight
+      });
     }
   }
-
 
   render() {
     const { width, height } = this.props;
@@ -62,24 +69,24 @@ export default class ProjectConfigurator extends Component<ProjectConfiguratorPr
       <ContentContainer width={width} height={height}>
         <ContentTitle>{translator.t('Project config')}</ContentTitle>
 
-        <form onSubmit={e => this.onSubmit(e)}>
+        <form onSubmit={(e) => this.onSubmit(e)}>
           <FormBlock>
-            <FormLabel htmlFor='width'>{translator.t('width')}</FormLabel>
+            <FormLabel htmlFor="width">{translator.t('width')}</FormLabel>
             <FormNumberInput
               //id='width'
-              placeholder='width'
+              placeholder="width"
               value={dataWidth}
-              onChange={e => this.setState({ dataWidth: e.target.value })}
+              onChange={(e) => this.setState({ dataWidth: e.target.value })}
             />
           </FormBlock>
 
           <FormBlock>
-            <FormLabel htmlFor='height'>{translator.t('height')}</FormLabel>
+            <FormLabel htmlFor="height">{translator.t('height')}</FormLabel>
             <FormNumberInput
               //id='height'
-              placeholder='height'
+              placeholder="height"
               value={dataHeight}
-              onChange={e => this.setState({ dataHeight: e.target.value })}
+              onChange={(e) => this.setState({ dataHeight: e.target.value })}
             />
           </FormBlock>
 
@@ -87,17 +94,23 @@ export default class ProjectConfigurator extends Component<ProjectConfiguratorPr
             <tbody>
               <tr>
                 <td>
-                  <CancelButton size='large'
-                    onClick={e => projectActions.rollback()}>{translator.t('Cancel')}</CancelButton>
+                  <CancelButton
+                    size="large"
+                    onClick={(e) => projectActions.rollback()}
+                  >
+                    {translator.t('Cancel')}
+                  </CancelButton>
                 </td>
                 <td>
-                  <FormSubmitButton size='large'>{translator.t('Save')}</FormSubmitButton>
+                  <FormSubmitButton size="large">
+                    {translator.t('Save')}
+                  </FormSubmitButton>
                 </td>
               </tr>
             </tbody>
           </table>
         </form>
       </ContentContainer>
-    )
+    );
   }
 }

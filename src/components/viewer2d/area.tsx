@@ -1,8 +1,10 @@
 import React from 'react';
+
+import { polygonArea } from 'd3-polygon';
 import polylabel from 'polylabel';
-import areapolygon from 'area-polygon';
+
 import { CatalogFn, CatalogJson } from '../../catalog/catalog';
-import { Layer, Area as AreaModel, Scene } from '../../models';
+import { Area as AreaModel, Layer, Scene } from '../../models';
 
 const STYLE_TEXT = {
   textAnchor: 'middle',
@@ -12,10 +14,10 @@ const STYLE_TEXT = {
   fontWeight: 'bold',
 
   //http://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting-using-css
-  WebkitTouchCallout: 'none', /* iOS Safari */
-  WebkitUserSelect: 'none', /* Chrome/Safari/Opera */
-  MozUserSelect: 'none', /* Firefox */
-  MsUserSelect: 'none', /* Internet Explorer/Edge */
+  WebkitTouchCallout: 'none' /* iOS Safari */,
+  WebkitUserSelect: 'none' /* Chrome/Safari/Opera */,
+  MozUserSelect: 'none' /* Firefox */,
+  MsUserSelect: 'none' /* Internet Explorer/Edge */,
   userSelect: 'none'
 } as const;
 
@@ -28,22 +30,24 @@ interface AreaProps {
 }
 
 export default function Area({ layer, area, scene, catalog, unit }: AreaProps) {
-
-  const rendered = CatalogFn.getElement(catalog, area.type).render2D(area, layer, scene);
+  const rendered = CatalogFn.getElement(catalog, area.type).render2D(
+    area,
+    layer,
+    scene
+  );
 
   let renderedAreaSize = null;
 
   if (area.selected) {
-    const polygon = area.vertices.map(vertexID => {
+    const polygon: [number, number][] = area.vertices.map((vertexID) => {
       const { x, y } = layer.vertices[vertexID];
       return [x, y];
     });
 
-    let polygonWithHoles = polygon;
+    let polygonWithHoles: number[][] = polygon;
 
-    area.holes.forEach(holeID => {
-
-      const polygonHole = layer.areas[holeID].vertices.map(vertexID => {
+    area.holes.forEach((holeID) => {
+      const polygonHole = layer.areas[holeID].vertices.map((vertexID) => {
         const { x, y } = layer.vertices[vertexID];
         return [x, y];
       });
@@ -52,23 +56,28 @@ export default function Area({ layer, area, scene, catalog, unit }: AreaProps) {
     });
 
     const center = polylabel([polygonWithHoles], 1.0);
-    let areaSize = areapolygon(polygon, false);
+    let areaSize = Math.abs(polygonArea(polygon));
 
     //subtract holes area
-    area.holes.forEach(areaID => {
+    area.holes.forEach((areaID) => {
       const hole = layer.areas[areaID];
-      const holePolygon = hole.vertices.map(vertexID => {
+      const holePolygon: [number, number][] = hole.vertices.map((vertexID) => {
         const { x, y } = layer.vertices[vertexID];
         return [x, y];
       });
-      areaSize -= areapolygon(holePolygon, false);
+      areaSize -= Math.abs(polygonArea(holePolygon));
     });
 
     renderedAreaSize = (
-      <text x="0" y="0" transform={`translate(${center[0]} ${center[1]}) scale(1, -1)`} style={STYLE_TEXT}>
+      <text
+        x="0"
+        y="0"
+        transform={`translate(${center[0]} ${center[1]}) scale(1, -1)`}
+        style={STYLE_TEXT}
+      >
         {(areaSize / 10000).toFixed(2)} m{String.fromCharCode(0xb2)}
       </text>
-    )
+    );
   }
 
   return (
@@ -82,6 +91,5 @@ export default function Area({ layer, area, scene, catalog, unit }: AreaProps) {
       {rendered}
       {renderedAreaSize}
     </g>
-  )
-
+  );
 }

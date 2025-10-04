@@ -1,6 +1,7 @@
-import * as Three from 'three';
 import React from 'react';
+
 import { defineCatalogElement } from '@archef2000/react-planner';
+import * as Three from 'three';
 
 const WIDTH = 80;
 const DEPTH = 100;
@@ -10,6 +11,7 @@ const textureLoader = new Three.TextureLoader();
 const steel = textureLoader.load(require('./steel.jpg'));
 const darkSteel = textureLoader.load(require('./darksteel.jpg'));
 const logo = textureLoader.load(require('./logo.jpg'));
+
 const steelTexture = new Three.MeshLambertMaterial({ map: steel });
 const darkSteelTexture = new Three.MeshLambertMaterial({ map: darkSteel });
 const logoTexture = new Three.MeshLambertMaterial({ map: logo });
@@ -21,22 +23,31 @@ function makeObjectMaxLOD() {
   const kitchen = new Three.Mesh();
 
   //base
-  const body = new Three.Mesh(new Three.BoxGeometry(1, 0.05, 1.5), steelTexture);
+  const body = new Three.Mesh(
+    new Three.BoxGeometry(1, 0.05, 1.5),
+    steelTexture
+  );
   body.position.set(0, 0.15, 0);
   kitchen.add(body);
 
   //foot
   for (let gx = -0.45; gx <= 0.45; gx += 0.9) {
     for (let gz = -0.7125; gz <= 0.7125; gz += 1.425) {
-      const foot = new Three.Mesh(new Three.CylinderGeometry(0.05, 0.05, 0.05, 4), steelTexture)
+      const foot = new Three.Mesh(
+        new Three.CylinderGeometry(0.05, 0.05, 0.05, 4),
+        steelTexture
+      );
       foot.position.set(gx, -0.05, gz);
       foot.rotation.y = 0.25 * Math.PI;
-      body.add(foot)
+      body.add(foot);
     }
   }
 
   //back
-  const back = new Three.Mesh(new Three.BoxGeometry(0.05, 1, 1.5), steelTexture);
+  const back = new Three.Mesh(
+    new Three.BoxGeometry(0.05, 1, 1.5),
+    steelTexture
+  );
   back.position.set(0.475, 0.525, 0);
   body.add(back);
 
@@ -50,7 +61,7 @@ function makeObjectMaxLOD() {
   body.add(side2);
 
   //top
-  const top = new Three.Mesh(new Three.BoxGeometry(1, 0.20, 1.5), steelTexture);
+  const top = new Three.Mesh(new Three.BoxGeometry(1, 0.2, 1.5), steelTexture);
   top.position.set(0, 1.1, 0);
   body.add(top);
 
@@ -61,92 +72,132 @@ function makeObjectMaxLOD() {
   body.add(logo);
 
   //front
-  const front = new Three.Mesh(new Three.BoxGeometry(0.05, 0.99, 1.4), steelTexture);
+  const front = new Three.Mesh(
+    new Three.BoxGeometry(0.05, 0.99, 1.4),
+    steelTexture
+  );
   front.position.set(-0.47, 0.525, 0);
   body.add(front);
 
   //oven
-  const oven = new Three.Mesh(new Three.BoxGeometry(0.05, 0.9, 1.3), steelTexture);
+  const oven = new Three.Mesh(
+    new Three.BoxGeometry(0.05, 0.9, 1.3),
+    steelTexture
+  );
   oven.position.set(-0.53, 0.525, 0);
   body.add(oven);
 
   //handle
-  const handle1 = new Three.Mesh(new Three.CylinderGeometry(0.02, 0.02, 1), darkSteelTexture);
+  const handle1 = new Three.Mesh(
+    new Three.CylinderGeometry(0.02, 0.02, 1),
+    darkSteelTexture
+  );
   handle1.position.set(-0.6, 0.85, 0);
   handle1.rotation.x = 0.5 * Math.PI;
   body.add(handle1);
 
-  const handle2 = new Three.Mesh(new Three.CylinderGeometry(0.02, 0.02, 0.06), darkSteelTexture);
+  const handle2 = new Three.Mesh(
+    new Three.CylinderGeometry(0.02, 0.02, 0.06),
+    darkSteelTexture
+  );
   handle2.position.set(-0.56, 0.85, -0.4);
   handle2.rotation.z = 0.5 * Math.PI;
   body.add(handle2);
 
-  const handle3 = new Three.Mesh(new Three.CylinderGeometry(0.02, 0.02, 0.06), darkSteelTexture);
+  const handle3 = new Three.Mesh(
+    new Three.CylinderGeometry(0.02, 0.02, 0.06),
+    darkSteelTexture
+  );
   handle3.position.set(-0.56, 0.85, 0.4);
   handle3.rotation.z = 0.5 * Math.PI;
   body.add(handle3);
 
   //knob
   for (let gz = -0.6; gz <= 0.65; gz += 0.3) {
-    const knob = new Three.Mesh(new Three.CylinderGeometry(0.03, 0.03, 0.02, 32), darkSteelTexture);
+    const knob = new Three.Mesh(
+      new Three.CylinderGeometry(0.03, 0.03, 0.02, 32),
+      darkSteelTexture
+    );
     knob.position.set(-0.51, 1.05, gz);
     knob.rotation.z = 0.5 * Math.PI;
     body.add(knob);
 
-    const knob_p2 = new Three.Mesh(new Three.BoxGeometry(0.05, 0.03, 0.01), darkSteelTexture);
+    const knob_p2 = new Three.Mesh(
+      new Three.BoxGeometry(0.05, 0.03, 0.01),
+      darkSteelTexture
+    );
     knob_p2.position.set(0, 0.02, 0);
-    knob.add(knob_p2)
+    knob.add(knob_p2);
   }
 
   //fire
   for (let gx = -0.22; gx <= 0.22; gx += 0.44) {
     for (let gz = -0.45; gz <= 0.45; gz += 0.9) {
-      const fire = new Three.Mesh(new Three.CylinderGeometry(0.08, 0.1, 0.02, 32), darkSteelTexture)
+      const fire = new Three.Mesh(
+        new Three.CylinderGeometry(0.08, 0.1, 0.02, 32),
+        darkSteelTexture
+      );
       fire.position.set(gx, 1.21, gz);
-      body.add(fire)
+      body.add(fire);
     }
   }
 
   //central fire
-  const centralFire = new Three.Mesh(new Three.CylinderGeometry(0.1, 0.12, 0.02, 32), darkSteelTexture);
+  const centralFire = new Three.Mesh(
+    new Three.CylinderGeometry(0.1, 0.12, 0.02, 32),
+    darkSteelTexture
+  );
   centralFire.position.set(0, 1.21, 0);
   body.add(centralFire);
-
 
   //long side grid
   for (let gx = -0.45; gx <= 0.45; gx += 0.45) {
     if (gx !== 0) {
-      const longSideGrid = new Three.Mesh(new Three.BoxGeometry(0.03, 0.05, 1.38), darkSteelTexture);
+      const longSideGrid = new Three.Mesh(
+        new Three.BoxGeometry(0.03, 0.05, 1.38),
+        darkSteelTexture
+      );
       longSideGrid.position.set(gx, 1.21, 0);
-      body.add(longSideGrid)
-    }
-    else {
-      for (let gz = -0.46; gz <= 0.68; gz += 0.90) {
-        const longSideGrid2 = new Three.Mesh(new Three.BoxGeometry(0.03, 0.05, 0.46), darkSteelTexture);
+      body.add(longSideGrid);
+    } else {
+      for (let gz = -0.46; gz <= 0.68; gz += 0.9) {
+        const longSideGrid2 = new Three.Mesh(
+          new Three.BoxGeometry(0.03, 0.05, 0.46),
+          darkSteelTexture
+        );
         longSideGrid2.position.set(gx, 1.21, gz);
-        body.add(longSideGrid2)
+        body.add(longSideGrid2);
       }
     }
   }
 
   //short side grid
   for (let gz = -0.675; gz <= 0.675; gz += 0.45) {
-    const shortSideGrid = new Three.Mesh(new Three.BoxGeometry(0.9, 0.05, 0.03), darkSteelTexture);
+    const shortSideGrid = new Three.Mesh(
+      new Three.BoxGeometry(0.9, 0.05, 0.03),
+      darkSteelTexture
+    );
     shortSideGrid.position.set(0, 1.21, gz);
-    body.add(shortSideGrid)
+    body.add(shortSideGrid);
   }
 
   //long side grid central
   for (let gx = -0.22; gx <= 0.22; gx += 0.44) {
-    for (let gz = -0.59; gz <= 0.68; gz += 0.90) {
-      const lsgc1 = new Three.Mesh(new Three.BoxGeometry(0.03, 0.01, 0.2), darkSteelTexture);
+    for (let gz = -0.59; gz <= 0.68; gz += 0.9) {
+      const lsgc1 = new Three.Mesh(
+        new Three.BoxGeometry(0.03, 0.01, 0.2),
+        darkSteelTexture
+      );
       lsgc1.position.set(gx, 1.24, gz);
-      body.add(lsgc1)
+      body.add(lsgc1);
     }
-    for (let gz = 0.59; gz >= -0.68; gz -= 0.90) {
-      const lsgc2 = new Three.Mesh(new Three.BoxGeometry(0.03, 0.01, 0.2), darkSteelTexture);
+    for (let gz = 0.59; gz >= -0.68; gz -= 0.9) {
+      const lsgc2 = new Three.Mesh(
+        new Three.BoxGeometry(0.03, 0.01, 0.2),
+        darkSteelTexture
+      );
       lsgc2.position.set(gx, 1.24, gz);
-      body.add(lsgc2)
+      body.add(lsgc2);
     }
   }
 
@@ -154,61 +205,77 @@ function makeObjectMaxLOD() {
   for (let gx = -0.365; gx <= 0.345; gx += 0.7) {
     for (let gz = -0.45; gz <= 0.45; gz += 0.45) {
       if (gz !== 0) {
-        const ssgc1 = new Three.Mesh(new Three.BoxGeometry(0.2, 0.02, 0.03), darkSteelTexture);
-        if (gx < 0)
-          ssgc1.position.set(gx, 1.24, gz);
-        else
-          ssgc1.position.set(gx + 0.03, 1.24, gz);
-        body.add(ssgc1)
-      }
-      else {
-        const ssgc2 = new Three.Mesh(new Three.BoxGeometry(0.4, 0.02, 0.03), darkSteelTexture);
-        if (gx < 0)
-          ssgc2.position.set(gx + 0.1, 1.24, gz);
-        else
-          ssgc2.position.set(gx - 0.07, 1.24, gz);
-        body.add(ssgc2)
+        const ssgc1 = new Three.Mesh(
+          new Three.BoxGeometry(0.2, 0.02, 0.03),
+          darkSteelTexture
+        );
+        if (gx < 0) ssgc1.position.set(gx, 1.24, gz);
+        else ssgc1.position.set(gx + 0.03, 1.24, gz);
+        body.add(ssgc1);
+      } else {
+        const ssgc2 = new Three.Mesh(
+          new Three.BoxGeometry(0.4, 0.02, 0.03),
+          darkSteelTexture
+        );
+        if (gx < 0) ssgc2.position.set(gx + 0.1, 1.24, gz);
+        else ssgc2.position.set(gx - 0.07, 1.24, gz);
+        body.add(ssgc2);
       }
     }
   }
 
   //long side grid inside
   for (let gz = -0.45; gz <= 0.45; gz += 0.9) {
-    const lsgi = new Three.Mesh(new Three.BoxGeometry(0.35, 0.02, 0.03), darkSteelTexture);
+    const lsgi = new Three.Mesh(
+      new Three.BoxGeometry(0.35, 0.02, 0.03),
+      darkSteelTexture
+    );
     lsgi.position.set(0, 1.24, gz);
-    body.add(lsgi)
+    body.add(lsgi);
   }
 
   //central peace
   for (let gz = -0.14; gz <= 0.14; gz += 0.28) {
-    const cp = new Three.Mesh(new Three.BoxGeometry(0.03, 0.02, 0.2), darkSteelTexture);
+    const cp = new Three.Mesh(
+      new Three.BoxGeometry(0.03, 0.02, 0.2),
+      darkSteelTexture
+    );
     cp.position.set(0, 1.25, gz);
-    body.add(cp)
+    body.add(cp);
   }
 
-  return kitchen
+  return kitchen;
 }
 
 function makeObjectMinLOD() {
   const kitchen = new Three.Mesh();
 
   //base
-  const body = new Three.Mesh(new Three.BoxGeometry(1, 0.05, 1.5), steelTexture);
+  const body = new Three.Mesh(
+    new Three.BoxGeometry(1, 0.05, 1.5),
+    steelTexture
+  );
   body.position.set(0, 0.15, 0);
   kitchen.add(body);
 
   //foot
   for (let gx = -0.45; gx <= 0.45; gx += 0.9) {
     for (let gz = -0.7125; gz <= 0.7125; gz += 1.425) {
-      const foot = new Three.Mesh(new Three.CylinderGeometry(0.05, 0.05, 0.05, 4), steelTexture)
+      const foot = new Three.Mesh(
+        new Three.CylinderGeometry(0.05, 0.05, 0.05, 4),
+        steelTexture
+      );
       foot.position.set(gx, -0.05, gz);
       foot.rotation.y = 0.25 * Math.PI;
-      body.add(foot)
+      body.add(foot);
     }
   }
 
   //back
-  const back = new Three.Mesh(new Three.BoxGeometry(0.05, 1, 1.5), steelTexture);
+  const back = new Three.Mesh(
+    new Three.BoxGeometry(0.05, 1, 1.5),
+    steelTexture
+  );
   back.position.set(0.475, 0.525, 0);
   body.add(back);
 
@@ -222,7 +289,7 @@ function makeObjectMinLOD() {
   body.add(side2);
 
   //top
-  const top = new Three.Mesh(new Three.BoxGeometry(1, 0.20, 1.5), steelTexture);
+  const top = new Three.Mesh(new Three.BoxGeometry(1, 0.2, 1.5), steelTexture);
   top.position.set(0, 1.1, 0);
   body.add(top);
 
@@ -233,90 +300,132 @@ function makeObjectMinLOD() {
   body.add(logo);
 
   //front
-  const front = new Three.Mesh(new Three.BoxGeometry(0.05, 0.99, 1.4), steelTexture);
+  const front = new Three.Mesh(
+    new Three.BoxGeometry(0.05, 0.99, 1.4),
+    steelTexture
+  );
   front.position.set(-0.47, 0.525, 0);
   body.add(front);
 
   //oven
-  const oven = new Three.Mesh(new Three.BoxGeometry(0.05, 0.9, 1.3), steelTexture);
+  const oven = new Three.Mesh(
+    new Three.BoxGeometry(0.05, 0.9, 1.3),
+    steelTexture
+  );
   oven.position.set(-0.53, 0.525, 0);
   body.add(oven);
 
   //handle
-  const handle1 = new Three.Mesh(new Three.CylinderGeometry(0.02, 0.02, 1), darkSteelTexture);
+  const handle1 = new Three.Mesh(
+    new Three.CylinderGeometry(0.02, 0.02, 1),
+    darkSteelTexture
+  );
   handle1.position.set(-0.6, 0.85, 0);
   handle1.rotation.x = 0.5 * Math.PI;
   body.add(handle1);
 
-  const handle2 = new Three.Mesh(new Three.CylinderGeometry(0.02, 0.02, 0.06), darkSteelTexture);
+  const handle2 = new Three.Mesh(
+    new Three.CylinderGeometry(0.02, 0.02, 0.06),
+    darkSteelTexture
+  );
   handle2.position.set(-0.56, 0.85, -0.4);
   handle2.rotation.z = 0.5 * Math.PI;
   body.add(handle2);
 
-  const handle3 = new Three.Mesh(new Three.CylinderGeometry(0.02, 0.02, 0.06), darkSteelTexture);
+  const handle3 = new Three.Mesh(
+    new Three.CylinderGeometry(0.02, 0.02, 0.06),
+    darkSteelTexture
+  );
   handle3.position.set(-0.56, 0.85, 0.4);
   handle3.rotation.z = 0.5 * Math.PI;
   body.add(handle3);
 
   //knob
   for (let gz = -0.6; gz <= 0.65; gz += 0.3) {
-    const knob = new Three.Mesh(new Three.CylinderGeometry(0.03, 0.03, 0.02, 32), darkSteelTexture);
+    const knob = new Three.Mesh(
+      new Three.CylinderGeometry(0.03, 0.03, 0.02, 32),
+      darkSteelTexture
+    );
     knob.position.set(-0.51, 1.05, gz);
     knob.rotation.z = 0.5 * Math.PI;
     body.add(knob);
 
-    const knob_p2 = new Three.Mesh(new Three.BoxGeometry(0.05, 0.03, 0.01), darkSteelTexture);
+    const knob_p2 = new Three.Mesh(
+      new Three.BoxGeometry(0.05, 0.03, 0.01),
+      darkSteelTexture
+    );
     knob_p2.position.set(0, 0.02, 0);
-    knob.add(knob_p2)
+    knob.add(knob_p2);
   }
 
   //fire
   for (let gx = -0.22; gx <= 0.22; gx += 0.44) {
     for (let gz = -0.45; gz <= 0.45; gz += 0.9) {
-      const fire = new Three.Mesh(new Three.CylinderGeometry(0.08, 0.1, 0.02, 32), darkSteelTexture)
+      const fire = new Three.Mesh(
+        new Three.CylinderGeometry(0.08, 0.1, 0.02, 32),
+        darkSteelTexture
+      );
       fire.position.set(gx, 1.21, gz);
-      body.add(fire)
+      body.add(fire);
     }
   }
 
   //central fire
-  const centralFire = new Three.Mesh(new Three.CylinderGeometry(0.1, 0.12, 0.02, 32), darkSteelTexture);
+  const centralFire = new Three.Mesh(
+    new Three.CylinderGeometry(0.1, 0.12, 0.02, 32),
+    darkSteelTexture
+  );
   centralFire.position.set(0, 1.21, 0);
   body.add(centralFire);
 
   //long side grid
   for (let gx = -0.45; gx <= 0.45; gx += 0.45) {
     if (gx !== 0) {
-      const longSideGrid = new Three.Mesh(new Three.BoxGeometry(0.03, 0.05, 1.38), darkSteelTexture);
+      const longSideGrid = new Three.Mesh(
+        new Three.BoxGeometry(0.03, 0.05, 1.38),
+        darkSteelTexture
+      );
       longSideGrid.position.set(gx, 1.21, 0);
-      body.add(longSideGrid)
+      body.add(longSideGrid);
     } else {
-      for (let gz = -0.46; gz <= 0.68; gz += 0.90) {
-        const longSideGrid2 = new Three.Mesh(new Three.BoxGeometry(0.03, 0.05, 0.46), darkSteelTexture);
+      for (let gz = -0.46; gz <= 0.68; gz += 0.9) {
+        const longSideGrid2 = new Three.Mesh(
+          new Three.BoxGeometry(0.03, 0.05, 0.46),
+          darkSteelTexture
+        );
         longSideGrid2.position.set(gx, 1.21, gz);
-        body.add(longSideGrid2)
+        body.add(longSideGrid2);
       }
     }
   }
 
   //short side grid
   for (let gz = -0.675; gz <= 0.675; gz += 0.45) {
-    const shortSideGrid = new Three.Mesh(new Three.BoxGeometry(0.9, 0.05, 0.03), darkSteelTexture);
+    const shortSideGrid = new Three.Mesh(
+      new Three.BoxGeometry(0.9, 0.05, 0.03),
+      darkSteelTexture
+    );
     shortSideGrid.position.set(0, 1.21, gz);
-    body.add(shortSideGrid)
+    body.add(shortSideGrid);
   }
 
   //long side grid central
   for (let gx = -0.22; gx <= 0.22; gx += 0.44) {
-    for (let gz = -0.59; gz <= 0.68; gz += 0.90) {
-      const lsgc1 = new Three.Mesh(new Three.BoxGeometry(0.03, 0.01, 0.2), darkSteelTexture);
+    for (let gz = -0.59; gz <= 0.68; gz += 0.9) {
+      const lsgc1 = new Three.Mesh(
+        new Three.BoxGeometry(0.03, 0.01, 0.2),
+        darkSteelTexture
+      );
       lsgc1.position.set(gx, 1.24, gz);
-      body.add(lsgc1)
+      body.add(lsgc1);
     }
-    for (let gz = 0.59; gz >= -0.68; gz -= 0.90) {
-      const lsgc2 = new Three.Mesh(new Three.BoxGeometry(0.03, 0.01, 0.2), darkSteelTexture);
+    for (let gz = 0.59; gz >= -0.68; gz -= 0.9) {
+      const lsgc2 = new Three.Mesh(
+        new Three.BoxGeometry(0.03, 0.01, 0.2),
+        darkSteelTexture
+      );
       lsgc2.position.set(gx, 1.24, gz);
-      body.add(lsgc2)
+      body.add(lsgc2);
     }
   }
 
@@ -324,56 +433,63 @@ function makeObjectMinLOD() {
   for (let gx = -0.365; gx <= 0.345; gx += 0.7) {
     for (let gz = -0.45; gz <= 0.45; gz += 0.45) {
       if (gz !== 0) {
-        const ssgc1 = new Three.Mesh(new Three.BoxGeometry(0.2, 0.02, 0.03), darkSteelTexture);
-        if (gx < 0)
-          ssgc1.position.set(gx, 1.24, gz);
-        else
-          ssgc1.position.set(gx + 0.03, 1.24, gz);
-        body.add(ssgc1)
-      }
-      else {
-        const ssgc2 = new Three.Mesh(new Three.BoxGeometry(0.4, 0.02, 0.03), darkSteelTexture);
-        if (gx < 0)
-          ssgc2.position.set(gx + 0.1, 1.24, gz);
-        else
-          ssgc2.position.set(gx - 0.07, 1.24, gz);
-        body.add(ssgc2)
+        const ssgc1 = new Three.Mesh(
+          new Three.BoxGeometry(0.2, 0.02, 0.03),
+          darkSteelTexture
+        );
+        if (gx < 0) ssgc1.position.set(gx, 1.24, gz);
+        else ssgc1.position.set(gx + 0.03, 1.24, gz);
+        body.add(ssgc1);
+      } else {
+        const ssgc2 = new Three.Mesh(
+          new Three.BoxGeometry(0.4, 0.02, 0.03),
+          darkSteelTexture
+        );
+        if (gx < 0) ssgc2.position.set(gx + 0.1, 1.24, gz);
+        else ssgc2.position.set(gx - 0.07, 1.24, gz);
+        body.add(ssgc2);
       }
     }
   }
 
   //long side grid inside
   for (let gz = -0.45; gz <= 0.45; gz += 0.9) {
-    const lsgi = new Three.Mesh(new Three.BoxGeometry(0.35, 0.02, 0.03), darkSteelTexture);
+    const lsgi = new Three.Mesh(
+      new Three.BoxGeometry(0.35, 0.02, 0.03),
+      darkSteelTexture
+    );
     lsgi.position.set(0, 1.24, gz);
-    body.add(lsgi)
+    body.add(lsgi);
   }
 
   //central peace
   for (let gz = -0.14; gz <= 0.14; gz += 0.28) {
-    const cp = new Three.Mesh(new Three.BoxGeometry(0.03, 0.02, 0.2), darkSteelTexture);
+    const cp = new Three.Mesh(
+      new Three.BoxGeometry(0.03, 0.02, 0.2),
+      darkSteelTexture
+    );
     cp.position.set(0, 1.25, gz);
-    body.add(cp)
+    body.add(cp);
   }
 
-  return kitchen
+  return kitchen;
 }
 
 export default defineCatalogElement({
-  name: "kitchen",
-  prototype: "items",
+  name: 'kitchen',
+  prototype: 'items',
 
   info: {
     tag: ['furnishings', 'metal'],
-    title: "kitchen",
-    description: "kitchen",
+    title: 'kitchen',
+    description: 'kitchen',
     image: require('./kitchen.png')
   },
 
   properties: {
     altitude: {
-      label: "altitude",
-      type: "length-measure",
+      label: 'altitude',
+      type: 'length-measure',
       defaultValue: {
         length: 0
       }
@@ -384,21 +500,35 @@ export default defineCatalogElement({
     const angle = element.rotation + 90;
 
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+    if (Math.sin((angle * Math.PI) / 180) < 0) {
       textRotation = 180;
     }
 
     return (
       <g transform={`translate(${-WIDTH / 2},${-DEPTH / 2})`}>
-        <rect key="1" x="0" y="0" width={WIDTH} height={DEPTH}
-          style={{ stroke: element.selected ? '#0096fd' : '#000', strokeWidth: "2px", fill: "#84e1ce" }} />
-        <text key="2" x="0" y="0"
+        <rect
+          key="1"
+          x="0"
+          y="0"
+          width={WIDTH}
+          height={DEPTH}
+          style={{
+            stroke: element.selected ? '#0096fd' : '#000',
+            strokeWidth: '2px',
+            fill: '#84e1ce'
+          }}
+        />
+        <text
+          key="2"
+          x="0"
+          y="0"
           transform={`translate(${WIDTH / 2}, ${DEPTH / 2}) scale(1,-1) rotate(${textRotation})`}
-          style={{ textAnchor: "middle", fontSize: "11px" }}>
+          style={{ textAnchor: 'middle', fontSize: '11px' }}
+        >
           {element.type}
         </text>
       </g>
-    )
+    );
   },
 
   async render3D(element, layer, scene) {
@@ -417,7 +547,6 @@ export default defineCatalogElement({
 
     kitchenMaxLOD.position.y += newAltitude;
     kitchenMaxLOD.scale.set(WIDTH / deltaX, HEIGHT / deltaY, DEPTH / deltaZ);
-
 
     /************ lod min ****************/
 
