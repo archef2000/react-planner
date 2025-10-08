@@ -1,19 +1,22 @@
-import path from "path";
+import path from 'path';
 import { fileURLToPath } from 'url';
 
-import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin";
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import webpack from "webpack";
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import webpack from 'webpack';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PAGE_TITLE = 'React Planner';
 
 export default (env, self) => {
-  const isProduction = self.hasOwnProperty('mode') ? (self.mode === 'production') : true;
+  const isProduction = self.hasOwnProperty('mode')
+    ? self.mode === 'production'
+    : true;
   const port = self.hasOwnProperty('port') ? self.port : 8080;
 
-  if (isProduction) console.info('Webpack: Production mode'); else console.info('Webpack: Development mode');
+  if (isProduction) console.info('Webpack: Production mode');
+  else console.info('Webpack: Development mode');
 
   const config = {
     context: path.resolve(__dirname),
@@ -22,12 +25,20 @@ export default (env, self) => {
     },
     output: {
       path: path.join(__dirname, 'dist'),
-      filename: isProduction ? '[contenthash].[name].js' : (pathData) => {
-        return pathData.chunk && pathData.chunk.name === 'vendor' ? 'vendor.[contenthash].js' : '[name].js';
-      },
-      chunkFilename: isProduction ? '[contenthash].[name].js' : (pathData) => {
-        return pathData.chunk && pathData.chunk.name === 'vendor' ? 'vendor.[contenthash].js' : '[name].js';
-      }
+      filename: isProduction
+        ? '[contenthash].[name].js'
+        : (pathData) => {
+            return pathData.chunk && pathData.chunk.name === 'vendor'
+              ? 'vendor.[contenthash].js'
+              : '[name].js';
+          },
+      chunkFilename: isProduction
+        ? '[contenthash].[name].js'
+        : (pathData) => {
+            return pathData.chunk && pathData.chunk.name === 'vendor'
+              ? 'vendor.[contenthash].js'
+              : '[name].js';
+          }
     },
     performance: {
       hints: isProduction ? 'warning' : false
@@ -42,7 +53,7 @@ export default (env, self) => {
       hot: true,
       client: {
         webSocketURL: 'https://9000.code.ntin.me/ws',
-        overlay: false,
+        overlay: false
       },
       // Add strong caching for binary/image assets (file-loader emitted) so they persist across reloads in development.
       // We also add hashed filenames below so that when content changes the URL changes and the browser fetches the new file.
@@ -50,10 +61,16 @@ export default (env, self) => {
         if (devServer && devServer.app) {
           devServer.app.use((req, res, next) => {
             if (/\.(?:png|jpe?g|gif|obj|mtl)$/i.test(req.path)) {
-              res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+              res.setHeader(
+                'Cache-Control',
+                'public, max-age=31536000, immutable'
+              );
             } else if (/vendor\.[0-9a-fA-F]{8,}\.js$/.test(req.path)) {
               // Hashed vendor bundle: safe to cache for a long time.
-              res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+              res.setHeader(
+                'Cache-Control',
+                'public, max-age=31536000, immutable'
+              );
             } else if (/index\.html$/.test(req.path)) {
               // Ensure HTML is always revalidated
               res.setHeader('Cache-Control', 'no-cache');
@@ -69,8 +86,11 @@ export default (env, self) => {
       alias: {
         '@archef2000/react-planner': path.join(__dirname, '../src/index'),
         'react-planner': path.join(__dirname, '../src/index'),
-        'src': path.join(__dirname, '../src'),
-        'three-nodes': path.resolve(__dirname, '../../node_modules/three/examples/jsm/nodes')
+        src: path.join(__dirname, '../src'),
+        'three-nodes': path.resolve(
+          __dirname,
+          '../../node_modules/three/examples/jsm/nodes'
+        )
       }
     },
     cache: isProduction ? false : { type: 'filesystem' },
@@ -81,9 +101,9 @@ export default (env, self) => {
           enforce: 'pre',
           use: [
             {
-              loader: 'source-map-loader',
+              loader: 'source-map-loader'
             }
-          ],
+          ]
         },
         {
           test: /\.(ts|tsx|js|jsx)$/,
@@ -94,37 +114,36 @@ export default (env, self) => {
               presets: ['@babel/preset-env', '@babel/preset-react'],
               sourceMaps: true,
               cacheDirectory: true,
-              plugins: isProduction ? [] : ['react-refresh/babel'],
+              plugins: isProduction ? [] : ['react-refresh/babel']
             }
           }
         },
         {
           test: /\.(jpe?g|jpg|png|gif|mtl|obj)$/i,
-          use: [{
-            loader: 'file-loader',
-            options: {
-              esModule: false,
-              hash: 'sha512',
-              digest: 'hex',
-              name: '[path][name].[ext]',
-              context: 'demo/src'
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                esModule: false,
+                hash: 'sha512',
+                digest: 'hex',
+                name: '[path][name].[ext]',
+                context: 'demo/src'
+              }
             }
-          }]
+          ]
         },
         {
           test: /\.module\.css$/,
           use: [
             { loader: 'style-loader' },
-            { loader: 'css-loader', options: { modules: true } },
+            { loader: 'css-loader', options: { modules: true } }
           ]
         },
         {
           test: /\.css$/,
           exclude: /\.module\.css$/,
-          use: [
-            { loader: 'style-loader' },
-            { loader: 'css-loader' }
-          ]
+          use: [{ loader: 'style-loader' }, { loader: 'css-loader' }]
         }
       ]
     },
@@ -135,7 +154,7 @@ export default (env, self) => {
         filename: 'index.html',
         inject: 'body',
         production: isProduction
-      }),
+      })
     ],
     optimization: {
       minimize: isProduction,
@@ -156,11 +175,13 @@ export default (env, self) => {
   };
 
   if (isProduction) {
-    config.plugins.push(new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
-    }));
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env': {
+          NODE_ENV: JSON.stringify('production')
+        }
+      })
+    );
   } else {
     config.plugins.push(new ReactRefreshWebpackPlugin({ overlay: false }));
   }

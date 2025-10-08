@@ -151,5 +151,5 @@ if ((module as any)?.hot) {
       root.unmount();
       delete globalAny[ROOT_KEY];
     });
-  } catch { }
+  } catch {}
 }

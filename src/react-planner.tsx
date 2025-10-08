@@ -22,7 +22,6 @@ import FooterBar from './components/footerbar/footerbar';
 import Sidebar from './components/sidebar/sidebar';
 import Toolbar from './components/toolbar/toolbar';
 import ReactPlannerContext from './react-planner-context';
-import './styles/export';
 import Translator from './translator/translator';
 import { ReactPlannerPlugin, ReactPlannerStateExtractor } from './types';
 import { objectsMap } from './utils/objects-utils';
