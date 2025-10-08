@@ -27,7 +27,7 @@ const footerBarStyle = {
   fontSize: '12px',
   color: SharedStyle.COLORS.white,
   backgroundColor: SharedStyle.SECONDARY_COLOR.alt,
-  padding: '3px 1em',
+  padding: '3px 10px',
   margin: 0,
   boxSizing: 'border-box',
   cursor: 'default',
@@ -39,7 +39,7 @@ export const leftTextStyle = {
   position: 'relative',
   borderRight: '1px solid #FFF',
   float: 'left',
-  padding: '0 1em',
+  padding: '0 1px',
   display: 'inline-block'
 } as const;
 
@@ -47,7 +47,7 @@ export const rightTextStyle = {
   position: 'relative',
   borderLeft: '1px solid #FFF',
   float: 'right',
-  padding: '0 1em',
+  padding: '0 5px',
   display: 'inline-block'
 } as const;
 
@@ -72,7 +72,6 @@ export default function FooterBar(props: FooterBarProps) {
   const [state] = useState({});
   const {
     state: globalState,
-    width,
     height,
     softwareSignature,
     footerbarComponents
@@ -93,9 +92,9 @@ export default function FooterBar(props: FooterBarProps) {
     : {};
   const errorIconStyle = errors.length
     ? {
-      transform: 'rotate(45deg)',
-      color: SharedStyle.MATERIAL_COLORS[500].red
-    }
+        transform: 'rotate(45deg)',
+        color: SharedStyle.MATERIAL_COLORS[500].red
+      }
     : { transform: 'rotate(45deg)' };
 
   const warnings = globalState.warnings;
@@ -114,7 +113,7 @@ export default function FooterBar(props: FooterBarProps) {
   };
 
   return (
-    <div style={{ ...footerBarStyle, width, height }}>
+    <div style={{ ...footerBarStyle, width: '100%', height }}>
       <If condition={MODE_SNAPPING.includes(mode)} style={{}}>
         <div style={leftTextStyle}>
           <div title={translator.t('Mouse X Coordinate')} style={coordStyle}>
@@ -125,7 +124,10 @@ export default function FooterBar(props: FooterBarProps) {
           </div>
         </div>
 
-        <div style={leftTextStyle} title={translator.t('Scene Zoom Level')}>
+        <div
+          style={{ ...leftTextStyle, padding: '0px 5px' }}
+          title={translator.t('Scene Zoom Level')}
+        >
           Zoom: {zoom.toFixed(3)}X
         </div>
 
@@ -194,7 +196,7 @@ export default function FooterBar(props: FooterBarProps) {
 
       {softwareSignature ? (
         <div
-          style={rightTextStyle}
+          style={{ ...rightTextStyle, paddingRight: '0px' }}
           title={
             softwareSignature +
             (softwareSignature.includes('React-Planner')

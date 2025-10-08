@@ -33,9 +33,10 @@ const toolbarW = 50;
 const sidebarW = 300;
 const footerBarH = 20;
 
-const wrapperStyle = {
+const wrapperStyle: React.CSSProperties = {
   display: 'flex',
-  flexFlow: 'row nowrap'
+  flexFlow: 'row nowrap',
+  position: 'relative'
 };
 
 interface ReactPlannerOptionalProps {

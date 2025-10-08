@@ -9,7 +9,8 @@ import {
   TOOL_PAN,
   TOOL_ZOOM_IN,
   TOOL_ZOOM_OUT,
-  ViewerMouseEvent
+  ViewerMouseEvent,
+  ViewerTouchEvent
 } from 'react-svg-pan-zoom';
 
 import * as constants from '../../constants';
@@ -137,6 +138,12 @@ interface Viewer2DProps {
   height: number;
 }
 
+function isViewerMouseEvent<T>(
+  ev: ViewerMouseEvent<T> | ViewerTouchEvent<T>
+): ev is ViewerMouseEvent<T> {
+  return ev.constructor.name === 'ViewerMouseEvent';
+}
+
 export default function Viewer2D({ state, width, height }: Viewer2DProps) {
   const {
     viewer2DActions,
@@ -153,11 +160,26 @@ export default function Viewer2D({ state, width, height }: Viewer2DProps) {
 
   const layerID = scene.selectedLayer as string;
 
-  const mapCursorPosition = <T,>({ x, y }: ViewerMouseEvent<T>) => {
-    return { x, y: -y + scene.height };
+  const mapCursorPosition = <T,>(
+    viewerEvent: ViewerMouseEvent<T> | ViewerTouchEvent<T>
+  ) => {
+    if (isViewerMouseEvent(viewerEvent)) {
+      const { x, y } = viewerEvent;
+      return { x, y: -y + scene.height };
+    } else {
+      const points = viewerEvent.changedPoints;
+      if (points.length == 0) {
+        return { x: 0, y: 0 };
+      }
+      const { x, y } = points[0];
+      const height = scene.height;
+      return { x, y: -y + height };
+    }
   };
 
-  const onMouseMove = <T,>(viewerEvent: ViewerMouseEvent<T>) => {
+  const onMouseMove = <T,>(
+    viewerEvent: ViewerMouseEvent<T> | ViewerTouchEvent<T>
+  ) => {
     //workaround that allow imageful component to work
     const evt = new Event('mousemove-planner-event');
     (evt as any).viewerEvent = viewerEvent;
@@ -204,7 +226,9 @@ export default function Viewer2D({ state, width, height }: Viewer2DProps) {
     (viewerEvent as any).originalEvent.stopPropagation();
   };
 
-  const onMouseDown = <T,>(viewerEvent: ViewerMouseEvent<T>) => {
+  const onMouseDown = <T,>(
+    viewerEvent: ViewerMouseEvent<T> | ViewerTouchEvent<T>
+  ) => {
     const event = viewerEvent.originalEvent;
 
     //workaround that allow imageful component to work
@@ -272,7 +296,9 @@ export default function Viewer2D({ state, width, height }: Viewer2DProps) {
     event.stopPropagation();
   };
 
-  const onMouseUp = <T,>(viewerEvent: ViewerMouseEvent<T>) => {
+  const onMouseUp = <T,>(
+    viewerEvent: ViewerMouseEvent<T> | ViewerTouchEvent<T>
+  ) => {
     const event = viewerEvent.originalEvent;
 
     const evt = new Event('mouseup-planner-event');
@@ -285,28 +311,28 @@ export default function Viewer2D({ state, width, height }: Viewer2DProps) {
       case constants.MODE_IDLE:
         const elementData = extractElementData(event.target);
 
-        if (!elementData || elementData.selected) return;
+        if (elementData && elementData.selected) return;
 
-        switch (elementData ? elementData.prototype : 'none') {
-          case 'areas':
-            areaActions.selectArea(elementData.layer, elementData.id);
-            break;
+        if (elementData) {
+          switch (elementData.prototype) {
+            case 'areas':
+              areaActions.selectArea(elementData.layer, elementData.id);
+              break;
 
-          case 'lines':
-            linesActions.selectLine(elementData.layer, elementData.id);
-            break;
+            case 'lines':
+              linesActions.selectLine(elementData.layer, elementData.id);
+              break;
 
-          case 'holes':
-            holesActions.selectHole(elementData.layer, elementData.id);
-            break;
+            case 'holes':
+              holesActions.selectHole(elementData.layer, elementData.id);
+              break;
 
-          case 'items':
-            itemsActions.selectItem(elementData.layer, elementData.id);
-            break;
-
-          case 'none':
-            projectActions.unselectAll();
-            break;
+            case 'items':
+              itemsActions.selectItem(elementData.layer, elementData.id);
+              break;
+          }
+        } else {
+          projectActions.unselectAll();
         }
         break;
 
@@ -479,6 +505,10 @@ export default function Viewer2D({ state, width, height }: Viewer2DProps) {
         onMouseUp={onMouseUp}
         miniatureProps={miniatureProps}
         toolbarProps={toolbarProps}
+        // @ts-ignore
+        onTouchStart={(e: ViewerTouchEvent<Element>) => onMouseDown(e)}
+        onTouchEnd={(e: ViewerTouchEvent<Element>) => onMouseUp(e)}
+        onTouchMove={(e: ViewerTouchEvent<Element>) => onMouseMove(e)}
       >
         <svg width={scene.width} height={scene.height}>
           <defs>

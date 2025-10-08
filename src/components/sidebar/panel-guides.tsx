@@ -36,12 +36,13 @@ const listTabStyle = {
   position: 'relative',
   listStyle: 'none',
   padding: '6px 12px',
-  cursor: 'pointer'
+  cursor: 'pointer',
+  outline: 'none'
 } as const;
 
 const activeTabStyle = {
-  border: '1px solid white',
-  borderBottom: '0px solid white',
+  border: '1px solid rgb(170, 170, 170)',
+  borderBottom: 'none',
   color: SharedStyle.SECONDARY_COLOR.main
 } as const;
 
@@ -66,7 +67,7 @@ function PanelGuides(props: PanelGuidesProps) {
         selectedIndex={selectedTab}
         onSelect={(i) => setSelectedTab(i)}
       >
-        <TabList style={{ borderBottom: '1px solid #aaa' }}>
+        <TabList style={{ borderBottom: '1px solid #aaa', padding: '0px' }}>
           <Tab
             style={
               selectedTab === 0
