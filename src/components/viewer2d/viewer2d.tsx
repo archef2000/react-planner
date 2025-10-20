@@ -141,7 +141,7 @@ interface Viewer2DProps {
 function isViewerMouseEvent<T>(
   ev: ViewerMouseEvent<T> | ViewerTouchEvent<T>
 ): ev is ViewerMouseEvent<T> {
-  return ev.hasOwnProperty('x') && ev.hasOwnProperty('y');
+  return !('changedPoints' in (ev as any));
 }
 
 export default function Viewer2D({ state, width, height }: Viewer2DProps) {
