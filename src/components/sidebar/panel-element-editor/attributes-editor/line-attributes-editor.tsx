@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 
 import { PropertyLengthMeasure } from '../../../../catalog/properties/export';
-import { State } from '../../../../models';
+import { Line, State } from '../../../../models';
 import ReactPlannerContext from '../../../../react-planner-context';
+import { LineAttributes } from '../../../../types';
 import { FormNumberInput, FormTextInput } from '../../../style/export';
 
 const tableStyle = { width: '100%' } as const;
@@ -10,12 +11,9 @@ const firstTdStyle = { width: '6em' } as const;
 const inputStyle = { textAlign: 'left' } as const;
 
 interface LineAttributesEditorProps {
-  element: {
-    name: string;
-    [key: string]: any;
-  };
+  element: Line;
   onUpdate: (key: string, value: any) => void;
-  attributeFormData: { [key: string]: any };
+  attributeFormData: LineAttributes;
   state: State;
   [key: string]: any;
 }

@@ -1,7 +1,5 @@
 import { ReactNode } from 'react';
 
-import { immerable } from 'immer';
-
 import { MODE_IDLE, ModeType, UnitLengthType } from './constants';
 import { CatalogElement, SnapMaskType } from './types';
 import { SNAP_MASK, SnapElement } from './utils/snap';
@@ -80,8 +78,8 @@ export type Vertex = SharedAttributes & {
   prototype: 'vertices';
   x: number;
   y: number;
-  lines: any[];
-  areas: any[];
+  lines: string[];
+  areas: string[];
 };
 
 export type VertexPrototypeKeys = keyof Vertex;
@@ -247,9 +245,9 @@ export interface SceneJson {
   height: number;
   meta: Record<string, any>;
   guides: {
-    horizontal: { [key: string]: number };
-    vertical: { [key: string]: number };
-    circular: any;
+    horizontal: Record<string, number>;
+    vertical: Record<string, number>;
+    circular: Record<string, { x: number; y: number; radius: number }>;
   };
 }
 
@@ -334,74 +332,47 @@ export function catalogElementFactory(
   }
 }
 
-export class Catalog2 {
-  static [immerable] = true;
-  ready = false;
-  page = 'root';
-  path: string[] = [];
-  elements: Record<string, CatalogElement> = {};
+export type DiffRemoveItem = {
+  op: 'remove';
+  path: string;
+};
 
-  constructor(json: any = {}) {
-    this.elements = json.elements;
-    this.ready = Object.keys(json.elements).length > 0;
-    this.page = json.page || 'root';
-    this.path = json.path ? [...json.path] : [];
-  }
+export type DiffAddItem = {
+  op: 'add';
+  path: string;
+  value: any;
+};
 
-  factoryElement(
-    type: string,
-    options?: SharedAttributes &
-      (Partial<Line> & Partial<Hole> & Partial<Area> & Partial<Item>),
-    initialProperties?: Record<string, any>
-  ) {
-    if (!this.elements[type]) {
-      const catList = Object.values(this.elements).map(
-        (element) => (element as { name?: string }).name
-      );
-      throw new Error(`Element ${type} does not exist in catalog ${catList}`);
-    }
+export type DiffReplaceItem = {
+  op: 'replace';
+  path: string;
+  value: any;
+};
 
-    const element = this.elements[type];
-    const properties: Record<string, any> = {};
-    for (const key in element.properties) {
-      properties[key] =
-        initialProperties && initialProperties[key] !== undefined
-          ? initialProperties[key]
-          : (element.properties[key] as { defaultValue: any }).defaultValue;
-    }
+export type DiffItem = DiffRemoveItem | DiffAddItem | DiffReplaceItem;
 
-    switch (element.prototype) {
-      case 'lines':
-        return Object.assign(Line(options as Partial<Line>), { properties });
-      case 'holes':
-        return Object.assign(Hole(options as Partial<Hole>), { properties });
-      case 'areas':
-        return Object.assign(Area(options as Partial<Area>), { properties });
-      case 'items':
-        return Object.assign(Item(options as Partial<Item>), { properties });
-      default:
-        throw new Error('prototype not valid');
-    }
-  }
-}
+export type HistoryStructureListItemDiff = Record<string, DiffItem>;
 
-export interface HistoryStructureProps {
-  list: any[];
+export type HistoryStructureListItem = {
+  time: number;
+  diff: HistoryStructureListItemDiff;
+};
+
+export type HistoryStructureProps = {
+  list: HistoryStructureListItem[];
   scene: SceneJson;
   last: SceneJson;
-}
+};
 
-export interface HistoryStructureJson {
-  list: any[];
+export type HistoryStructure = {
+  list: HistoryStructureListItem[];
   first: SceneJson;
   last: SceneJson;
-}
-
-export type HistoryStructure = HistoryStructureJson;
+};
 
 export function HistoryStructure(
   props: Partial<HistoryStructureProps> = {}
-): HistoryStructureJson {
+): HistoryStructure {
   const resullt = {
     list: props.list ?? [],
     first: Scene(props.scene || {}),
@@ -439,7 +410,7 @@ export type StateProps = {
   zoom: number;
   snapMask: SnapMaskType;
   snapElements: SnapElement[];
-  activeSnapElement: any;
+  activeSnapElement: SnapElement | null;
   drawingSupport: Record<string, any>;
   draggingSupport: DraggingSupportType | undefined;
   rotatingSupport: { layerID: string; itemID: string } | undefined;
@@ -457,7 +428,7 @@ export function State(props: Partial<StateProps> = {}): StateProps {
   const defaults: StateProps = {
     mode: MODE_IDLE,
     scene: Scene(),
-    sceneHistory: HistoryStructure(),
+    sceneHistory: HistoryStructure(props),
     catalog: CatalogState(),
     viewer2D: {},
     mouse: { x: 0, y: 0 },

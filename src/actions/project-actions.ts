@@ -26,6 +26,7 @@ import {
   ROLLBACK,
   SAVE_PROJECT,
   SELECT_TOOL_EDIT,
+  SET_AREAS_ATTRIBUTES,
   SET_HOLES_ATTRIBUTES,
   SET_ITEMS_ATTRIBUTES,
   SET_LINES_ATTRIBUTES,
@@ -40,8 +41,13 @@ import {
   UPDATE_MOUSE_COORDS,
   UPDATE_ZOOM_SCALE
 } from '../constants';
-import { Hole, Item, Scene } from '../models';
-import { CatalogElement, LineAttributes, SnapMaskType } from '../types';
+import { Area, Item, Scene } from '../models';
+import {
+  CatalogElement,
+  HoleAttributes,
+  LineAttributes,
+  SnapMaskType
+} from '../types';
 
 export function loadProject(sceneJSON: Scene) {
   return {
@@ -127,7 +133,7 @@ export function setLinesAttributes(linesAttributes: LineAttributes) {
   };
 }
 
-export function setHolesAttributes(holesAttributes: Hole) {
+export function setHolesAttributes(holesAttributes: HoleAttributes) {
   holesAttributes = produce(holesAttributes, (draft) => {
     draft.offset = parseFloat(draft.offset as any);
   });
@@ -135,6 +141,13 @@ export function setHolesAttributes(holesAttributes: Hole) {
   return {
     type: SET_HOLES_ATTRIBUTES,
     holesAttributes
+  };
+}
+
+export function setAreasAttributes(areasAttributes: Area) {
+  return {
+    type: SET_AREAS_ATTRIBUTES,
+    areasAttributes
   };
 }
 
@@ -233,9 +246,10 @@ export function pushLastSelectedCatalogElementToHistory(
   };
 }
 
-export function setAlterateState() {
+export function setAlterateState(alterate?: boolean) {
   return {
-    type: ALTERATE_STATE
+    type: ALTERATE_STATE,
+    alterate
   };
 }
 

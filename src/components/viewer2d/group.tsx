@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 
 import { CatalogJson } from '../../catalog/catalog';
+import { Group as GroupModel, Layer, Scene } from '../../models';
 import ReactPlannerContext from '../../react-planner-context';
 import * as sharedStyles from '../../shared-style';
 import If from '../../utils/react-if';
@@ -16,9 +17,9 @@ const STYLE_CIRCLE = {
 };
 
 interface GroupProps {
-  layer: any;
-  group: any;
-  scene: any;
+  layer: Layer;
+  group: GroupModel;
+  scene: Scene;
   catalog: CatalogJson;
 }
 

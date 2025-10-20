@@ -22,9 +22,9 @@ import { CatalogElement, SnapMaskType } from '../types';
 import { history } from '../utils/export';
 
 class Project {
-  static setAlterate(state: State) {
+  static setAlterate(state: State, alterate?: boolean) {
     return produce(state, (draft) => {
-      draft.alterate = !draft.alterate;
+      draft.alterate = alterate === undefined ? !draft.alterate : alterate;
     });
   }
 
@@ -76,6 +76,16 @@ class Project {
 
   static setHolesAttributes(state: State, attributes: Partial<Hole>) {
     //TODO apply only to holes
+    return produce(state, (draft) => {
+      Object.values(draft.scene.layers).forEach((layer) => {
+        draft = Layer.setAttributesOnSelected(draft, layer.id, attributes);
+      });
+      return draft;
+    });
+  }
+
+  static setAreasAttributes(state: State, attributes: Partial<Item>) {
+    //TODO apply only to areas
     return produce(state, (draft) => {
       Object.values(draft.scene.layers).forEach((layer) => {
         draft = Layer.setAttributesOnSelected(draft, layer.id, attributes);

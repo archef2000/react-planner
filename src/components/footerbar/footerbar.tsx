@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 
 import { MdAddCircle, MdWarning } from 'react-icons/md';
 
@@ -6,7 +6,7 @@ import { MODE_SNAPPING } from '../../constants';
 import { State } from '../../models';
 import ReactPlannerContext from '../../react-planner-context';
 import * as SharedStyle from '../../shared-style';
-import { SnapMaskType } from '../../types';
+import { FooterBarComponentProps, SnapMaskType } from '../../types';
 import If from '../../utils/react-if';
 import {
   SNAP_GRID,
@@ -60,16 +60,15 @@ const coordStyle = {
 
 const appMessageStyle = { borderBottom: '1px solid #555', lineHeight: '1.5em' };
 
-interface FooterBarProps {
+type FooterBarProps = {
   state: State;
-  footerbarComponents: any[];
+  footerbarComponents: React.ComponentType<FooterBarComponentProps>[];
   width: number;
   height: number;
   softwareSignature: string;
-}
+};
 
 export default function FooterBar(props: FooterBarProps) {
-  const [state] = useState({});
   const {
     state: globalState,
     height,
@@ -92,9 +91,9 @@ export default function FooterBar(props: FooterBarProps) {
     : {};
   const errorIconStyle = errors.length
     ? {
-        transform: 'rotate(45deg)',
-        color: SharedStyle.MATERIAL_COLORS[500].red
-      }
+      transform: 'rotate(45deg)',
+      color: SharedStyle.MATERIAL_COLORS[500].red
+    }
     : { transform: 'rotate(45deg)' };
 
   const warnings = globalState.warnings;
@@ -191,7 +190,7 @@ export default function FooterBar(props: FooterBarProps) {
       </If>
 
       {footerbarComponents.map((Component, index) => (
-        <Component state={state} key={index} />
+        <Component state={globalState} key={index} />
       ))}
 
       {softwareSignature ? (

@@ -610,26 +610,25 @@ export default defineCatalogElement({
   },
 
   async updateRender3D(
-    element: Models.Item,
-    layer: Models.Layer,
-    scene: Models.Scene,
-    mesh: Three.Object3D,
-    oldElement: Models.Item,
-    differences: any,
-    selfDestroy: Function,
-    selfBuild: Function
+    element,
+    layer,
+    scene,
+    mesh,
+    oldElement,
+    differences,
+    selfDestroy,
+    selfBuild
   ) {
-    const diffs = Array.isArray(differences) ? differences : [differences];
     if (typeof console !== 'undefined' && console.debug) {
       console.debug(
         '[toilet] updateRender3D diffs:',
-        diffs,
+        differences,
         'element id:',
         element.id
       );
     }
 
-    if (diffs.length === 1 && diffs[0] === 'selected') {
+    if (differences.length === 1 && differences[0] === 'selected') {
       let hasBox = false;
       mesh.traverse((child) => {
         if (child instanceof Three.BoxHelper) {

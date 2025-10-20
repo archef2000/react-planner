@@ -94,42 +94,34 @@ class Line {
 
   static remove(state: State, layerID: string, lineID: string) {
     const line = state.scene.layers[layerID].lines[lineID];
-    return produce(state, (draft) => {
-      if (line) {
-        draft = this.unselect(draft, layerID, lineID);
-        line.holes.forEach(
-          (holeID) => (draft = Hole.remove(draft, layerID, holeID))
-        );
-        draft = Layer.removeElement(draft, layerID, 'lines', lineID);
-        line.vertices.forEach(
-          (vertexID) =>
-            (draft = Vertex.remove(draft, layerID, vertexID, 'lines', lineID))
-        );
+    if (!line) return state;
 
-        Object.values(draft.scene.groups).forEach((group) => {
-          draft = Group.removeElement(
-            draft,
-            group.id,
-            layerID,
-            'lines',
-            lineID
-          );
-        });
-        return draft;
-      }
+    state = this.unselect(state, layerID, lineID);
+
+    line.holes.forEach((holeID) => {
+      state = Hole.remove(state, layerID, holeID);
     });
+
+    state = Layer.removeElement(state, layerID, 'lines', lineID);
+
+    line.vertices.forEach((vertexID) => {
+      state = Vertex.remove(state, layerID, vertexID, 'lines', lineID);
+    });
+
+    Object.values(state.scene.groups).forEach((group) => {
+      state = Group.removeElement(state, group.id, layerID, 'lines', lineID);
+    });
+
+    return state;
   }
 
   static unselect(state: State, layerID: string, lineID: string) {
     const line = state.scene.layers[layerID].lines[lineID];
-    if (line) {
-      state = produce(state, (draft) => {
-        draft = Layer.unselect(draft, layerID, 'vertices', line.vertices[0]);
-        draft = Layer.unselect(draft, layerID, 'vertices', line.vertices[1]);
-        draft = Layer.unselect(draft, layerID, 'lines', lineID);
-        return draft;
-      });
-    }
+    if (!line) return state;
+
+    state = Layer.unselect(state, layerID, 'vertices', line.vertices[0]);
+    state = Layer.unselect(state, layerID, 'vertices', line.vertices[1]);
+    state = Layer.unselect(state, layerID, 'lines', lineID);
     return state;
   }
 
@@ -316,77 +308,74 @@ class Line {
       { x: x1, y: y1 }
     ];
 
-    state = produce(state, (draft) => {
-      const linesArr = Object.values(draft.scene.layers[layerID].lines);
-      for (const line of linesArr) {
-        const [v0, v1] = line.vertices.map((vertexID) => {
-          return draft.scene.layers[layerID].vertices[vertexID];
-        });
-        //const v0 = draft.scene.layers[layerID].vertices[line.vertices[0]];
-        //const v1 = draft.scene.layers[layerID].vertices[line.vertices[1]];
+    const linesArr = Object.values(state.scene.layers[layerID].lines);
+    for (const line of linesArr) {
+      const [v0, v1] = line.vertices.map((vertexID) => {
+        return state.scene.layers[layerID].vertices[vertexID];
+      });
+      //const v0 = draft.scene.layers[layerID].vertices[line.vertices[0]];
+      //const v1 = draft.scene.layers[layerID].vertices[line.vertices[1]];
 
-        const hasCommonEndpoint =
-          GeometryUtils.samePoints(v0, points[0]) ||
-          GeometryUtils.samePoints(v0, points[1]) ||
-          GeometryUtils.samePoints(v1, points[0]) ||
-          GeometryUtils.samePoints(v1, points[1]);
+      const hasCommonEndpoint =
+        GeometryUtils.samePoints(v0, points[0]) ||
+        GeometryUtils.samePoints(v0, points[1]) ||
+        GeometryUtils.samePoints(v1, points[0]) ||
+        GeometryUtils.samePoints(v1, points[1]);
 
-        const intersection = GeometryUtils.twoLineSegmentsIntersection(
-          points[0],
-          points[1],
-          v0,
-          v1
-        );
+      const intersection = GeometryUtils.twoLineSegmentsIntersection(
+        points[0],
+        points[1],
+        v0,
+        v1
+      );
 
-        if (intersection.type === 'colinear') {
-          if (!oldHoles) {
-            oldHoles = [];
-          }
-
-          const orderedVertices = GeometryUtils.orderVertices(points);
-
-          for (const holeID of line.holes) {
-            const hole = draft.scene.layers[layerID].holes[holeID];
-            const oldLineLength = GeometryUtils.pointsDistance(
-              v0.x,
-              v0.y,
-              v1.x,
-              v1.y
-            );
-            const offset = GeometryUtils.samePoints(
-              orderedVertices[1],
-              draft.scene.layers[layerID].vertices[line.vertices[1]]
-            )
-              ? 1 - hole.offset
-              : hole.offset;
-            const offsetPosition = GeometryUtils.extendLine(
-              v0.x,
-              v0.y,
-              v1.x,
-              v1.y,
-              oldLineLength * offset
-            );
-            oldHoles.push({ hole, offsetPosition });
-          }
-
-          draft = Line.remove(draft, layerID, line.id);
-
-          points.push({ ...v0 }, { ...v1 });
+      if (intersection.type === 'colinear') {
+        if (!oldHoles) {
+          oldHoles = [];
         }
 
-        if (intersection.type === 'intersecting' && !hasCommonEndpoint) {
-          draft = Line.split(
-            draft,
-            layerID,
-            line.id,
-            intersection.point.x,
-            intersection.point.y
-          ).updatedState;
-          points.push(intersection.point);
+        const orderedVertices = GeometryUtils.orderVertices(points);
+
+        for (const holeID of line.holes) {
+          const hole = state.scene.layers[layerID].holes[holeID];
+          const oldLineLength = GeometryUtils.pointsDistance(
+            v0.x,
+            v0.y,
+            v1.x,
+            v1.y
+          );
+          const offset = GeometryUtils.samePoints(
+            orderedVertices[1],
+            state.scene.layers[layerID].vertices[line.vertices[1]]
+          )
+            ? 1 - hole.offset
+            : hole.offset;
+          const offsetPosition = GeometryUtils.extendLine(
+            v0.x,
+            v0.y,
+            v1.x,
+            v1.y,
+            oldLineLength * offset
+          );
+          oldHoles.push({ hole, offsetPosition });
         }
+
+        state = Line.remove(state, layerID, line.id);
+
+        points.push({ ...v0 }, { ...v1 });
       }
-      return draft;
-    });
+
+      if (intersection.type === 'intersecting' && !hasCommonEndpoint) {
+        state = Line.split(
+          state,
+          layerID,
+          line.id,
+          intersection.point.x,
+          intersection.point.y
+        ).updatedState;
+        points.push({ ...intersection.point });
+      }
+    }
 
     const { updatedState, lines } = Line.addFromPoints(
       state,

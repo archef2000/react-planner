@@ -19,10 +19,10 @@ interface StateProps {
 
 export default function State({ state, catalog }: StateProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let { activeSnapElement, snapElements, scene } = state;
+  const { activeSnapElement, snapElements, scene } = state;
   const { width, height } = scene;
 
-  activeSnapElement = activeSnapElement ? (
+  const activeSnapDrawingElement = activeSnapElement ? (
     <Snap snap={activeSnapElement} width={scene.width} height={scene.height} />
   ) : null;
   // snapElements = snapElements.map((snap,id) => <Snap key={id} snap={snap} width={scene.width} height={scene.height}/>);
@@ -63,7 +63,7 @@ export default function State({ state, catalog }: StateProps) {
             style={guideStyle}
           />
         ))}
-        {activeSnapElement}
+        {activeSnapDrawingElement}
         {
           //snapElements
         }

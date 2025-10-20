@@ -2,12 +2,13 @@ import React from 'react';
 
 import PropertyLengthMeasure from '../../../../catalog/properties/property-lenght-measure';
 import PropertyString from '../../../../catalog/properties/property-string';
-import { State } from '../../../../models';
+import { Hole, State } from '../../../../models';
+import { HoleAttributes } from '../../../../types';
 
 interface HoleAttributesEditorProps {
-  element: any;
+  element: Hole;
   onUpdate: (name: string, data: any) => void;
-  attributeFormData: any;
+  attributeFormData: HoleAttributes;
   state: State;
   [key: string]: any;
 }
@@ -19,9 +20,9 @@ export default function HoleAttributesEditor({
   state,
   ...rest
 }: HoleAttributesEditorProps) {
-  const name = attributeFormData.name ?? element.name;
-  const offsetA = attributeFormData.offsetA ?? element.offsetA;
-  const offsetB = attributeFormData.offsetB ?? element.offsetA;
+  const name = element.name;
+  const offsetA = attributeFormData.offsetA;
+  const offsetB = attributeFormData.offsetB;
 
   return (
     <div>

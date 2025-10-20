@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 
-import { Models, ReactPlannerContext } from '@archef2000/react-planner';
+import {
+  LengthMeasureValue,
+  Models,
+  ReactPlannerContext
+} from '@archef2000/react-planner';
 
 const grabCircleRadius = 10;
 const hoverCircleRadius = 14;
@@ -30,12 +34,12 @@ const pointsDistance = (x1: number, y1: number, x2: number, y2: number) => {
 };
 
 interface ImageFulProps {
-  element: any;
+  element: Models.Item;
   x1: number;
   y1: number;
   x2: number;
   y2: number;
-  distance: any;
+  distance: LengthMeasureValue;
   width: number;
   height: number;
   imageUri: string;

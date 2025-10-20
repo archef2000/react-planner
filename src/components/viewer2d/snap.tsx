@@ -1,6 +1,7 @@
 import React from 'react';
 
 import * as Geometry from '../../utils/geometry';
+import { SnapElement } from '../../utils/snap';
 
 const STYLE = {
   stroke: '#D32F2F',
@@ -8,7 +9,7 @@ const STYLE = {
 };
 
 interface ActiveDrawingHelperProps {
-  snap: any; // object
+  snap: SnapElement;
   width: number;
   height: number;
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Layer, Vertex as VertexModel } from '../../models';
 import * as SharedStyle from '../../shared-style';
 
 const STYLE = {
@@ -9,8 +10,8 @@ const STYLE = {
 };
 
 interface VertexProps {
-  vertex: any; // object
-  layer: any; // object
+  vertex: VertexModel;
+  layer: Layer;
 }
 
 export default function Vertex({ vertex, layer }: VertexProps) {

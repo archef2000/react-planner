@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
-import convert, { Unit } from 'convert-units';
+import convert from 'convert-units';
 import { produce } from 'immer';
 import { MdContentCopy, MdContentPaste } from 'react-icons/md';
 
 import { CatalogFn } from '../../../catalog/catalog';
-import { Item, Layer, StateProps } from '../../../models';
+import { Area, Item, Layer, StateProps } from '../../../models';
 import ReactPlannerContext, {
   ReactPlannerContextProps
 } from '../../../react-planner-context';
@@ -13,6 +13,7 @@ import * as SharedStyle from '../../../shared-style';
 import {
   CatalogElementProperty,
   ElementType,
+  HoleAttributes,
   LineAttributes
 } from '../../../types';
 import { GeometryUtils, MathUtils } from '../../../utils/export';
@@ -49,19 +50,15 @@ interface ElementEditorProps {
   layer: Layer;
 }
 
-type HoleAttributeData = {
-  offset: number;
-  offsetA: { length: number; _length: number; _unit: Unit };
-  offsetB: { length: number; _length: number; _unit: Unit };
-};
-
 type PropertyForm = {
   currentValue: Record<string, any>;
   configs: Record<string, any>;
 };
 
+export type AttributesFormData = Item | LineAttributes | HoleAttributes | Area;
+
 type ElementEditorState = {
-  attributesFormData: Item | LineAttributes | HoleAttributeData | {};
+  attributesFormData: AttributesFormData;
   propertiesFormData: Record<string, PropertyForm>;
 };
 
@@ -171,10 +168,10 @@ export default class ElementEditor extends Component<
             _length: MathUtils.toFixedFloat(_lengthB, PRECISION),
             _unit: _unitB
           }
-        } as HoleAttributeData;
+        } as HoleAttributes;
       }
       case 'areas': {
-        return {};
+        return element;
       }
     }
   }
@@ -277,7 +274,7 @@ export default class ElementEditor extends Component<
         break;
       }
       case 'holes': {
-        let attributesFormData = oldAttributesFormData as HoleAttributeData;
+        let attributesFormData = oldAttributesFormData as HoleAttributes;
         switch (attributeName) {
           case 'offsetA': {
             const line = this.props.layer.lines[this.props.element.line];
@@ -419,6 +416,13 @@ export default class ElementEditor extends Component<
         newAttributesFormData = attributesFormData;
         break;
       }
+      case 'areas': {
+        newAttributesFormData = {
+          ...oldAttributesFormData,
+          [attributeName]: value
+        };
+        break;
+      }
       default:
         newAttributesFormData = oldAttributesFormData;
         break;
@@ -448,10 +452,7 @@ export default class ElementEditor extends Component<
   save({
     propertiesFormData,
     attributesFormData
-  }: {
-    propertiesFormData?: Record<string, any>;
-    attributesFormData?: any;
-  }) {
+  }: Partial<ElementEditorState>) {
     if (propertiesFormData) {
       const properties = Object.keys(propertiesFormData).reduce(
         (acc, key) => {
@@ -471,15 +472,27 @@ export default class ElementEditor extends Component<
     if (attributesFormData) {
       switch (this.props.element.prototype) {
         case 'items': {
-          this.context.projectActions.setItemsAttributes(attributesFormData);
+          this.context.projectActions.setItemsAttributes(
+            attributesFormData as Item
+          );
           break;
         }
         case 'lines': {
-          this.context.projectActions.setLinesAttributes(attributesFormData);
+          this.context.projectActions.setLinesAttributes(
+            attributesFormData as LineAttributes
+          );
           break;
         }
         case 'holes': {
-          this.context.projectActions.setHolesAttributes(attributesFormData);
+          this.context.projectActions.setHolesAttributes(
+            attributesFormData as HoleAttributes
+          );
+          break;
+        }
+        case 'areas': {
+          this.context.projectActions.setAreasAttributes(
+            attributesFormData as Area
+          );
           break;
         }
       }

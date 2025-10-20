@@ -257,7 +257,7 @@ class Vertex {
           const lineType = line.type;
           const lineProps = line.properties;
           const lineGroups = Object.values(draft.scene.groups).filter(
-            (group: any) => {
+            (group) => {
               const lines = group.elements[layerID]?.lines;
               return lines && lines.includes(lineID);
             }

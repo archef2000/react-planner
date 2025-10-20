@@ -86,7 +86,7 @@ interface CatalogListProps {
   state: State;
   width: number;
   height: number;
-  style?: any;
+  style?: React.CSSProperties;
 }
 
 interface CatalogListState {

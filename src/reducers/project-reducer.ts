@@ -26,6 +26,7 @@ import {
   REMOVE_VERTICAL_GUIDE,
   ROLLBACK,
   SELECT_TOOL_EDIT,
+  SET_AREAS_ATTRIBUTES,
   SET_HOLES_ATTRIBUTES,
   SET_ITEMS_ATTRIBUTES,
   SET_LINES_ATTRIBUTES,
@@ -40,8 +41,13 @@ import {
   UPDATE_MOUSE_COORDS,
   UPDATE_ZOOM_SCALE
 } from '../constants';
-import { CatalogState, Hole, Item, Scene, State } from '../models';
-import { CatalogElement, SnapMaskType } from '../types';
+import { Area, CatalogState, Item, Scene, State } from '../models';
+import {
+  CatalogElement,
+  HoleAttributes,
+  LineAttributes,
+  SnapMaskType
+} from '../types';
 import { history } from '../utils/export';
 
 export type NewProjectAction = {
@@ -88,12 +94,17 @@ export type SetItemsAttributesAction = {
 
 export type SetLinesAttributesAction = {
   type: typeof SET_LINES_ATTRIBUTES;
-  linesAttributes: Partial<Item>;
+  linesAttributes: Partial<LineAttributes>;
 };
 
 export type SetHolesAttributesAction = {
   type: typeof SET_HOLES_ATTRIBUTES;
-  holesAttributes: Partial<Hole>;
+  holesAttributes: Partial<HoleAttributes>;
+};
+
+export type SetAreasAttributesAction = {
+  type: typeof SET_AREAS_ATTRIBUTES;
+  areasAttributes: Partial<Area>;
 };
 
 export type RemoveAction = {
@@ -163,6 +174,7 @@ export type PushLastSelectedCatalogElementToHistoryAction = {
 
 export type AlterateStateAction = {
   type: typeof ALTERATE_STATE;
+  alterate?: boolean;
 };
 
 export type SetModeAction = {
@@ -214,6 +226,7 @@ export type ProjectAction =
   | SetItemsAttributesAction
   | SetLinesAttributesAction
   | SetHolesAttributesAction
+  | SetAreasAttributesAction
   | RemoveAction
   | UnDoAction
   | RollbackAction
@@ -303,6 +316,15 @@ export default function projectReducer(
       });
       return Project.setHolesAttributes(state, action.holesAttributes);
 
+    case SET_AREAS_ATTRIBUTES:
+      state = produce(state, (draft) => {
+        draft.sceneHistory = history.historyPush(
+          draft.sceneHistory,
+          draft.scene
+        );
+      });
+      return Project.setAreasAttributes(state, action.areasAttributes);
+
     case REMOVE:
       state = produce(state, (draft) => {
         draft.sceneHistory = history.historyPush(
@@ -373,7 +395,7 @@ export default function projectReducer(
       );
 
     case ALTERATE_STATE:
-      return Project.setAlterate(state);
+      return Project.setAlterate(state, action.alterate);
 
     case SET_MODE:
       return Project.setMode(state, action.mode);

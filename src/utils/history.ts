@@ -1,15 +1,14 @@
 import { produce } from 'immer';
 
-import { HistoryStructureJson, Scene } from '../models';
+import {
+  HistoryStructure,
+  HistoryStructureListItem,
+  HistoryStructureListItemDiff,
+  Scene
+} from '../models';
 
-export function diff(obj1: any, obj2: any) {
-  const ops: {
-    [k: string]: {
-      op: 'add' | 'remove' | 'replace';
-      path: string;
-      value?: any;
-    };
-  } = {};
+export function diff(obj1: any, obj2: any): HistoryStructureListItemDiff {
+  const ops: HistoryStructureListItemDiff = {};
   let idx = 0;
 
   const isObject = (v: any) => v && typeof v === 'object' && !Array.isArray(v);
@@ -91,7 +90,10 @@ export function diff(obj1: any, obj2: any) {
   return ops;
 }
 
-export function patch(obj: object, diffObj: any): object {
+export function patch(
+  obj: object,
+  diffObj: HistoryStructureListItemDiff
+): object {
   if (!diffObj || typeof diffObj !== 'object') return obj;
 
   // Sort numeric-like keys to preserve original generation order
@@ -149,7 +151,9 @@ export function patch(obj: object, diffObj: any): object {
     }
   };
 
-  for (const { op, path, value } of ops) {
+  for (const diffItem of ops) {
+    const { op, path } = diffItem;
+    const value = (diffItem as any).value;
     // Handle root-level operations directly
     if (path === '/' || path === '') {
       if (op === 'remove') {
@@ -168,13 +172,10 @@ export function patch(obj: object, diffObj: any): object {
   return result;
 }
 
-export function historyPush(
-  historyStructure: HistoryStructureJson,
-  item: Scene
-) {
+export function historyPush(historyStructure: HistoryStructure, item: Scene) {
   if (historyStructure.last) {
     if (historyStructure.last !== item) {
-      const toPush = {
+      const toPush: HistoryStructureListItem = {
         time: Date.now(),
         diff: diff(historyStructure.last, item)
       };
@@ -192,7 +193,7 @@ export function historyPush(
   return historyStructure;
 }
 
-export function historyPop(historyStructure: HistoryStructureJson) {
+export function historyPop(historyStructure: HistoryStructure) {
   if (historyStructure.last) {
     if (historyStructure.list.length) {
       let last = historyStructure.first;

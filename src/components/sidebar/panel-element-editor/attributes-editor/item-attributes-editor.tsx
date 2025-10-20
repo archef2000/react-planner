@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-import { State } from '../../../../models';
+import { Item, State } from '../../../../models';
 import ReactPlannerContext from '../../../../react-planner-context';
 import FormNumberInput from '../../../style/form-number-input';
 import FormTextInput from '../../../style/form-text-input';
@@ -10,9 +10,9 @@ const firstTdStyle = { width: '6em' } as const;
 const inputStyle = { textAlign: 'left' } as const;
 
 interface ItemAttributesEditorProps {
-  element: any;
+  element: Item;
   onUpdate: (name: string, value: any) => void;
-  attributeFormData: { [key: string]: any };
+  attributeFormData: Item;
   state: State;
   [key: string]: any;
 }

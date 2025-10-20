@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { CatalogFn, CatalogJson } from '../../catalog/catalog';
+import { Item as ItemModel, Layer, Scene } from '../../models';
 import If from '../../utils/react-if';
 
 const STYLE_CIRCLE = {
@@ -16,9 +17,9 @@ const STYLE_CIRCLE2 = {
 };
 
 interface ItemProps {
-  layer: any;
-  item: any;
-  scene: any;
+  layer: Layer;
+  item: ItemModel;
+  scene: Scene;
   catalog: CatalogJson;
 }
 

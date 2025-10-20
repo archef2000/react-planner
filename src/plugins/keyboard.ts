@@ -95,7 +95,7 @@ export default function keyboard() {
           break;
         }
         case KEYBOARD_BUTTON_CODE.CTRL: {
-          store.dispatch(setAlterateState());
+          store.dispatch(setAlterateState(true));
           break;
         }
       }
@@ -117,7 +117,7 @@ export default function keyboard() {
           break;
         }
         case KEYBOARD_BUTTON_CODE.CTRL: {
-          store.dispatch(setAlterateState());
+          store.dispatch(setAlterateState(false));
           break;
         }
       }

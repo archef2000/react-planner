@@ -23,7 +23,11 @@ import Sidebar from './components/sidebar/sidebar';
 import Toolbar from './components/toolbar/toolbar';
 import ReactPlannerContext from './react-planner-context';
 import Translator from './translator/translator';
-import { ReactPlannerPlugin, ReactPlannerStateExtractor } from './types';
+import {
+  FooterBarComponentProps,
+  ReactPlannerPlugin,
+  ReactPlannerStateExtractor
+} from './types';
 import { objectsMap } from './utils/objects-utils';
 import { VERSION } from './version';
 
@@ -47,7 +51,7 @@ interface ReactPlannerOptionalProps {
   sidebarComponents: [];
   customContents: {};
   softwareSignature: string; // `React Planner ${VERSION}`
-  footerbarComponents: [];
+  footerbarComponents: React.ComponentType<FooterBarComponentProps>[];
   customOverlays: { [key: string]: React.ComponentType<any> }[];
   customActions: { [key: string]: any };
 }
