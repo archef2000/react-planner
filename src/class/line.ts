@@ -119,9 +119,25 @@ class Line {
     const line = state.scene.layers[layerID].lines[lineID];
     if (!line) return state;
 
-    state = Layer.unselect(state, layerID, 'vertices', line.vertices[0]);
-    state = Layer.unselect(state, layerID, 'vertices', line.vertices[1]);
     state = Layer.unselect(state, layerID, 'lines', lineID);
+    const layer = state.scene.layers[layerID];
+
+    const firstVertexID = line.vertices[0];
+    const firstVertexLines = layer.vertices[firstVertexID].lines;
+    const firstVertexSelectedLines = firstVertexLines
+      .map((lineID) => layer.lines[lineID])
+      .filter((line) => line && line.selected);
+    if (firstVertexSelectedLines.length === 0)
+      state = Layer.unselect(state, layerID, 'vertices', firstVertexID);
+
+    const secondVertexID = line.vertices[1];
+    const secondVertexLines = layer.vertices[secondVertexID].lines;
+    const secondVertexSelectedLines = secondVertexLines
+      .map((lineID) => layer.lines[lineID])
+      .filter((line) => line && line.selected);
+    if (secondVertexSelectedLines.length === 0)
+      state = Layer.unselect(state, layerID, 'vertices', secondVertexID);
+
     return state;
   }
 
