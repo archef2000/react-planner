@@ -299,7 +299,7 @@ export function buildWall(
   element.holes.forEach((holeID) => {
     const holeData = layer.holes[holeID];
 
-    const holeWidth = holeData.properties.width.length;
+    const holeWidth = Math.abs(holeData.properties.width.length);
     const holeHeight = holeData.properties.height.length;
     const holeAltitude = holeData.properties.altitude.length;
     const offset = inverted ? 1 - holeData.offset : holeData.offset;
@@ -500,7 +500,7 @@ export function buildWall(
   element.holes.forEach((holeID) => {
     const holeData = layer.holes[holeID];
 
-    const holeWidth = holeData.properties.width.length;
+    const holeWidth = Math.abs(holeData.properties.width.length);
     const holeHeight = holeData.properties.height.length;
     const holeAltitude = holeData.properties.altitude.length;
     const offset = inverted ? 1 - holeData.offset : holeData.offset;

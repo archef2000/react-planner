@@ -46,7 +46,7 @@ export function calcLineEnd(
       const thickness: number = line.properties.thickness.length || 0;
       const vertex =
         layer.vertices[
-        line.vertices.find((id) => id !== centerVertexId) as string
+          line.vertices.find((id) => id !== centerVertexId) as string
         ];
       if (!vertex) {
         return;
@@ -72,11 +72,11 @@ export function calcLineEnd(
   );
   const rightVertex =
     sortedVertices[
-    vertexIndex === 0 ? sortedVertices.length - 1 : vertexIndex - 1
+      vertexIndex === 0 ? sortedVertices.length - 1 : vertexIndex - 1
     ];
   const leftVertex =
     sortedVertices[
-    vertexIndex === sortedVertices.length - 1 ? 0 : vertexIndex + 1
+      vertexIndex === sortedVertices.length - 1 ? 0 : vertexIndex + 1
     ];
   rightVertex.angle = 2 * Math.PI - rightVertex.angle;
   if (rightVertex.angle > 2 * Math.PI) {
