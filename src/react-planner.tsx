@@ -99,8 +99,13 @@ function ReactPlanner(props: InternalReactPlannerProps) {
   useEffect(() => {
     const store = context.store;
     const { projectActions, catalog, stateExtractor, plugins } = props;
-    plugins.forEach((plugin) => plugin(store, stateExtractor));
+    const pluginUnmounts = plugins
+      .map((plugin) => plugin(store, stateExtractor))
+      .filter((unmount) => !!unmount);
     projectActions.initCatalog(catalog);
+    return () => {
+      pluginUnmounts.forEach((unmount) => unmount());
+    };
   }, []);
 
   useEffect(() => {

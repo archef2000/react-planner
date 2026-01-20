@@ -19,8 +19,8 @@ import {
 import { State } from '../models';
 
 export default function keyboard() {
-  return (store: Store, stateExtractor: (store: any) => State) => {
-    window.addEventListener('keydown', (event) => {
+  return (store: Store, stateExtractor: (state: any) => State) => {
+    function window_keydown_event_handler(event: KeyboardEvent) {
       const state = stateExtractor(store.getState());
       const mode = state.mode;
 
@@ -59,6 +59,12 @@ export default function keyboard() {
           break;
         }
         case KEYBOARD_BUTTON_CODE.C: {
+          if (
+            event.getModifierState('Control') ||
+            event.getModifierState('Meta')
+          ) {
+            break;
+          }
           const selectedLayer = state.scene.selectedLayer;
           if (selectedLayer === undefined) break;
           const selected = state.scene.layers[selectedLayer].selected;
@@ -91,17 +97,26 @@ export default function keyboard() {
           break;
         }
         case KEYBOARD_BUTTON_CODE.V: {
+          if (
+            event.getModifierState('Control') ||
+            event.getModifierState('Meta')
+          ) {
+            break;
+          }
           store.dispatch(pasteProperties());
           break;
         }
         case KEYBOARD_BUTTON_CODE.CTRL: {
-          store.dispatch(setAlterateState(true));
+          if (!state.alterate) {
+            store.dispatch(setAlterateState(true));
+          }
           break;
         }
       }
-    });
+    }
+    window.addEventListener('keydown', window_keydown_event_handler);
 
-    window.addEventListener('keyup', (event) => {
+    function window_keyup_event_handler(event: KeyboardEvent) {
       const state = stateExtractor(store.getState());
       const mode = state.mode;
 
@@ -121,6 +136,12 @@ export default function keyboard() {
           break;
         }
       }
-    });
+    }
+    window.addEventListener('keyup', window_keyup_event_handler);
+
+    return () => {
+      window.removeEventListener('keydown', window_keydown_event_handler);
+      window.removeEventListener('keyup', window_keyup_event_handler);
+    };
   };
 }

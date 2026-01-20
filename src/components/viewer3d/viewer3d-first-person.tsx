@@ -109,6 +109,7 @@ class Viewer3DFirstPerson extends React.Component<Viewer3DFirstPersonProps> {
     sceneOnTop.add(controls.getObject());
 
     this.keyDownEvent = (event: KeyboardEvent) => {
+      event.preventDefault();
       const moveResult = firstPersonOnKeyDown(
         event,
         moveForward,
