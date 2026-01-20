@@ -18,7 +18,7 @@ const STYLE = {
   display: 'block',
   overflowY: 'auto',
   overflowX: 'hidden',
-  paddingBottom: '20px'
+  boxSizing: 'border-box'
 } as const;
 
 const sortButtonsCb = (
@@ -67,10 +67,10 @@ export default function Sidebar({
     selected.holes.length > 1 ||
     selected.areas.length > 1 ||
     selected.lines.length +
-    selected.items.length +
-    selected.holes.length +
-    selected.areas.length >
-    1;
+      selected.items.length +
+      selected.holes.length +
+      selected.areas.length >
+      1;
 
   const selectedGroup = Object.values(state.scene.groups).find(
     (g) => g.selected

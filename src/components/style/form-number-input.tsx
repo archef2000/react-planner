@@ -111,7 +111,7 @@ export default class FormNumberInput extends Component<
     const saveFn = (e: React.KeyboardEvent | React.MouseEvent) => {
       e.stopPropagation();
       if (this.state.valid) {
-        const savedValue = showedValue || 0;
+        const savedValue = parseFloat(showedValue as any) || 0;
         this.setState({ showedValue: savedValue });
         onChange({ target: { value: savedValue } });
       }
@@ -138,7 +138,7 @@ export default class FormNumberInput extends Component<
     return (
       <div style={{ position: 'relative' }}>
         <input
-          type="text"
+          type="number"
           value={currValue}
           style={numericInputStyle}
           onChange={(evt) => {

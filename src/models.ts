@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
 
+import { Value as ReactSVGPanZoomValue } from 'react-svg-pan-zoom';
+
 import { MODE_IDLE, ModeType, UnitLengthType } from './constants';
 import { CatalogElement, SnapMaskType } from './types';
 import { SNAP_MASK, SnapElement } from './utils/snap';
@@ -405,7 +407,7 @@ export type StateProps = {
   scene: Scene;
   sceneHistory: HistoryStructure;
   catalog: CatalogState;
-  viewer2D: Record<string, any>;
+  viewer2D: ReactSVGPanZoomValue;
   mouse: { x: number; y: number };
   zoom: number;
   snapMask: SnapMaskType;
@@ -430,7 +432,7 @@ export function State(props: Partial<StateProps> = {}): StateProps {
     scene: Scene(),
     sceneHistory: HistoryStructure(props),
     catalog: CatalogState(),
-    viewer2D: {},
+    viewer2D: {} as ReactSVGPanZoomValue,
     mouse: { x: 0, y: 0 },
     zoom: 0,
     snapMask: SNAP_MASK,

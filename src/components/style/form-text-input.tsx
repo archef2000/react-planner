@@ -32,6 +32,7 @@ export default function FormTextInput(
       onBlur={(e) => setFocus(false)}
       style={textInputStyle}
       type="text"
+      value={typeof rest.value === 'string' ? rest.value : ''}
       {...rest}
     />
   );

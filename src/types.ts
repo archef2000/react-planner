@@ -4,17 +4,7 @@ import { Unit } from 'convert-units';
 import { Store, UnknownAction } from 'redux';
 import { Object3D, Object3DEventMap } from 'three';
 
-import {
-  Area,
-  Hole,
-  Item,
-  Layer,
-  Line,
-  Scene,
-  State,
-  StateProps,
-  Vertex
-} from './models';
+import { Area, Hole, Item, Layer, Line, Scene, State, Vertex } from './models';
 import { SNAP_MASK } from './utils/snap';
 
 export type FooterBarComponentProps = {
@@ -116,6 +106,11 @@ export type ReadOnlyProperty = CatalogPropertyBase & {
   defaultValue: any;
 };
 
+export type FallbackProperty = CatalogPropertyBase & {
+  type: string;
+  defaultValue: any;
+};
+
 export type CatalogProperty =
   | ColorProperty
   | EnumProperty
@@ -125,7 +120,8 @@ export type CatalogProperty =
   | ToggleProperty
   | CheckboxProperty
   | HiddenProperty
-  | ReadOnlyProperty;
+  | ReadOnlyProperty
+  | FallbackProperty;
 
 export type CatalogElementProperty = CatalogProperty; //TODO: remove {}
 export type CatalogElementPropertyWithDefault = CatalogElementProperty & {
@@ -141,24 +137,24 @@ export type CatalogElementProperties = Record<string, CatalogElementProperty>;
 
 export type PropertyValue<T extends CatalogElementProperty> =
   T extends LengthMeasureProperty
-  ? LengthMeasureValue
-  : T extends ColorProperty
-  ? string
-  : T extends EnumProperty
-  ? string
-  : T extends StringProperty
-  ? string
-  : T extends NumberProperty
-  ? number
-  : T extends ToggleProperty
-  ? boolean
-  : T extends CheckboxProperty
-  ? boolean
-  : T extends HiddenProperty
-  ? any
-  : T extends ReadOnlyProperty
-  ? any
-  : any;
+    ? LengthMeasureValue
+    : T extends ColorProperty
+      ? string
+      : T extends EnumProperty
+        ? string
+        : T extends StringProperty
+          ? string
+          : T extends NumberProperty
+            ? number
+            : T extends ToggleProperty
+              ? boolean
+              : T extends CheckboxProperty
+                ? boolean
+                : T extends HiddenProperty
+                  ? any
+                  : T extends ReadOnlyProperty
+                    ? any
+                    : any;
 
 export type ElementPropertiesValues<P extends CatalogElementProperties> = {
   [K in keyof P]: PropertyValue<P[K]>;
@@ -289,8 +285,13 @@ export interface ReactPlannerStateExtractor {
   (state: { [key: string]: any }): StateProps;
 }
 
+type ReactPlannerPluginUnmountCallback = () => void;
+
 export interface ReactPlannerPlugin {
-  (store: ReactPlannerStore, stateExtractor: ReactPlannerStateExtractor): void;
+  (
+    store: ReactPlannerStore,
+    stateExtractor: ReactPlannerStateExtractor
+  ): void | ReactPlannerPluginUnmountCallback;
 }
 
 export class ViewerEventError extends Event {
