@@ -12,7 +12,10 @@ import { Area, Hole, Item, Layer, Line, Project } from './export';
 
 class Group {
   static select(state: State, groupID: string) {
-    state = Project.setAlterate(state);
+    const wasAlterate = state.alterate;
+    if (!wasAlterate) {
+      state = Project.setAlterate(state, true);
+    }
     const group = state.scene.groups[groupID];
     if (!group) return state;
 
@@ -20,7 +23,9 @@ class Group {
     for (const [groupLayerID, groupLayerElements] of Object.entries(
       layerList
     )) {
-      state = Layer.unselectAll(state, groupLayerID);
+      if (!wasAlterate) {
+        state = Layer.unselectAll(state, groupLayerID);
+      }
       const lines = groupLayerElements.lines;
       const holes = groupLayerElements.holes;
       const items = groupLayerElements.items;
@@ -39,17 +44,17 @@ class Group {
       });
     }
 
-    state = Project.setAlterate(state);
+    if (!wasAlterate) {
+      state = Project.setAlterate(state, false);
+    }
 
     return produce(state, (draft) => {
       const groups = draft.scene.groups;
-      Object.keys(groups).forEach((id) => {
-        groups[id].selected = false;
-      });
-
-      Object.keys(groups).forEach((id) => {
-        groups[id].selected = false;
-      });
+      if (!wasAlterate) {
+        Object.keys(groups).forEach((id) => {
+          groups[id].selected = false;
+        });
+      }
       groups[groupID].selected = true;
       return draft;
     });
@@ -59,8 +64,58 @@ class Group {
     state = produce(state, (draft) => {
       draft.scene.groups[groupID].selected = false;
     });
-    for (const layerID of Object.keys(state.scene.groups[groupID].elements)) {
-      state = Layer.unselectAll(state, layerID);
+
+    const otherSelectedGroupElements = Object.values(state.scene.groups)
+      .filter((g) => g.id !== groupID && g.selected)
+      .reduce<Record<string, GroupElement>>((value, g) => {
+        for (const [layerID, groupLayerElements] of Object.entries(
+          g.elements
+        )) {
+          const layer: GroupElement = {
+            lines: [],
+            items: [],
+            holes: [],
+            areas: []
+          };
+          value[layerID] = layer;
+          for (const [prototype, elements] of Object.entries(
+            groupLayerElements
+          )) {
+            for (const elementID of elements) {
+              if (!(elementID in layer[prototype as keyof GroupElement])) {
+                layer[prototype as keyof GroupElement].push(elementID);
+              }
+            }
+          }
+        }
+        return value;
+      }, {});
+
+    for (const [layerID, groupElements] of Object.entries(
+      state.scene.groups[groupID].elements
+    )) {
+      const otherSelectedElements = otherSelectedGroupElements[layerID]; // could be undefined
+      for (const [prototype, elements] of Object.entries(groupElements)) {
+        for (const element of elements) {
+          if (
+            !otherSelectedElements ||
+            !otherSelectedElements[prototype as keyof GroupElement].includes(
+              element
+            )
+          ) {
+            if (prototype === 'lines') {
+              state = Line.unselect(state, layerID, element);
+            } else {
+              state = Layer.unselect(
+                state,
+                layerID,
+                prototype as keyof GroupElement,
+                element
+              );
+            }
+          }
+        }
+      }
     }
     return state;
   }
@@ -186,11 +241,11 @@ class Group {
                 if (line) {
                   const v0 =
                     draft.scene.layers[groupLayerID]?.vertices[
-                    line.vertices[0]
+                      line.vertices[0]
                     ];
                   const v1 =
                     draft.scene.layers[groupLayerID]?.vertices[
-                    line.vertices[1]
+                      line.vertices[1]
                     ];
                   if (v0 && v1) {
                     const { x: xM, y: yM } = GeometryUtils.midPoint(
