@@ -68,26 +68,24 @@ class Layer {
   }
 
   static unselectAll(state: State, layerID: string) {
-    state = produce(state, (draft) => {
-      const layer = draft.scene.layers[layerID];
-      if (!layer) return;
+    const layer = state.scene.layers[layerID];
+    if (!layer) return state;
 
-      const { lines, holes, items, areas } = layer;
+    const { lines, holes, items, areas } = layer;
 
-      Object.values(lines).forEach((line) => {
-        draft = Line.unselect(draft, layerID, line.id);
-      });
-      Object.values(holes).forEach((hole) => {
-        draft = Hole.unselect(draft, layerID, hole.id);
-      });
-      Object.values(items).forEach((item) => {
-        draft = Item.unselect(draft, layerID, item.id);
-      });
-      Object.values(areas).forEach((area) => {
-        draft = Area.unselect(draft, layerID, area.id);
-      });
-      return draft;
+    Object.values(lines).forEach((line) => {
+      state = Line.unselect(state, layerID, line.id);
     });
+    Object.values(holes).forEach((hole) => {
+      state = Hole.unselect(state, layerID, hole.id);
+    });
+    Object.values(items).forEach((item) => {
+      state = Item.unselect(state, layerID, item.id);
+    });
+    Object.values(areas).forEach((area) => {
+      state = Area.unselect(state, layerID, area.id);
+    });
+
     return produce(state, (draft) => {
       const layer = draft.scene.layers[layerID];
       if (!layer) return;
@@ -124,6 +122,13 @@ class Layer {
   static remove(state: State, layerID: string) {
     return produce(state, (draft) => {
       delete draft.scene.layers[layerID];
+      for (const group of Object.values(draft.scene.groups)) {
+        for (const layerID of Object.keys(group.elements)) {
+          if (layerID === layerID) {
+            delete group.elements[layerID];
+          }
+        }
+      }
       if (draft.scene.selectedLayer === layerID) {
         const newSelectedLayer = Object.keys(draft.scene.layers)[0];
         draft.scene.selectedLayer = newSelectedLayer;
