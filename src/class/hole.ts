@@ -82,18 +82,7 @@ class Hole {
   }
 
   static unselect(state: State, layerID: string, holeID: string) {
-    return produce(state, (draft) => {
-      const layer = draft.scene.layers[layerID];
-      if (layer) {
-        const index = layer.selected.holes.indexOf(holeID);
-        if (index !== -1) {
-          layer.selected.holes.splice(index, 1);
-        }
-        if (layer.holes[holeID]) {
-          layer.holes[holeID].selected = false;
-        }
-      }
-    });
+    return Layer.unselect(state, layerID, 'holes', holeID);
   }
 
   static selectToolDrawingHole(state: State, sceneComponentType: string) {
