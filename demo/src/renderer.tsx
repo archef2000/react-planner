@@ -4,7 +4,8 @@ import {
   Models as PlannerModels,
   Plugins as PlannerPlugins,
   reducer as PlannerReducer,
-  ReactPlanner
+  ReactPlanner,
+  ReactPlannerActions
 } from '@archef2000/react-planner';
 import { configureStore } from '@reduxjs/toolkit';
 import { produce } from 'immer';
@@ -66,7 +67,8 @@ const store = configureStore({
   //middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middleware),
   devTools: {
     actionsDenylist: devToolsActionsDenylist,
-    maxAge: 10000
+    maxAge: 10000,
+    actionCreators: ReactPlannerActions
   },
   /*
   !isProduction && (window as any).devToolsExtension ?
@@ -91,7 +93,8 @@ const store = configureStore({
   ...((window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
     (window as any).__REDUX_DEVTOOLS_EXTENSION__({
       maxAge: 10000,
-      actionsDenylist: devToolsActionsDenylist
+      actionsDenylist: devToolsActionsDenylist,
+      actionCreators: ReactPlannerActions
     }))
 });
 
