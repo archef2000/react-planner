@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { catalogElementFactory, CatalogState, State } from '../models';
 import { IDBroker, NameGenerator } from '../utils/export';
 
-import { Group, Layer, Vertex } from './export';
+import { Group, Layer, Line, Vertex } from './export';
 
 class Area {
   static add(
@@ -51,21 +51,23 @@ class Area {
   }
 
   static remove(state: State, layerID: string, areaID: string) {
-    return produce(state, (draft) => {
-      const area = draft.scene.layers[layerID]?.areas[areaID];
-      if (!area) return;
+    const area = state.scene.layers[layerID]?.areas[areaID];
+    if (!area) return state;
 
-      area.vertices.forEach((vertexID) => {
-        Vertex.remove(draft, layerID, vertexID, 'areas', areaID);
-      });
+    for (const line of Object.values(state.scene.layers[layerID].lines)) {
+      if (line.vertices.every((v) => area.vertices.includes(v))) {
+        state = Line.remove(state, layerID, line.id);
+      }
+    }
 
+    state = produce(state, (draft) => {
       delete draft.scene.layers[layerID].areas[areaID];
-
-      Object.values(draft.scene.groups).forEach((group) => {
-        draft = Group.removeElement(draft, group.id, layerID, 'areas', areaID);
-      });
-      return draft;
     });
+
+    Object.values(state.scene.groups).forEach((group) => {
+      state = Group.removeElement(state, group.id, layerID, 'areas', areaID);
+    });
+    return state;
   }
 
   static unselect(state: State, layerID: string, areaID: string) {
