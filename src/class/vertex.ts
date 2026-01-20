@@ -22,16 +22,21 @@ class Vertex {
     relatedID: string
   ) {
     let vertex: VertexModel | undefined = undefined;
-    const vertices = state.scene.layers[layerID].vertices;
-    for (const v of Object.values(vertices)) {
-      if (GeometryUtils.samePoints(v, { x, y })) {
-        vertex = { ...v };
-        break;
+    let vertexID: string | undefined = undefined;
+    state = produce(state, (draft) => {
+      const vertices = draft.scene.layers[layerID].vertices;
+      for (const v of Object.values(vertices)) {
+        if (GeometryUtils.samePoints(v, { x, y })) {
+          if (!v[relatedPrototype].includes(relatedID)) {
+            v[relatedPrototype].push(relatedID);
+          }
+          vertexID = v.id;
+          break;
+        }
       }
-    }
-
-    if (vertex) {
-      vertex[relatedPrototype].push(relatedID);
+    });
+    if (vertexID) {
+      vertex = state.scene.layers[layerID].vertices[vertexID];
     } else {
       const vertexID = IDBroker.acquireID();
       vertex = VertexModel({
